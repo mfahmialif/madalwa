@@ -17,6 +17,7 @@ class CreateKelasSubTable extends Migration
             $table->id();
             $table->foreignId('tahun_pelajaran_id')->constrained('tahun_pelajaran');
             $table->foreignId('kelas_id')->constrained('kelas');
+            $table->foreignId('jurusan_id')->constrained('jurusan');
             $table->string('sub');
             $table->string('keterangan')->nullable();
             $table->timestamps();

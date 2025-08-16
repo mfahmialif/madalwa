@@ -54,118 +54,138 @@ class DatabaseSeeder extends Seeder
 
         \DB::table('tahun_pelajaran')->insert([
             [
-                'kode' => '20242',
-                'nama' => '2024/2026',
+                'kode'     => '20242',
+                'nama'     => '2024/2026',
                 'semester' => 'Genap',
-                'status' => 'tidak aktif',
+                'status'   => 'tidak aktif',
             ],
             [
-                'kode' => '20251',
-                'nama' => '2025/2026',
+                'kode'     => '20251',
+                'nama'     => '2025/2026',
                 'semester' => 'Ganjil',
-                'status' => 'aktif',
+                'status'   => 'aktif',
             ],
         ]);
 
         \DB::table('kelas')->insert([
             [
-                'romawi' => 'X',
-                'angka' => '10',
+                'romawi'     => 'X',
+                'angka'      => '10',
                 'keterangan' => 'Kelas 10',
             ],
         ]);
         \DB::table('kelas')->insert([
             [
-                'romawi' => 'XI',
-                'angka' => '11',
+                'romawi'     => 'XI',
+                'angka'      => '11',
                 'keterangan' => 'Kelas 11',
             ],
         ]);
         \DB::table('kelas')->insert([
             [
-                'romawi' => 'XII',
-                'angka' => '12',
+                'romawi'     => 'XII',
+                'angka'      => '12',
                 'keterangan' => 'Kelas 12',
-            ]
+            ],
+        ]);
+        \DB::table('jurusan')->insert([
+            [
+                'kode_jurusan' => 'BAHASA',
+                'nama_jurusan' => 'Bahasa',
+                'kuota'        => 1000,
+                'status'       => 'aktif',
+            ],
+            [
+                'kode_jurusan' => 'IPA',
+                'nama_jurusan' => 'IPA',
+                'kuota'        => 1000,
+                'status'       => 'aktif',
+            ],
+            [
+                'kode_jurusan' => 'IPS',
+                'nama_jurusan' => 'IPS',
+                'kuota'        => 1000,
+                'status'       => 'aktif',
+            ],
         ]);
         \DB::table('kelas_sub')->insert([
             [
                 'tahun_pelajaran_id' => 1,
-                'kelas_id' => 1,
-                'sub' => 'A',
-                'keterangan' => 'Kelas 10 A',
+                'kelas_id'           => 1,
+                'jurusan_id'         => 1,
+                'sub'                => 'A',
+                'keterangan'         => 'Kelas 10 A',
             ],
         ]);
         \DB::table('mata_pelajaran')->insert([
             [
-                'nama' => 'Ilmu Pengetahuan Alam',
-                'kode' => 'IPA',
-                'status' => 'aktif',
-                'kelas_id' => 1
+                'nama'     => 'Ilmu Pengetahuan Alam',
+                'kode'     => 'IPA',
+                'status'   => 'aktif',
+                'kelas_id' => 1,
             ],
             [
-                'nama' => 'Bahasa Indonesia',
-                'kode' => 'BINDO',
-                'status' => 'aktif',
-                'kelas_id' => 1
+                'nama'     => 'Bahasa Indonesia',
+                'kode'     => 'BINDO',
+                'status'   => 'aktif',
+                'kelas_id' => 1,
             ],
             [
-                'nama' => 'Bahasa Inggris',
-                'kode' => 'BINGGRIS',
-                'status' => 'aktif',
-                'kelas_id' => 1
+                'nama'     => 'Bahasa Inggris',
+                'kode'     => 'BINGGRIS',
+                'status'   => 'aktif',
+                'kelas_id' => 1,
             ],
         ]);
         \DB::table('kurikulum')->insert([
             [
-                'nama' => 'Kurikulum Lama',
+                'nama'               => 'Kurikulum Lama',
                 'tahun_pelajaran_id' => 1,
             ],
         ]);
         \DB::table('kurikulum')->insert([
             [
-                'nama' => 'Kurikulum Merdeka',
+                'nama'               => 'Kurikulum Merdeka',
                 'tahun_pelajaran_id' => 2,
             ],
         ]);
         \DB::table('kurikulum_detail')->insert([
             [
-                'kurikulum_id' => 1,
+                'kurikulum_id'      => 1,
                 'mata_pelajaran_id' => 1,
             ],
             [
-                'kurikulum_id' => 2,
+                'kurikulum_id'      => 2,
                 'mata_pelajaran_id' => 2,
             ],
             [
-                'kurikulum_id' => 2,
+                'kurikulum_id'      => 2,
                 'mata_pelajaran_id' => 3,
             ],
         ]);
 
-        Guru::factory()->count(20)->create(); // otomatis buat 20 guru dan user
+        Guru::factory()->count(20)->create();  // otomatis buat 20 guru dan user
         Siswa::factory()->count(20)->create(); // otomatis buat 20 guru dan user
 
         \DB::table('jadwal')->insert([
             [
-                'tahun_pelajaran_id' => 1,
+                'tahun_pelajaran_id'  => 1,
                 'kurikulum_detail_id' => 1,
-                'kelas_sub_id' => 1,
-                'guru_id' => 1,
-                'hari' => 'Senin',
-                'jam_mulai' => '08:00',
-                'jam_selesai' => '09:00',
+                'kelas_sub_id'        => 1,
+                'guru_id'             => 1,
+                'hari'                => 'Senin',
+                'jam_mulai'           => '08:00',
+                'jam_selesai'         => '09:00',
             ],
         ]);
-
 
         $jadwalId = 1; // ID mapel yang akan diisi
 
         // Daftar komponen
         $komponenMap = [
-            'pengetahuan' => ['Ulangan Harian', 'Tugas', 'UTS', 'UAS'],
+            'pengetahuan'  => ['Ulangan Harian', 'Tugas', 'UTS', 'UAS'],
             'keterampilan' => ['Praktik', 'Proyek'],
-            'sikap' => ['Sikap Spiritual', 'Sikap Sosial'],
+            'sikap'        => ['Sikap Spiritual', 'Sikap Sosial'],
         ];
 
         $insertedKomponen = [];
@@ -173,8 +193,8 @@ class DatabaseSeeder extends Seeder
         foreach ($komponenMap as $jenis => $komponens) {
             foreach ($komponens as $nama) {
                 $insertedKomponen[] = [
-                    'nama' => $nama,
-                    'jenis' => $jenis,
+                    'nama'       => $nama,
+                    'jenis'      => $jenis,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -193,15 +213,15 @@ class DatabaseSeeder extends Seeder
 
         foreach ($komponenAll as $jenis => $komponens) {
             $jumlah = $komponens->count();
-            $bobot = round(1 / $jumlah, 2); // contoh: 1/4 = 0.25, 1/3 ≈ 0.33
+            $bobot  = round(1 / $jumlah, 2); // contoh: 1/4 = 0.25, 1/3 ≈ 0.33
 
             foreach ($komponens as $komponen) {
                 $bobotData[] = [
-                    'jadwal_id' => $jadwalId,
+                    'jadwal_id'         => $jadwalId,
                     'komponen_nilai_id' => $komponen->id,
-                    'bobot' => $bobot,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'bobot'             => $bobot,
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
                 ];
             }
         }

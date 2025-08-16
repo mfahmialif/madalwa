@@ -31,4 +31,9 @@ class KelasSub extends Model
         return $this->hasMany(Jadwal::class, 'kelas_sub_id');
     }
 
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
+
 }
