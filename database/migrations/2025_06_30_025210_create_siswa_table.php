@@ -98,7 +98,7 @@ class CreateSiswaTable extends Migration
             $table->string('nomor_telepon_wali')->nullable();
 
             $table->enum('status_daftar', ['daftar', 'diterima', 'tidak diterima'])->default('daftar');
-            $table->enum('status', ['aktif', 'tidak aktif', 'cuti', 'lulus'])->default('aktif');
+            $table->enum('status', ['aktif', 'tidak aktif', 'cuti', 'pindah', 'lulus'])->default('aktif');
             $table->timestamps(); // Adds created_at and updated_at columns
         });
     }

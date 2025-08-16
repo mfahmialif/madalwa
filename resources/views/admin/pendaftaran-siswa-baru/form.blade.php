@@ -10,7 +10,7 @@
             <option value="">Pilih Kelas</option>
             @foreach ($kelas as $item)
                 <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>
-                    {{ $item->angka }}
+                    {{ $item->angka }} ({{ $item->unitSekolah->nama_unit }})
                 </option>
             @endforeach
         </select>
