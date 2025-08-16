@@ -51,6 +51,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+require __DIR__ . '/web/fah.php';
+require __DIR__ . '/web/yah.php';
+
 Auth::routes();
 
 // remake halaman utama menjadi login
