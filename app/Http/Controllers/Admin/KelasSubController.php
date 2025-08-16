@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\KelasSub;
 use App\Models\TahunPelajaran;
@@ -14,12 +15,14 @@ class KelasSubController extends Controller
         "sub"                => "required|string",
         "keterangan"         => "nullable|string",
         "tahun_pelajaran_id" => "required|exists:tahun_pelajaran,id",
+        "jurusan_id"         => "required|exists:jurusan,id",
     ];
 
     public function index(Kelas $kelas)
     {
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        return view('admin.kelas.sub.index', compact('kelas', 'tahunPelajaran'));
+        $jurusan        = Jurusan::all();
+        return view('admin.kelas.sub.index', compact('kelas', 'tahunPelajaran', 'jurusan'));
     }
 
     public function data(Kelas $kelas, Request $request)
@@ -27,8 +30,9 @@ class KelasSubController extends Controller
         $search = request('search.value');
         $data   = KelasSub::join('kelas', 'kelas.id', '=', 'kelas_sub.kelas_id')
             ->join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'kelas_sub.tahun_pelajaran_id')
+            ->join('jurusan', 'jurusan.id', '=', 'kelas_sub.jurusan_id')
             ->where('kelas_sub.kelas_id', $kelas->id)
-            ->select('kelas_sub.*', 'kelas.angka as kelas_angka', 'tahun_pelajaran.kode as tahun_pelajaran_kode');
+            ->select('kelas_sub.*', 'kelas.angka as kelas_angka', 'tahun_pelajaran.kode as tahun_pelajaran_kode', 'jurusan.nama_jurusan');
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
@@ -36,10 +40,14 @@ class KelasSubController extends Controller
                     $query->orWhere('kelas.romawi', 'LIKE', "%$search%");
                     $query->orWhere('kelas.angka', 'LIKE', "%$search%");
                     $query->orWhere('kelas_sub.sub', 'LIKE', "%$search%");
+                    $query->orWhere('jurusan.nama_jurusan', 'LIKE', "%$search%");
                 });
 
                 $query->when($request->tahun_pelajaran_id, function ($q) use ($request) {
                     $q->where('kelas_sub.tahun_pelajaran_id', $request->tahun_pelajaran_id);
+                });
+                $query->when($request->jurusan_id, function ($q) use ($request) {
+                    $q->where('kelas_sub.jurusan_id', $request->jurusan_id);
                 });
             })
             ->addColumn('action', function ($row) {
@@ -79,7 +87,8 @@ class KelasSubController extends Controller
     {
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        return view('admin.kelas.sub.add', compact('dataKelas', 'kelas', 'tahunPelajaran'));
+        $jurusan        = Jurusan::all();
+        return view('admin.kelas.sub.add', compact('dataKelas', 'kelas', 'tahunPelajaran', 'jurusan'));
     }
 
     public function store(Kelas $kelas, Request $request)
@@ -87,13 +96,19 @@ class KelasSubController extends Controller
         try {
             $request->validate($this->rules);
 
-            $cek = KelasSub::where('kelas_id', $request->kelas_id)->where('sub', $request->sub)->first();
+            $cek = KelasSub::where('kelas_id', $kelas->id)
+                ->where('sub', $request->sub)
+                ->where('tahun_pelajaran_id', $request->tahun_pelajaran_id)
+                ->where('jurusan_id', $request->jurusan_id)
+                ->first();
+
             if ($cek) {
-                throw new \Exception('KelasSub Sub sudah ada');
+                throw new \Exception('Data Sub Kelas sudah ada');
             }
 
             $kelasSub                     = new KelasSub();
             $kelasSub->tahun_pelajaran_id = $request->tahun_pelajaran_id;
+            $kelasSub->jurusan_id         = $request->jurusan_id;
             $kelasSub->kelas_id           = $kelas->id;
             $kelasSub->sub                = $request->sub;
             $kelasSub->keterangan         = $request->keterangan;
@@ -114,7 +129,8 @@ class KelasSubController extends Controller
     {
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        return view('admin.kelas.sub.edit', compact('kelas', 'dataKelas', 'kelasSub', 'tahunPelajaran'));
+        $jurusan        = Jurusan::all();
+        return view('admin.kelas.sub.edit', compact('kelas', 'dataKelas', 'kelasSub', 'tahunPelajaran', 'jurusan'));
     }
 
     public function update(Kelas $kelas, Request $request, KelasSub $kelasSub)
@@ -122,13 +138,17 @@ class KelasSubController extends Controller
         try {
             $request->validate($this->rules);
 
-            $cek = KelasSub::where('kelas_id', $request->kelas_id)->where('sub', $request->sub)->where('id', '!=', $kelasSub->id)->first();
+            $cek = KelasSub::where('kelas_id', $kelas->id)
+                ->where('sub', $request->sub)
+                ->where('jurusan_id', $request->jurusan_id)
+                ->where('tahun_pelajaran_id', $request->tahun_pelajaran_id)
+                ->where('id', '!=', $kelasSub->id)->first();
             if ($cek) {
-                throw new \Exception('KelasSub Sub sudah ada');
+                throw new \Exception('Data Sub Kelas sudah ada');
             }
 
-
             $kelasSub->tahun_pelajaran_id = $request->tahun_pelajaran_id;
+            $kelasSub->jurusan_id         = $request->jurusan_id;
             $kelasSub->sub                = $request->sub;
             $kelasSub->keterangan         = $request->keterangan;
 
@@ -141,7 +161,7 @@ class KelasSubController extends Controller
                 ->withInput()
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
-            return redirect()->route('admin.kelas.sub.edit', ['kelasSub' => $kelasSub], ['kelas' => $kelas])->with('error', $th->getMessage())->withInput();
+            return redirect()->route('admin.kelas.sub.edit', ['kelasSub' => $kelasSub, 'kelas' => $kelas])->with('error', $th->getMessage())->withInput();
         }
     }
 

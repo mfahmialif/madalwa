@@ -50,5 +50,6 @@
         $('#form_edit').find('input[name="sub"]').val(kelasSub.sub);
         $('#form_edit').find('textarea[name="keterangan"]').val(kelasSub.keterangan);
         $('#form_edit').find('select[name="tahun_pelajaran_id"]').val(kelasSub.tahun_pelajaran_id).change();
+        $('#form_edit').find('select[name="jurusan_id"]').val(kelasSub.jurusan_id).change();
     </script>
 @endpush

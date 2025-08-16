@@ -1,14 +1,14 @@
 @extends('layouts.admin.template')
-@section('title', 'Edit Data User')
+@section('title', 'Edit Data Unit Sekolah')
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.kelas.index') }}">Kelas </a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.unit-sekolah.index') }}">Unit Sekolah </a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Edit Kelas</li>
+                    <li class="breadcrumb-item active">Edit Unit Sekolah</li>
                 </ul>
             </div>
         </div>
@@ -18,17 +18,17 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.kelas.update', ['kelas' => $kelas]) }}" onsubmit="submitForm(this)"
+                    <form action="{{ route('admin.unit-sekolah.update', ['unitSekolah' => $unitSekolah]) }}" onsubmit="submitForm(this)"
                         method="POST" enctype="multipart/form-data" id="form_edit">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Edit Data Kelas</h4>
+                                    <h4>Edit Data Unit Sekolah</h4>
                                 </div>
                             </div>
-                            @include('admin.kelas.form')
+                            @include('admin.unit-sekolah.form')
                         </div>
                     </form>
                 </div>
@@ -38,10 +38,9 @@
 @endsection
 @push('script')
     <script>
-        const kelas = @json($kelas);
-        $('#form_edit').find('[name="romawi"]').val(kelas.romawi).trigger('change');
-        $('#form_edit').find('[name="angka"]').val(kelas.angka).trigger('change');
-        $('#form_edit').find('[name="unit_sekolah_id"]').val(kelas.unit_sekolah_id).trigger('change');
-        $('#form_edit').find('[name="keterangan"]').val(kelas.keterangan);
+        const unitSekolah = @json($unitSekolah);
+        $('#form_edit').find('[name="nama_unit"]').val(unitSekolah.nama_unit);
+        $('#form_edit').find('[name="alamat"]').val(unitSekolah.alamat);
+        $('#form_edit').find('[name="keterangan"]').val(unitSekolah.keterangan);
     </script>
 @endpush

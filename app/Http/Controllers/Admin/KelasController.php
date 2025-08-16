@@ -1,33 +1,40 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class KelasController extends Controller
 {
     private $rules = [
-        "romawi" => "required|string",
-        "angka" => "required|string",
-        "keterangan" => "required|string"
+        "unit_sekolah_id" => "required|exists:unit_sekolah,id",
+        "romawi"          => "required|string",
+        "angka"           => "required|string",
+        "keterangan"      => "nullable|string",
     ];
-    function index()
+    public function index()
     {
-        return view('admin.kelas.index');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.kelas.index', compact('unitSekolah'));
     }
-    function data(Request $request)
+    public function data(Request $request)
     {
         $search = request('search.value');
-        $data   = Kelas::select('*');
+        $data   = Kelas::join('unit_sekolah', 'unit_sekolah.id', '=', 'kelas.unit_sekolah_id')
+            ->select('kelas.*', 'unit_sekolah.nama_unit');
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
-                    $query->orWhere('romawi', 'LIKE', "%$search%");
-                    $query->orWhere('angka', 'LIKE', "%$search%");
-                    $query->orWhere('keterangan', 'LIKE', "%$search%");
+                    $query->orWhere('kelas.romawi', 'LIKE', "%$search%");
+                    $query->orWhere('kelas.angka', 'LIKE', "%$search%");
+                    $query->orWhere('kelas.keterangan', 'LIKE', "%$search%");
+                    $query->orWhere('unit_sekolah.nama_unit', 'LIKE', "%$search%");
+                });
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('kelas.unit_sekolah_id', $request->unit_sekolah_id);
                 });
             })
             ->addColumn('action', function ($row) {
@@ -51,18 +58,28 @@ class KelasController extends Controller
             ->rawColumns(['action', 'name'])
             ->toJson();
     }
-    function add()
+    public function add()
     {
-        return view('admin.kelas.add');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.kelas.add', compact('unitSekolah'));
     }
-    function store(Request $request)
+    public function store(Request $request)
     {
         try {
             $request->validate($this->rules);
-            $kelas = new Kelas();
-            $kelas->romawi = $request->romawi;
-            $kelas->angka = $request->angka;
-            $kelas->keterangan = $request->keterangan;
+            $cek = Kelas::where('unit_sekolah_id', $request->unit_sekolah_id)
+                ->where('romawi', $request->romawi)
+                ->where('angka', $request->angka)
+                ->first();
+            if ($cek) {
+                throw new \Exception('Data kelas sudah ada');
+            }
+
+            $kelas                  = new Kelas();
+            $kelas->unit_sekolah_id = $request->unit_sekolah_id;
+            $kelas->romawi          = $request->romawi;
+            $kelas->angka           = $request->angka;
+            $kelas->keterangan      = $request->keterangan;
             $kelas->save();
             return redirect()->route('admin.kelas.index')->with('success', 'User berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -74,22 +91,33 @@ class KelasController extends Controller
             return redirect()->route('admin.kelas.add')->with('error', $th->getMessage())->withInput();
         }
     }
-    function edit(Kelas $kelas)
+    public function edit(Kelas $kelas)
     {
-        return view('admin.kelas.edit',compact('kelas'));
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.kelas.edit', compact('kelas', 'unitSekolah'));
     }
-    function update(Request $request, Kelas $kelas)
+    public function update(Request $request, Kelas $kelas)
     {
         try {
 
-            $rules = $this->rules;
+            $rules       = $this->rules;
             $rules["id"] = "required";
             $request->validate($this->rules);
 
-                $kelas->romawi = $request->romawi;
-                $kelas->angka = $request->angka;
-                $kelas->keterangan = $request->keterangan;
-                $kelas->save();
+            $cek = Kelas::where('unit_sekolah_id', $request->unit_sekolah_id)
+                ->where('romawi', $request->romawi)
+                ->where('angka', $request->angka)
+                ->where('id', '!=', $kelas->id)
+                ->first();
+            if ($cek) {
+                throw new \Exception('Data kelas sudah ada');
+            }
+
+            $kelas->unit_sekolah_id = $request->unit_sekolah_id;
+            $kelas->romawi          = $request->romawi;
+            $kelas->angka           = $request->angka;
+            $kelas->keterangan      = $request->keterangan;
+            $kelas->save();
             return redirect()->route('admin.kelas.index')->with('success', 'Kelas berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.kelas.edit')
@@ -97,10 +125,11 @@ class KelasController extends Controller
                 ->withInput()
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
-           return redirect()->route('admin.kelas.edit', ['kelas' => $kelas])->with('error', $th->getMessage())->withInput();
+            return redirect()->route('admin.kelas.edit', ['kelas' => $kelas])->with('error', $th->getMessage())->withInput();
         }
     }
-    function destroy(Kelas $kelas){
+    public function destroy(Kelas $kelas)
+    {
         try {
             $kelas->delete();
             return response()->json([

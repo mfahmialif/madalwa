@@ -67,25 +67,42 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        \DB::table('kelas')->insert([
+        \DB::table('unit_sekolah')->insert([
             [
-                'romawi'     => 'X',
-                'angka'      => '10',
-                'keterangan' => 'Kelas 10',
+                'nama_unit' => 'Dalwa 3',
+                'alamat'    => 'Jl. Raya',
+            ],
+            [
+                'nama_unit' => 'Dalwa 5',
+                'alamat'    => 'Jl. Raya',
+            ],
+            [
+                'nama_unit' => 'Pusat',
+                'alamat'    => 'Jl. Raya',
             ],
         ]);
         \DB::table('kelas')->insert([
             [
-                'romawi'     => 'XI',
-                'angka'      => '11',
-                'keterangan' => 'Kelas 11',
+                'unit_sekolah_id' => 1,
+                'romawi'          => 'X',
+                'angka'           => '10',
+                'keterangan'      => 'Kelas 10',
             ],
         ]);
         \DB::table('kelas')->insert([
             [
-                'romawi'     => 'XII',
-                'angka'      => '12',
-                'keterangan' => 'Kelas 12',
+                'unit_sekolah_id' => 1,
+                'romawi'          => 'XI',
+                'angka'           => '11',
+                'keterangan'      => 'Kelas 11',
+            ],
+        ]);
+        \DB::table('kelas')->insert([
+            [
+                'unit_sekolah_id' => 1,
+                'romawi'          => 'XII',
+                'angka'           => '12',
+                'keterangan'      => 'Kelas 12',
             ],
         ]);
         \DB::table('jurusan')->insert([

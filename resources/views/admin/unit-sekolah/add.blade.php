@@ -1,14 +1,14 @@
 @extends('layouts.admin.template')
-@section('title', 'Tambah Data Jurusan')
+@section('title', 'Tambah Data Unit Sekolah')
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.jurusan.index') }}">Jurusan</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.unit-sekolah.index') }}">Unit Sekolah</a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Tambah Jurusan</li>
+                    <li class="breadcrumb-item active">Tambah Unit Sekolah</li>
                 </ul>
             </div>
         </div>
@@ -19,17 +19,17 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.jurusan.store') }}" onsubmit="submitForm(this)" method="POST"
+                    <form action="{{ route('admin.unit-sekolah.store') }}" onsubmit="submitForm(this)" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row">
 
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Tambah Data Jurusan</h4>
+                                    <h4>Tambah Data Unit Sekolah</h4>
                                 </div>
                             </div>
-                            @include('admin.jurusan.form')
+                            @include('admin.unit-sekolah.form')
 
                         </div>
                     </form>

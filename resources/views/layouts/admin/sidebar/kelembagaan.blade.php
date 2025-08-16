@@ -7,6 +7,8 @@
                  href="{{ route('admin.mata-pelajaran.index') }}">Profil Lembaga</a></li>
          <li><a class="{{ request()->RouteIs('admin.user.*') ? 'active' : '' }}"
                  href="{{ route('admin.user.index') }}">Data Pengguna</a>
+         <li><a class="{{ request()->RouteIs('admin.unit-sekolah.*') ? 'active' : '' }}"
+                 href="{{ route('admin.unit-sekolah.index') }}">Data Unit Sekolah</a></li>
          <li><a class="{{ request()->RouteIs('admin.kelas.*') ? 'active' : '' }}"
                  href="{{ route('admin.kelas.index') }}">Data Kelas</a></li>
          <li><a class="{{ request()->RouteIs('admin.kepala-sekolah.*') ? 'active' : '' }}"

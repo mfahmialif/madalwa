@@ -1,3 +1,21 @@
+<div class="col-12">
+    <div class="input-block local-forms">
+        <label>Unit Sekolah <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('unit_sekolah_id') is-invalid @enderror" name="unit_sekolah_id"
+            required>
+            <option value="">Pilih Unit Sekolah</option>
+            @foreach ($unitSekolah as $item)
+                <option value="{{ $item->id }}" {{ old('unit_sekolah_id') == $item->id ? 'selected' : '' }}>
+                    {{ $item->nama_unit }}</option>
+            @endforeach
+        </select>
+        @error('tahun_pelajaran_id')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
 <div class="col-12 col-sm-6">
     <div class="input-block local-forms">
         <label>Romawi</label>
@@ -21,7 +39,8 @@
 <div class="col-12">
     <div class="input-block local-forms">
         <label>Keterangan</label>
-        <textarea class="form-control  @error('keterangan') is-invalid @enderror"  name="keterangan" id="keterangan" cols="30" rows="10"></textarea>
+        <textarea class="form-control  @error('keterangan') is-invalid @enderror" name="keterangan" id="keterangan"
+            cols="30" rows="10"></textarea>
         @error('keterangan')
             <div class="invalid-feedback">
                 {{ $message }}

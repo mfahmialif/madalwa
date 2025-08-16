@@ -16,4 +16,8 @@ class Kelas extends Model
     }
 
 
+    public function unitSekolah()
+    {
+        return $this->belongsTo(UnitSekolah::class, 'unit_sekolah_id');
+    }
 }

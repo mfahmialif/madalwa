@@ -37,7 +37,7 @@
                                             </form>
                                         </div>
                                         <div class="add-group">
-                                            <a href="{{ route('admin.kelas.add') }}"
+                                            <a href="{{ route('admin.jurusan.add') }}"
                                                 class="btn btn-primary add-pluss ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/plus.svg"
                                                     alt=""></a>
@@ -69,9 +69,10 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
-                                    <th>Romawi</th>
-                                    <th class="text-start">Angka</th>
-                                    <th>Keterangan</th>
+                                    <th>Kode Jurusan</th>
+                                    <th class="text-start">Nama Jurusan</th>
+                                    <th>Kuota</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -104,7 +105,7 @@
         }
 
         function dataTable(tableId) {
-            var url = "{{ route('admin.kelas.data') }}"
+            var url = "{{ route('admin.jurusan.data') }}"
             var datatable = $(tableId).DataTable({
                 // responsive: true,
                 dom: "rt<'d-flex justify-content-end m-3 align-items-center'l p><'d-flex justify-content-between m-3'iB>",
@@ -131,18 +132,23 @@
                         },
                     },
                     {
-                        data: 'romawi',
-                        name: 'romawi',
+                        data: 'kode_jurusan',
+                        name: 'kode_jurusan',
                         className: "text-middle"
                     },
                     {
-                        data: 'angka',
-                        name: 'angka',
+                        data: 'nama_jurusan',
+                        name: 'nama_jurusan',
+                        className: "text-middle"
+                    },
+                    {
+                        data: 'kuota',
+                        name: 'kuota',
                         className: "text-start"
                     },
                     {
-                        data: 'keterangan',
-                        name: 'keterangan',
+                        data: 'status',
+                        name: 'status',
                         className: "text-middle"
                     },
                     {
@@ -178,8 +184,8 @@
                 dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
-                    var url = "{{ route('admin.kelas.destroy', ['kelas' => '_kelas']) }}";
-                    url = url.replace('_kelas', id);
+                    var url = "{{ route('admin.jurusan.destroy', ['jurusan' => '_jurusan']) }}";
+                    url = url.replace('_jurusan', id);
                     var fd = new FormData($(event.target)[0]);
                     $.ajax({
                         type: "post",

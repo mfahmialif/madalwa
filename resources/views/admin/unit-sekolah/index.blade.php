@@ -1,14 +1,14 @@
 @extends('layouts.admin.template')
-@section('title', 'Kelas')
+@section('title', 'Unit Sekolah')
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.kelas.index') }}">Kelas </a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.unit-sekolah.index') }}">Unit Sekolah </a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Data Kelas</li>
+                    <li class="breadcrumb-item active">Data Unit Sekolah</li>
                 </ul>
             </div>
         </div>
@@ -18,18 +18,6 @@
     <div class="row">
         <div class="col-sm-12">
 
-            <div class="col-12 col-md-12">
-                <div class="input-block local-forms">
-                    <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
-                        <option value="">Semua Unit Sekolah</option>
-                        @foreach ($unitSekolah as $item)
-                            <option value="{{ $item->id }}">
-                                {{ $item->nama_unit }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
@@ -37,7 +25,7 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <div class="doctor-table-blk">
-                                    <h3>Data Kelas</h3>
+                                    <h3>Data Unit Sekolah</h3>
                                     <div class="doctor-search-blk mt-3 mt-md-0">
                                         <div class="top-nav-search table-search-blk">
                                             <form onsubmit="event.preventDefault(); searchDataTable('#tableKelas');">
@@ -49,7 +37,7 @@
                                             </form>
                                         </div>
                                         <div class="add-group">
-                                            <a href="{{ route('admin.kelas.add') }}"
+                                            <a href="{{ route('admin.unit-sekolah.add') }}"
                                                 class="btn btn-primary add-pluss ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/plus.svg"
                                                     alt=""></a>
@@ -81,9 +69,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
-                                    <th>Nama Unit</th>
-                                    <th>Romawi</th>
-                                    <th class="text-start">Angka</th>
+                                    <th class="text-start">Nama Unit Sekolah</th>
+                                    <th>Alamat</th>
                                     <th>Keterangan</th>
                                     <th>Action</th>
                                 </tr>
@@ -102,11 +89,6 @@
         var table1 = dataTable('#tableKelas');
         $('#search-table').focus();
 
-        $('.filter-dt').change(function(e) {
-            e.preventDefault();
-            table1.ajax.reload();
-        });
-
         var searchTimeout = null;
 
         function searchDataTable(tableId, refresh = false) {
@@ -122,7 +104,7 @@
         }
 
         function dataTable(tableId) {
-            var url = "{{ route('admin.kelas.data') }}"
+            var url = "{{ route('admin.unit-sekolah.data') }}"
             var datatable = $(tableId).DataTable({
                 // responsive: true,
                 dom: "rt<'d-flex justify-content-end m-3 align-items-center'l p><'d-flex justify-content-between m-3'iB>",
@@ -138,7 +120,7 @@
                 ajax: {
                     url: url,
                     data: function(d) {
-                        d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
+                        // d.search = $('#search-table').val();
                     },
                 },
                 deferRender: true,
@@ -154,19 +136,14 @@
                         className: "text-middle"
                     },
                     {
-                        data: 'romawi',
-                        name: 'romawi',
+                        data: 'alamat',
+                        name: 'alamat',
                         className: "text-middle"
-                    },
-                    {
-                        data: 'angka',
-                        name: 'angka',
-                        className: "text-start"
                     },
                     {
                         data: 'keterangan',
                         name: 'keterangan',
-                        className: "text-middle"
+                        className: "text-start"
                     },
                     {
                         data: 'action',
@@ -201,8 +178,8 @@
                 dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
-                    var url = "{{ route('admin.kelas.destroy', ['kelas' => '_kelas']) }}";
-                    url = url.replace('_kelas', id);
+                    var url = "{{ route('admin.unit-sekolah.destroy', ['unitSekolah' => '_unitSekolah']) }}";
+                    url = url.replace('_unitSekolah', id);
                     var fd = new FormData($(event.target)[0]);
                     $.ajax({
                         type: "post",

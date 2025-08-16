@@ -25,16 +25,31 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-12">
-                <div class="input-block local-forms">
-                    <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id" required>
-                        <option value="">Semua Tahun Pelajaran</option>
-                        @foreach ($tahunPelajaran as $item)
-                            <option value="{{ $item->id }}">
-                                {{ $item->nama }} {{ $item->semester }}
-                            </option>
-                        @endforeach
-                    </select>
+            <div class="row">
+
+                <div class="col-12 col-md-6">
+                    <div class="input-block local-forms">
+                        <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id" required>
+                            <option value="">Semua Tahun Pelajaran</option>
+                            @foreach ($tahunPelajaran as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->nama }} {{ $item->semester }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="input-block local-forms">
+                        <select class="form-control select2 filter-dt" id="filter_jurusan_id" required>
+                            <option value="">Semua Jurusan</option>
+                            @foreach ($jurusan as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->nama_jurusan }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -92,6 +107,7 @@
                                     <th style="width: 5%">No</th>
                                     <th>Tahun</th>
                                     <th>Kelas</th>
+                                    <th>Jurusan</th>
                                     <th>Sub Kelas</th>
                                     <th>Keterangan</th>
                                     <th>Action</th>
@@ -149,6 +165,7 @@
                     url: url,
                     data: function(d) {
                         d.tahun_pelajaran_id = $('#filter_tahun_pelajaran_id').val();
+                        d.jurusan_id = $('#filter_jurusan_id').val();
                     },
                 },
                 deferRender: true,
@@ -166,6 +183,11 @@
                     {
                         data: 'kelas_angka',
                         name: 'kelas_angka',
+                        className: "text-middle"
+                    },
+                    {
+                        data: 'nama_jurusan',
+                        name: 'nama_jurusan',
                         className: "text-middle"
                     },
                     {
