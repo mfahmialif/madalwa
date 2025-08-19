@@ -53,8 +53,10 @@ class NilaiInputController extends Controller
         $search = request('search.value');
         $data   = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
+            ->join('kelas_sub', 'kelas_sub.kelas_id', '=', 'kelas.id')
             ->join('kelas_siswa', 'kelas_siswa.siswa_id', '=', 'siswa.id')
             ->where('status_daftar', 'diterima')
+            ->where('kelas_sub.id', $jadwal->kelas_sub_id)
             ->where('kelas_siswa.kelas_sub_id', $jadwal->kelas_sub_id)
             ->where('siswa.kurikulum_id', $jadwal->kurikulumDetail->kurikulum_id)
             ->with([
