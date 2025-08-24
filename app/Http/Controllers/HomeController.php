@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TahunPelajaran;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,6 +25,7 @@ class HomeController extends Controller
     public function index()
     {
         $user = \Auth::user();
+       
 
         if ($user->role->nama == 'admin') {
             return redirect()->route('admin.dashboard.index');

@@ -3,8 +3,8 @@
                  alt=""></span>
          <span> Kelembagaan </span> <span class="menu-arrow"></span></a>
      <ul style="display: none;">
-         <li><a class="{{ request()->RouteIs('admin.mata-pelajaran.*') ? 'active' : '' }}"
-                 href="{{ route('admin.mata-pelajaran.index') }}">Profil Lembaga</a></li>
+         <li><a class="{{ request()->RouteIs('admin.lembaga.*') ? 'active' : '' }}"
+                 href="{{ route('admin.lembaga.index') }}">Profil Lembaga</a></li>
          <li><a class="{{ request()->RouteIs('admin.user.*') ? 'active' : '' }}"
                  href="{{ route('admin.user.index') }}">Data Pengguna</a>
          <li><a class="{{ request()->RouteIs('admin.unit-sekolah.*') ? 'active' : '' }}"

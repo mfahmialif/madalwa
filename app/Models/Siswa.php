@@ -49,4 +49,7 @@ class Siswa extends Model
     public function kurikulum(){
         return $this->belongsTo(Kurikulum::class);
     }
+    function mutasi() {
+        return $this->hasMany(Mutasi::class);
+    }
 }
