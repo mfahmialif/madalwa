@@ -34,6 +34,7 @@ use App\Http\Controllers\Guru\NilaiInputController as GuruNilaiInputController;
 use App\Http\Controllers\Guru\ProfileController as GuruProfileController;
 use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Siswa\KelasSiswaController as SiswaKelasSiswaController;
 use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\NilaiController as SiswaNilaiController;
@@ -323,6 +324,12 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function () {
         Route::get('/edit', [SiswaDashboardController::class, 'edit'])->name('siswa.dashboard.edit');
         Route::put('/update', [SiswaDashboardController::class, 'update'])->name('siswa.dashboard.update');
     });
+
+     Route::prefix('kelas/{kelasSub}')->group(function () {
+        Route::get('/', [SiswaKelasSiswaController::class, 'index'])->name('siswa.kelas.index');
+        Route::get('/data', [SiswaKelasSiswaController::class, 'data'])->name('siswa.kelas.data');
+    });
+
 
     Route::prefix('absensi/{kelasSub}')->group(function () {
         Route::get('/', [SiswaAbsensiController::class, 'index'])->name('siswa.absensi.index');
