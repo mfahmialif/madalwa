@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AlumniController;
 use App\Http\Controllers\Admin\LembagaController;
 use App\Http\Controllers\Admin\MutasiKeluarController;
 use App\Http\Controllers\Admin\MutasiMasukController;
-use App\Models\Lembaga;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,9 +21,9 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::prefix('/lembaga')->group(function () {
             Route::get('/', [LembagaController::class, 'index'])->name('admin.lembaga.index');
-            Route::post('/save', [LembagaController::class, 'store'])->name('admin.lembaga.store');
+            Route::post('/store', [LembagaController::class, 'store'])->name('admin.lembaga.store');
         });
-        
+
         Route::prefix('/alumni')->group(function () {
             Route::get('/', [AlumniController::class, 'index'])->name('admin.alumni.index');
             Route::get('/data', [AlumniController::class, 'data'])->name('admin.alumni.data');
