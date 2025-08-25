@@ -33,7 +33,7 @@ class AlumniController extends Controller
         $search = request('search.value');
         $data   = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
-            ->where('status', 'lulus')
+            ->where('siswa.status', 'lulus')
             ->select('siswa.*', 'tahun_pelajaran.kode as tahun_pelajaran_kode', 'kelas.angka as kelas_angka');
 
         return DataTables::of($data)
@@ -112,7 +112,7 @@ class AlumniController extends Controller
             Log::info($tahunPelajaranId);
         $data = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
-            // ->where('siswa.status', 'lulus')
+            ->where('siswa.status', 'lulus')
             ->where('siswa.tahun_pelajaran_id',$tahunPelajaranId)
             ->select(
                 'siswa.*',

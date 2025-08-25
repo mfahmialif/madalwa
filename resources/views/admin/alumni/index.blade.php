@@ -87,7 +87,7 @@
 @endsection
 @push('script')
     <script>
-        var table1 = dataTable('#tableAlumniPetahun');
+        var table1 = dataTable('#tableAlumni');
         $('#search-table').focus();
 
         var searchTimeout = null;
