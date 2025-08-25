@@ -6,9 +6,9 @@
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.mata-pelajaran.index') }}">Mutasi Masuk</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.mutasi-keluar.index') }}">Mutasi Keluar</a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Data Mutasi Masuk</li>
+                    <li class="breadcrumb-item active">Data Mutasi Keluar</li>
                 </ul>
             </div>
         </div>
@@ -17,7 +17,6 @@
 
     <div class="row">
         <div class="col-sm-12">
-
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
@@ -25,23 +24,23 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <div class="doctor-table-blk">
-                                    <h3>Data Mutasi Masuk</h3>
+                                    <h3>Data Mutasi Keluar</h3>
                                     <div class="doctor-search-blk mt-3 mt-md-0">
                                         <div class="top-nav-search table-search-blk">
-                                            <form onsubmit="event.preventDefault(); searchDataTable('#tableMutasiMasuk');">
+                                            <form onsubmit="event.preventDefault(); searchDataTable('#tableMutasiKeluar');">
                                                 <input type="text" class="form-control" id="search-table"
-                                                    oninput="searchDataTable('#tableMutasiMasuk')" placeholder="Search here">
+                                                    oninput="searchDataTable('#tableMutasiKeluar')" placeholder="Search here">
                                                 <a class="btn"><img
                                                         src="{{ asset('template') }}/assets/img/icons/search-normal.svg"
                                                         alt=""></a>
                                             </form>
                                         </div>
                                         <div class="add-group">
-                                            <a href="{{ route('admin.mutasi-masuk.add') }}"
+                                            <a href="{{ route('admin.mutasi-keluar.add') }}"
                                                 class="btn btn-primary add-pluss ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/plus.svg"
                                                     alt=""></a>
-                                            <a href="javascript:void(0);" onclick="searchDataTable('#tableMutasiMasuk', true)"
+                                            <a href="javascript:void(0);" onclick="searchDataTable('#tableMutasiKeluar', true)"
                                                 class="btn btn-primary doctor-refresh ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/re-fresh.svg"
                                                     alt=""></a>
@@ -63,16 +62,16 @@
                         </div>
                     </div>
                     <!-- /Table Header -->
-
                     <div class="table-responsive">
-                        <table id="tableMutasiMasuk" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
+                        <table id="tableMutasiKeluar" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
                                     <th>No Surat</th>
                                     <th>Nama Siswa</th>
-                                    <th>Asal Sekolah</th>
-                                    <th>Alamat Siswa</th>
+                                    <th>Sekolah Tujuan</th>
+                                    <th>Alasan Mutasi</th>
+                                    <th>Kelas</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -87,7 +86,7 @@
 @endsection
 @push('script')
     <script>
-        var table1 = dataTable('#tableMutasiMasuk');
+        var table1 = dataTable('#tableMutasiKeluar');
         $('#search-table').focus();
 
         var searchTimeout = null;
@@ -103,7 +102,7 @@
         }
 
         function dataTable(tableId) {
-            var url = "{{ route('admin.mutasi-masuk.data') }}"
+            var url = "{{ route('admin.mutasi-keluar.data') }}"
             var datatable = $(tableId).DataTable({
                 // responsive: true,
                 dom: "rt<'d-flex justify-content-end m-3 align-items-center'l p><'d-flex justify-content-between m-3'iB>",
@@ -140,13 +139,18 @@
                         className: "text-middle"
                     },
                     {
-                        data: 'alamat',
-                        name: 'alamat',
+                        data: 'sekolah_tujuan',
+                        name: 'sekolah_tujuan',
                         className: "text-middle"
                     },
                     {
-                        data: 'asal',
-                        name: 'asal',
+                        data: 'alasan_mutasi',
+                        name: 'alasan_mutasi',
+                        className: "text-middle"
+                    },
+                    {
+                        data: 'kelas',
+                        name: 'kelas',
                         className: "text-middle"
                     },
                     {
@@ -195,7 +199,7 @@
                             toastr.info('Loading...');
                         },
                         success: function(response) {
-                            searchDataTable('#tableMutasiMasuk', true);
+                            searchDataTable('#tableMutasiKeluar', true);
                             showToastr(response.status, response.message);
                         }
                     });

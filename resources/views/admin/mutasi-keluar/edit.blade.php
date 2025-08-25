@@ -6,9 +6,9 @@
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.mutasi-masuk.index') }}">Mutasi Masuk</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.mutasi-keluar.index') }}">Mutasi Keluar</a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Edit Mutasi Masuk</li>
+                    <li class="breadcrumb-item active">Edit Mutasi Keluar</li>
                 </ul>
             </div>
         </div>
@@ -25,10 +25,10 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Edit Data Mata Pelajaran</h4>
+                                    <h4>Edit Data Mutasi Keluar</h4>
                                 </div>
                             </div>
-                            @include('admin.mutasi-masuk.form')
+                            @include('admin.mutasi-keluar.form')
                         </div>
                     </form>
                 </div>
