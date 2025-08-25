@@ -17,7 +17,10 @@ class CreateMutasiTable extends Migration
             $table->id();
             $table->unsignedBigInteger('siswa_id');
             $table->string('tgl_mutasi');
-            $table->enum('jenis',['keluar','masuk']);
+            $table->enum('jenis', ['keluar', 'masuk']);
+            $table->string('sekolah_tujuan')->nullable();
+            $table->string('alasan_mutasi')->nullable();
+            $table->string('no_surat');
             $table->foreign('siswa_id')->references('id')->on('siswa')->cascadeOnDelete();
             $table->timestamps();
         });

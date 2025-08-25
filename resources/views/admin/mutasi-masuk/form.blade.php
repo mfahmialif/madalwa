@@ -127,9 +127,9 @@
 </div>
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>NIS</label>
+        <label>NIS <span class="login-danger">*</span></label>
         <input class="form-control @error('nis') is-invalid @enderror" name="nis" type="text"
-            value="{{ old('nis',$siswa->nis ?? '') }}">
+            value="{{ old('nis',$siswa->nis ?? '') }}" required>
         @error('nis')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -619,9 +619,9 @@
 </div>
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Tanggal Mutasi</label>
+        <label>Tanggal Mutasi <span class="login-danger">*</span></label>
         <input class="form-control @error('tgl_mutasi') is-invalid @enderror" name="tgl_mutasi" type="date"
-            value="{{ old('tgl_mutasi',$mutasi->tgl_mutasi ?? '') }}">
+            value="{{ old('tgl_mutasi',$mutasi->tgl_mutasi ?? '') }}" required>
         @error('tgl_mutasi')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -629,9 +629,9 @@
 </div>
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>No Surat</label>
+        <label>No Surat <span class="login-danger">*</span></label>
         <input class="form-control @error('no_surat') is-invalid @enderror" name="no_surat" type="text"
-            value="{{ old('no_surat',$mutasi->no_surat ?? '') }}">
+            value="{{ old('no_surat',$mutasi->no_surat ?? '') }}" required>
         @error('no_surat')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

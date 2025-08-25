@@ -19,7 +19,6 @@ use App\Models\Role as ModelsRole;
 use App\Models\TahunPelajaran;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class MutasiMasukController extends Controller
 {
@@ -185,7 +184,6 @@ class MutasiMasukController extends Controller
     {
         try {
 
-            Log::info($request->all());
             DB::beginTransaction();
             $request->validate($this->rules);
             $role = ModelsRole::where('nama', 'siswa')->first();
@@ -198,7 +196,6 @@ class MutasiMasukController extends Controller
             $user->jenis_kelamin = $request->jenis_kelamin;
             $user->password     = Hash::make($request->nis);
             $user->save();
-            Log::info('berhasil memasukkan data user');
             $umur = $request->tanggal_lahir ? Helper::hitungUmur($request->tanggal_lahir) : null;
 
             $siswa = new Siswa();
@@ -300,13 +297,11 @@ class MutasiMasukController extends Controller
             }
 
             $siswa->save();
-            Log::info('berhasil memasukkan data siswa');
 
             $kelasSiswa = new KelasSiswa();
             $kelasSiswa->kelas_sub_id = $request->kelas_sub_id;
             $kelasSiswa->siswa_id = $siswa->id;
             $kelasSiswa->save();
-            Log::info('berhasil memasukkan data kelas sub');
 
             $mutasi = new Mutasi();
             $mutasi->no_surat = $request->no_surat;
@@ -314,7 +309,6 @@ class MutasiMasukController extends Controller
             $mutasi->tgl_mutasi = $request->tgl_mutasi;
             $mutasi->jenis      = 'masuk';
             $mutasi->save();
-            Log::info('berhasil memasukkan data mutasi');
             DB::commit();
             return redirect()->route('admin.mutasi-masuk.index')->with('success', 'Mutasi Masuk berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -345,7 +339,6 @@ class MutasiMasukController extends Controller
     }
     function update(Request $request, Mutasi $mutasi)
     {
-        Log::info($request->all());
         try {
             DB::beginTransaction();
             $rules = $this->rules;
@@ -374,7 +367,7 @@ class MutasiMasukController extends Controller
             $request->validate($rules);
             $umur = $request->tanggal_lahir ? Helper::hitungUmur($request->tanggal_lahir) : null;
 
-           
+
             // Mengisi Foreign Keys
             $siswa->kurikulum_id             = $request->kurikulum_id;
             $siswa->kelas_id                 = $request->kelas_id;
@@ -472,12 +465,10 @@ class MutasiMasukController extends Controller
             }
 
             $siswa->save();
-            Log::info('berhasil memasukkan data siswa');
 
             $kelasSiswa = KelasSiswa::where('siswa_id', $mutasi->siswa_id)->first();
             $kelasSiswa->kelas_sub_id = $request->kelas_sub_id;
             $kelasSiswa->save();
-            Log::info('berhasil memasukkan data kelas sub');
 
             $mutasi = Mutasi::find($mutasi->id);
             $mutasi->no_surat = $request->no_surat;
@@ -485,7 +476,6 @@ class MutasiMasukController extends Controller
             $mutasi->tgl_mutasi = $request->tgl_mutasi;
             $mutasi->jenis      = 'masuk';
             $mutasi->save();
-            Log::info('berhasil memasukkan data mutasi');
             DB::commit();
             return redirect()->route('admin.mutasi-masuk.index')->with('success', 'Mutasi Masuk berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {

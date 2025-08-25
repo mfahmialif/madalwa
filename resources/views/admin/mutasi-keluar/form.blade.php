@@ -1,10 +1,10 @@
 {{-- DATA AKUN & TAHUN AJARAN --}}
-<div class="col-12 mt-4">
+<div class="col-12">
     <h5 class="form-title"><span>Informasi Mutasi Siswa</span></h5>
 </div>
 <div class="col-12">
     <div class="input-block local-forms">
-        <label>Kelas <span class="login-danger">*</span></label>
+        <label>Siswa <span class="login-danger">*</span></label>
         <select class="form-control select2 @error('siswa_id') is-invalid @enderror" name="siswa_id" required>
             <option value="">Pilih Siswa</option>
             @foreach ($siswa as $item)
@@ -20,9 +20,9 @@
 </div>
 <div class="col-12 ">
     <div class="input-block local-forms">
-        <label>Tanggal Mutasi</label>
+        <label>Tanggal Mutasi <span class="login-danger">*</span></label>
         <input class="form-control @error('tgl_mutasi') is-invalid @enderror" name="tgl_mutasi" type="date"
-            value="{{ old('tgl_mutasi',$mutasi->tgl_mutasi ?? '')}}">
+            value="{{ old('tgl_mutasi',$mutasi->tgl_mutasi ?? '')}}" required>
         @error('tgl_mutasi')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -30,9 +30,9 @@
 </div>
 <div class="col-12 ">
     <div class="input-block local-forms">
-        <label>Sekolah Tujuan</label>
+        <label>Sekolah Tujuan <span class="login-danger">*</span></label>
         <input class="form-control @error('sekolah_tujuan') is-invalid @enderror" name="sekolah_tujuan" type="text"
-            value="{{ old('sekolah_tujuan',$mutasi->sekolah_tujuan ?? '')}}">
+            value="{{ old('sekolah_tujuan',$mutasi->sekolah_tujuan ?? '')}}" required>
         @error('sekolah_tujuan')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -40,8 +40,8 @@
 </div>
 <div class="col-12">
     <div class="input-block local-forms">
-        <label>Alasan Mutasi</label>
-        <textarea class="form-control @error('alasan_mutasi') is-invalid @enderror" 
+        <label>Alasan Mutasi <span class="login-danger">*</span></label>
+        <textarea class="form-control @error('alasan_mutasi') is-invalid @enderror" required
                   name="alasan_mutasi" rows="3">{{ old('alasan_mutasi', $mutasi->alasan_mutasi ?? '')}}</textarea>
         @error('alasan_mutasi')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -50,11 +50,11 @@
 </div>
 <div class="col-12">
     <div class="input-block local-forms">
-        <label>No Surat</label>
-        <input type="text" 
+        <label>No Surat <span class="login-danger">*</span></label>
+        <input type="text"
                class="form-control @error('no_surat') is-invalid @enderror"
                name="no_surat"
-               value="{{ old('no_surat', $mutasi->no_surat ?? '') }}">
+               value="{{ old('no_surat', $mutasi->no_surat ?? '') }}" required>
         @error('no_surat')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

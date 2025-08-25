@@ -18,14 +18,14 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.mutasi-keluar.update', ['mutasi' => $mutasi]) }}" onsubmit="submitForm(this)"
+                    <form action="{{ route('admin.mutasi-masuk.update', ['mutasi' => $mutasi]) }}" onsubmit="submitForm(this)"
                         method="POST" enctype="multipart/form-data" id="form_edit">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Edit Data Mata Pelajaran</h4>
+                                    <h4>Edit Data Mutasi Masuk</h4>
                                 </div>
                             </div>
                             @include('admin.mutasi-masuk.form')

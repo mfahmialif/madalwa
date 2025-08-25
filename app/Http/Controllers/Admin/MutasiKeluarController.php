@@ -1,45 +1,35 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
 use App\Models\Mutasi;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\Siswa;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-use App\Http\Services\Helper;
-use App\Models\Kelas;
-use App\Models\KelasSiswa;
-use App\Models\KelasSub;
-use App\Models\Kurikulum;
-use App\Models\Role as ModelsRole;
-use App\Models\TahunPelajaran;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class MutasiKeluarController extends Controller
 {
     protected $rules = [
         // Foreign Keys
-        'siswa_id'                 => 'required|exists:siswa,id',
-        'sekolah_tujuan'           => 'required',
-        'alasan_mutasi'            => 'required',
-        'no_surat'                 => 'required',
-        'tgl_mutasi'               => 'required',
+        'siswa_id'       => 'required|exists:siswa,id',
+        'sekolah_tujuan' => 'required',
+        'alasan_mutasi'  => 'required',
+        'no_surat'       => 'required',
+        'tgl_mutasi'     => 'required',
 
     ];
 
-    function index()
+    public function index()
     {
         return view('admin.mutasi-keluar.index');
     }
-    function data(Request $request)
+
+    public function data(Request $request)
     {
         $search = request('search.value');
-        $data = Mutasi::join('siswa', 'mutasi.siswa_id', '=', 'siswa.id')
+        $data   = Mutasi::join('siswa', 'mutasi.siswa_id', '=', 'siswa.id')
             ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
             ->where('mutasi.jenis', 'keluar')
             ->select([
@@ -80,26 +70,24 @@ class MutasiKeluarController extends Controller
             ->rawColumns(['action', 'nama_siswa', 'alamat', 'asal'])
             ->toJson();
     }
-    function add()
+    public function add()
     {
         $siswa = Siswa::all();
         return view('admin.mutasi-keluar.add', compact('siswa'));
     }
-    function store(Request $request)
+    public function store(Request $request)
     {
-        Log::info($request->all());
         try {
 
-            Log::info('hello');
             $request->validate($this->rules);
 
-            $mutasi                  = new Mutasi();
-            $mutasi->no_surat        = $request->no_surat;
-            $mutasi->siswa_id        = $request->siswa_id;
-            $mutasi->tgl_mutasi      = $request->tgl_mutasi;
-            $mutasi->sekolah_tujuan  = $request->sekolah_tujuan;
-            $mutasi->alasan_mutasi   = $request->alasan_mutasi;
-            $mutasi->jenis           = 'keluar';
+            $mutasi                 = new Mutasi();
+            $mutasi->no_surat       = $request->no_surat;
+            $mutasi->siswa_id       = $request->siswa_id;
+            $mutasi->tgl_mutasi     = $request->tgl_mutasi;
+            $mutasi->sekolah_tujuan = $request->sekolah_tujuan;
+            $mutasi->alasan_mutasi  = $request->alasan_mutasi;
+            $mutasi->jenis          = 'keluar';
             $mutasi->save();
             return redirect()->route('admin.mutasi-keluar.index')->with('success', 'Mutasi Keluar berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -111,24 +99,23 @@ class MutasiKeluarController extends Controller
             return redirect()->route('admin.mutasi-keluar.add')->with('error', $th->getMessage())->withInput();
         }
     }
-    function edit(Mutasi $mutasi)
+    public function edit(Mutasi $mutasi)
     {
         $siswa = Siswa::all();
-        return view('admin.mutasi-keluar.edit', compact('mutasi','siswa'));
+        return view('admin.mutasi-keluar.edit', compact('mutasi', 'siswa'));
     }
-    function update(Request $request, Mutasi $mutasi)
+    public function update(Request $request, Mutasi $mutasi)
     {
-        Log::info($request->all());
         try {
             $request->validate($this->rules);
-            $mutasi = Mutasi::find($mutasi->id);
-            $mutasi->no_surat        = $request->no_surat;
-            $mutasi->siswa_id        = $request->siswa_id;
-            $mutasi->tgl_mutasi      = $request->tgl_mutasi;
-            $mutasi->sekolah_tujuan  = $request->sekolah_tujuan;
-            $mutasi->alasan_mutasi   = $request->alasan_mutasi;
-            $mutasi->tgl_mutasi      = $request->tgl_mutasi;
-            $mutasi->jenis           = 'keluar';
+            $mutasi                 = Mutasi::find($mutasi->id);
+            $mutasi->no_surat       = $request->no_surat;
+            $mutasi->siswa_id       = $request->siswa_id;
+            $mutasi->tgl_mutasi     = $request->tgl_mutasi;
+            $mutasi->sekolah_tujuan = $request->sekolah_tujuan;
+            $mutasi->alasan_mutasi  = $request->alasan_mutasi;
+            $mutasi->tgl_mutasi     = $request->tgl_mutasi;
+            $mutasi->jenis          = 'keluar';
             $mutasi->save();
             DB::commit();
             return redirect()->route('admin.mutasi-keluar.index')->with('success', 'Mutasi Keluar berhasil diupdate');
@@ -142,7 +129,7 @@ class MutasiKeluarController extends Controller
             return redirect()->route('admin.mutasi-keluar.edit', ['mutasi' => $mutasi->id])->with('error', $th->getMessage())->withInput();
         }
     }
-    function destroy(Mutasi $mutasi)
+    public function destroy(Mutasi $mutasi)
     {
         try {
             $mutasi->delete();
