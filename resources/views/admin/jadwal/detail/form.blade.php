@@ -5,7 +5,7 @@
             <option value="">Pilih Kelas</option>
             @foreach ($kurikulumDetail->mataPelajaran->kelas->sub->where('tahun_pelajaran_id', $tahunPelajaran->id) as $item)
                 <option value="{{ $item->id }}" {{ old('kelas_sub_id') == $item->id ? 'selected' : '' }}>
-                    {{ $item->kelas->angka }} {{ $item->sub }}
+                    ({{ $item->kelas->unitSekolah->nama_unit }}) {{ $item->kelas->angka }} {{ $item->sub }}
                 </option>
             @endforeach
         </select>

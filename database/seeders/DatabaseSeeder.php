@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             ['nama' => 'guru'],
             ['nama' => 'kepala sekolah'],
             ['nama' => 'siswa'],
+            ['nama' => 'unit sekolah'],
         ]);
 
 // Insert ke tabel 'users'

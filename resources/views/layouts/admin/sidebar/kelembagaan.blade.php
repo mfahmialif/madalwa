@@ -15,7 +15,7 @@
                  href="{{ route('admin.kepala-sekolah.index') }}">Kepala Sekolah</a></li>
          <li><a class="{{ request()->RouteIs('admin.guru.*') ? 'active' : '' }}"
                  href="{{ route('admin.guru.index') }}">Data Guru</a></li>
-         <li><a class="{{ request()->RouteIs('admin.jadwal.*') ? 'active' : '' }}"
-                 href="{{ route('admin.jadwal.index') }}">Data Jurusan</a></li>
+         <li><a class="{{ request()->RouteIs('admin.jurusan.*') ? 'active' : '' }}"
+                 href="{{ route('admin.jurusan.index') }}">Data Jurusan</a></li>
      </ul>
  </li>
