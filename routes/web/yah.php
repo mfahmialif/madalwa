@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AlumniController;
+use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\LembagaController;
 use App\Http\Controllers\Admin\MutasiKeluarController;
 use App\Http\Controllers\Admin\MutasiMasukController;
@@ -51,6 +52,30 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/{mutasi}/edit', [MutasiKeluarController::class, 'edit'])->name('admin.mutasi-keluar.edit');
             Route::put('/{mutasi}/update', [MutasiKeluarController::class, 'update'])->name('admin.mutasi-keluar.update');
             Route::delete('/{mutasi}/destroy', [MutasiKeluarController::class, 'destroy'])->name('admin.mutasi-keluar.destroy');
+        });
+
+        Route::prefix('import')->group(function() {
+            
+            Route::prefix('siswa')->group(function() {
+                Route::get('/',[ImportController::class,'showSiswa'])->name('admin.import.siswa.show');
+                Route::post('/save',[ImportController::class,'importSiswa'])->name('admin.import.siswa.save');
+            });
+
+            Route::prefix('mataPelajaran')->group(function() {
+                Route::get('/',[ImportController::class,'showMataPelajaran'])->name('admin.import.mata-pelajaran.show');
+                Route::post('/save',[ImportController::class,'importMataPelajaran'])->name('admin.import.mata-pelajaran.save');
+            });
+
+            Route::prefix('kelas')->group(function() {
+                Route::get('/',[ImportController::class,'showKelas'])->name('admin.import.kelas.show');
+                Route::post('/save',[ImportController::class,'importKelas'])->name('admin.import.kelas.save');
+            });
+
+            Route::prefix('kurikulum')->group(function() {
+                Route::get('/',[ImportController::class,'showKurikulum'])->name('admin.import.kurikulum.show');
+                Route::post('/save',[ImportController::class,'importKurikulum'])->name('admin.import.kurikulum.save');
+            });
+           
         });
     });
 });

@@ -7,7 +7,6 @@
                 @include('layouts.admin.sidebar.laporan')
                 <li class="menu-title">Pengaturan</li>
                 @include('layouts.admin.sidebar.sistem')
-
             </ul>
             @include('layouts.admin.sidebar.profil')
             @include('layouts.admin.sidebar.logout')

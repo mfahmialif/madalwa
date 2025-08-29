@@ -111,14 +111,14 @@ class AlumniController extends Controller
             $search = request('search.value');
             Log::info($tahunPelajaranId);
         $data = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
-            ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
-            ->where('siswa.status', 'lulus')
-            ->where('siswa.tahun_pelajaran_id',$tahunPelajaranId)
-            ->select(
-                'siswa.*',
-                'tahun_pelajaran.kode as tahun_pelajaran_kode',
-                'kelas.angka as kelas_angka'
-            );
+                ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
+                ->where('siswa.status', 'lulus')
+                ->where('siswa.tahun_pelajaran_id',$tahunPelajaranId)
+                ->select(
+                    'siswa.*',
+                    'tahun_pelajaran.kode as tahun_pelajaran_kode',
+                    'kelas.angka as kelas_angka'
+                );
 
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
