@@ -16,6 +16,7 @@ class CreateKepalaSekolahTable extends Migration
         Schema::create('kepala_sekolah', function (Blueprint $table) {
             $table->id();
             $table->foreignId('guru_id')->constrained('guru');
+            $table->foreignId('unit_sekolah_id')->constrained('unit_sekolah');
             $table->date('mulai_menjabat')->nullable();
             $table->date('selesai_menjabat')->nullable();
             $table->timestamps();

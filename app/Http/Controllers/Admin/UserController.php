@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -6,6 +7,7 @@ use App\Http\Services\Helper;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
@@ -32,6 +34,15 @@ class UserController extends Controller
     {
         $search = request('search.value');
         $data   = User::join('role', 'role.id', '=', 'users.role_id')
+            ->leftJoin('guru', 'guru.user_id', '=', 'users.id')
+            ->leftJoin('siswa', 'siswa.user_id', '=', 'users.id')
+            ->leftJoin('kelas', 'kelas.id', '=', 'siswa.kelas_id') 
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('guru.unit_sekolah_id', Auth::user()->unitSekolah->id)
+                        ->orWhere('kelas.unit_sekolah_id', Auth::user()->unitSekolah->id);
+                });
+            })
             ->select('users.*', 'role.nama as role_nama');
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
@@ -101,7 +112,6 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('admin.user.add')->with('error', $th->getMessage())->withInput();
         }
-
     }
 
     public function edit(User $user)

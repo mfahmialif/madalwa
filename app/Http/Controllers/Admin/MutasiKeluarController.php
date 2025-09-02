@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\Mutasi;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -30,12 +31,15 @@ class MutasiKeluarController extends Controller
     {
         $search = request('search.value');
         $data   = Mutasi::join('siswa', 'mutasi.siswa_id', '=', 'siswa.id')
-            ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
-            ->where('mutasi.jenis', 'keluar')
-            ->select([
-                'mutasi.*',
-                'siswa.nama_siswa',
-            ]);
+                ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
+                ->where('mutasi.jenis', 'keluar')
+                ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
+                ->select([
+                    'mutasi.*',
+                    'siswa.nama_siswa',
+                ]);
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
@@ -72,7 +76,10 @@ class MutasiKeluarController extends Controller
     }
     public function add()
     {
-        $siswa = Siswa::all();
+        $siswa = Siswa::join('kelas','kelas.id','=','siswa.kelas_id')
+        ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })->get();
         return view('admin.mutasi-keluar.add', compact('siswa'));
     }
     public function store(Request $request)

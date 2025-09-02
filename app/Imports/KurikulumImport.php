@@ -20,8 +20,9 @@ class KurikulumImport implements ToModel,WithStartRow
         $tahun = TahunPelajaran::where('kode',$row[1])->first();
         if (!$tahun) {
             throw new Exception("Baris ke {$this->no} tahun ajaran tidak ditemukan");
+            
         }
-        
+
         $kurikulum                     = new Kurikulum();
         $kurikulum->nama               = $row[0];
         $kurikulum->tahun_pelajaran_id = $tahun->id;

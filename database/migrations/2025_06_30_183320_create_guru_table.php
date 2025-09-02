@@ -22,6 +22,7 @@ class CreateGuruTable extends Migration
             $table->string('nama', 150);
             $table->string('nuptk', 20)->unique()->nullable();
             $table->string('npwp', 25)->nullable();
+            $table->foreignId('unit_sekolah_id')->constrained('unit_sekolah_user');
             $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
             $table->string('tempat_lahir', 100);
             $table->date('tanggal_lahir');

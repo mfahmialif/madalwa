@@ -109,18 +109,21 @@ class DatabaseSeeder extends Seeder
         \DB::table('jurusan')->insert([
             [
                 'kode_jurusan' => 'BAHASA',
+                'unit_sekolah_id' => 1,
                 'nama_jurusan' => 'Bahasa',
                 'kuota'        => 1000,
                 'status'       => 'aktif',
             ],
             [
                 'kode_jurusan' => 'IPA',
+                'unit_sekolah_id' => 1,
                 'nama_jurusan' => 'IPA',
                 'kuota'        => 1000,
                 'status'       => 'aktif',
             ],
             [
                 'kode_jurusan' => 'IPS',
+                'unit_sekolah_id' => 1,
                 'nama_jurusan' => 'IPS',
                 'kuota'        => 1000,
                 'status'       => 'aktif',

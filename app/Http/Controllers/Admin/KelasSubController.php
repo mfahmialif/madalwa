@@ -87,7 +87,7 @@ class KelasSubController extends Controller
     {
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        $jurusan        = Jurusan::all();
+        $jurusan        = Jurusan::where('unit_sekolah_id',$kelas->unit_sekolah_id)->get();
         return view('admin.kelas.sub.add', compact('dataKelas', 'kelas', 'tahunPelajaran', 'jurusan'));
     }
 
@@ -129,7 +129,7 @@ class KelasSubController extends Controller
     {
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        $jurusan        = Jurusan::all();
+        $jurusan        = Jurusan::where('unit_sekolah_id',$kelas->unit_sekolah_id)->get();
         return view('admin.kelas.sub.edit', compact('kelas', 'dataKelas', 'kelasSub', 'tahunPelajaran', 'jurusan'));
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class JurusanController extends Controller
@@ -21,7 +22,11 @@ class JurusanController extends Controller
     public function data(Request $request)
     {
         $search = request('search.value');
-        $data   = Jurusan::select('*');
+        $data   = Jurusan::select('*')
+                  ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('unit_sekolah_id',Auth::user()->unitSekolah->id);
+                });
+                
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {

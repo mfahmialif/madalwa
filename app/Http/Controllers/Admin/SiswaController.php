@@ -14,6 +14,7 @@ use App\Models\KomponenNilai;
 use App\Models\TahunPelajaran;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SiswaController extends Controller
 {
@@ -121,6 +122,9 @@ class SiswaController extends Controller
         $data   = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
             ->where('status_daftar', 'diterima')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
             ->select('siswa.*', 'tahun_pelajaran.kode as tahun_pelajaran_kode', 'kelas.angka as kelas_angka');
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {

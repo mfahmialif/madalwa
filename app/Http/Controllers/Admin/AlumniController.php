@@ -13,6 +13,7 @@ use App\Models\NilaiDetail;
 use App\Http\Services\Helper;
 use App\Models\KomponenNilai;
 use App\Models\TahunPelajaran;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
@@ -33,6 +34,9 @@ class AlumniController extends Controller
         $search = request('search.value');
         $data   = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
             ->where('siswa.status', 'lulus')
             ->select('siswa.*', 'tahun_pelajaran.kode as tahun_pelajaran_kode', 'kelas.angka as kelas_angka');
 
@@ -113,6 +117,9 @@ class AlumniController extends Controller
         $data = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
                 ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
                 ->where('siswa.status', 'lulus')
+                ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
                 ->where('siswa.tahun_pelajaran_id',$tahunPelajaranId)
                 ->select(
                     'siswa.*',

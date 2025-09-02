@@ -16,6 +16,7 @@ class CreateJurusanTable extends Migration
         Schema::create('jurusan', function (Blueprint $table) {
             $table->id();
             $table->string('kode_jurusan')->unique();
+            $table->foreignId('unit_sekolah_id')->constrained('unit_sekolah');
             $table->string('nama_jurusan');
             $table->integer('kuota')->default(0);
             $table->enum('status', ['aktif', 'tidak aktif']);

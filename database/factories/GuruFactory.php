@@ -23,7 +23,7 @@ class GuruFactory extends Factory
                     'jenis_kelamin'  => $jenisKelamin,
                 ];
             }),
-
+            'unit_sekolah_id' => 1,
             'nip'                  => $nip,
             'nama'                 => $nama,
             'nuptk'                => $this->faker->optional()->numerify('12345678####'),

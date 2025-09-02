@@ -66,8 +66,11 @@ class KelasImport implements ToModel,WithStartRow
         $kelas->keterangan      = $keterangan;
         $kelas->save();
 
-
-        $kelasSub                       = new KelasSub();
+        $kelasSub = KelasSub::where('kelas_id',$kelas->id)->where('sub',$row[4])->first();
+        if (!$kelasSub) {
+           $kelasSub                       = new KelasSub();
+        }
+        
         $kelasSub->kelas_id             = $kelas->id;
         $kelasSub->jurusan_id           = $jurusan->id;
         $kelasSub->tahun_pelajaran_id   = $tahun->id;

@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\KepalaSekolah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class KepalaSekolahController extends Controller
@@ -39,6 +41,9 @@ class KepalaSekolahController extends Controller
     {
         $search = request('search.value');
         $data   = KepalaSekolah::join('guru', 'guru.id', '=', 'kepala_sekolah.guru_id')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+                $query->where('kepala_sekolah.unit_sekolah_id', Auth::user()->unitSekolah->id);
+            })
             ->select('kepala_sekolah.*', 'guru.nama');
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
@@ -97,7 +102,6 @@ class KepalaSekolahController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('admin.kepala-sekolah.add')->with('error', $th->getMessage())->withInput();
         }
-
     }
 
     public function edit(KepalaSekolah $kepalaSekolah)

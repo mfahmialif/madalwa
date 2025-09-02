@@ -7,6 +7,7 @@ use App\Models\Jadwal;
 use App\Models\Kelas;
 use App\Models\TahunPelajaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -26,7 +27,6 @@ class AbsensiController extends Controller
     public function data(Request $request)
     {
         $search = request('search.value');
-
         $data = Jadwal::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'jadwal.tahun_pelajaran_id')
             ->join('kurikulum_detail', 'kurikulum_detail.id', '=', 'jadwal.kurikulum_detail_id')
             ->join('kurikulum', 'kurikulum.id', '=', 'kurikulum_detail.kurikulum_id')
@@ -34,6 +34,9 @@ class AbsensiController extends Controller
             ->join('kelas_sub', 'kelas_sub.id', '=', 'jadwal.kelas_sub_id')
             ->join('kelas', 'kelas.id', '=', 'kelas_sub.kelas_id')
             ->join('guru', 'guru.id', '=', 'jadwal.guru_id')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
             ->select(
                 'jadwal.*',
                 'tahun_pelajaran.kode as tahun_pelajaran_kode',

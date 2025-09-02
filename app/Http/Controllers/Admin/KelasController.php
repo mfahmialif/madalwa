@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class KelasController extends Controller
@@ -24,7 +25,10 @@ class KelasController extends Controller
     {
         $search = request('search.value');
         $data   = Kelas::join('unit_sekolah', 'unit_sekolah.id', '=', 'kelas.unit_sekolah_id')
-            ->select('kelas.*', 'unit_sekolah.nama_unit');
+                  ->select('kelas.*', 'unit_sekolah.nama_unit')
+                  ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                });
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
@@ -66,6 +70,7 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         try {
+            
             $request->validate($this->rules);
             $cek = Kelas::where('unit_sekolah_id', $request->unit_sekolah_id)
                 ->where('romawi', $request->romawi)

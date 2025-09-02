@@ -16,4 +16,7 @@ class UnitSekolah extends Model
     {
         return $this->hasMany(Kelas::class, 'kelas_id');
     }
+    public function user() {
+        return $this->hasOne(UnitSekolahUser::class);
+    }
 }

@@ -18,6 +18,7 @@ use App\Models\Kurikulum;
 use App\Models\Role as ModelsRole;
 use App\Models\TahunPelajaran;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class MutasiMasukController extends Controller
@@ -124,7 +125,11 @@ class MutasiMasukController extends Controller
     {
         $search = request('search.value');
         $data = Mutasi::join('siswa', 'mutasi.siswa_id', '=', 'siswa.id')
+                ->join('kelas','kelas.id','=','siswa.kelas_id')
             ->where('mutasi.jenis', 'masuk')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                })
             ->select([
                 'mutasi.*',
                 'siswa.nama_siswa',

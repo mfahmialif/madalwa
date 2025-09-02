@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use App\Models\Jadwal;
+use Illuminate\Support\Facades\Auth;
 
 class GuruController extends Controller
 {
@@ -73,6 +75,10 @@ class GuruController extends Controller
     {
         $search = request('search.value');
         $data   = Guru::select('*');
+            // ->join('unit_sekolah_user','unit_sekolah_user.id','=','guru.unit_sekolah_id')
+            // ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+            //     $query->where('unit_sekolah_user.unit_sekolah_id', Auth::user()->unitSekolah->id);
+            // });
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->when($request->jenis_kelamin, function ($q) use ($request) {
