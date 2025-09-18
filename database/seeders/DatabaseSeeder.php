@@ -51,6 +51,14 @@ class DatabaseSeeder extends Seeder
                 'jenis_kelamin' => 'Laki-Laki',
                 'role_id'       => 3, // tambahkan jika kolom ini wajib
             ],
+            [
+                'username'      => 'dalwa3',
+                'name'          => 'Dalwa 3',
+                'password'      => bcrypt('password'),
+                'email'         => 'dalwa3@gmail.com',
+                'jenis_kelamin' => 'Laki-Laki',
+                'role_id'       => 5, // tambahkan jika kolom ini wajib
+            ],
         ]);
 
         \DB::table('tahun_pelajaran')->insert([
@@ -82,6 +90,12 @@ class DatabaseSeeder extends Seeder
                 'alamat'    => 'Jl. Raya',
             ],
         ]);
+
+        \DB::table('unit_sekolah_user')->insert([
+            'unit_sekolah_id' => 1,
+            'user_id' => 4
+        ]);
+
         \DB::table('kelas')->insert([
             [
                 'unit_sekolah_id' => 1,
@@ -104,6 +118,14 @@ class DatabaseSeeder extends Seeder
                 'romawi'          => 'XII',
                 'angka'           => '12',
                 'keterangan'      => 'Kelas 12',
+            ],
+        ]);
+        \DB::table('kelas')->insert([
+            [
+                'unit_sekolah_id' => 2,
+                'romawi'          => 'X',
+                'angka'           => '10',
+                'keterangan'      => 'Kelas 10',
             ],
         ]);
         \DB::table('jurusan')->insert([

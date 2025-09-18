@@ -5,7 +5,7 @@
                     <ul style="display: none;">
                         <li><a class="{{ request()->RouteIs('admin.laporan-akademik.*') ? 'active' : '' }}"
                                 href="{{ route('admin.laporan-akademik.index') }}">Siswa</a></li>
-                        <li><a class="{{ request()->RouteIs('admin.import.kelas') ? 'active' : '' }}"
-                                href="{{ route('admin.import.kelas') }}">Kelas</a></li>
+                        <li><a class="{{ request()->RouteIs('admin.import.kelas.show') ? 'active' : '' }}"
+                                href="{{ route('admin.import.kelas.show') }}">Kelas</a></li>
                     </ul>
                 </li>

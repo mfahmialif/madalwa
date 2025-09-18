@@ -15,13 +15,12 @@ class CreateMutasiTable extends Migration
     {
         Schema::create('mutasi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('siswa_id');
+            $table->foreignId('siswa_id')->constrained('siswa');
             $table->string('tgl_mutasi');
             $table->enum('jenis', ['keluar', 'masuk']);
             $table->string('sekolah_tujuan')->nullable();
             $table->string('alasan_mutasi')->nullable();
             $table->string('no_surat');
-            $table->foreign('siswa_id')->references('id')->on('siswa')->cascadeOnDelete();
             $table->timestamps();
         });
     }

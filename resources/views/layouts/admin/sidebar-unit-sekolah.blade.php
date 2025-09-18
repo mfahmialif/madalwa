@@ -1,23 +1,22 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
-            @include('layouts.admin.sidebar.dashboard')
+            @include('layouts.admin.sidebar-unit-sekolah.dashboard')
             <ul>
                 <li class="menu-title">MADALWA</li>
-                @include('layouts.admin.sidebar.ppdb')
-                {{-- @include('layouts.admin.sidebar.sekolah') --}}
-                @include('layouts.admin.sidebar.kelembagaan')
-                @include('layouts.admin.sidebar.akademik')
-                @include('layouts.admin.sidebar.siswa')
-                @include('layouts.admin.sidebar.alumni')
-                @include('layouts.admin.sidebar.laporan')
-                @include('layouts.admin.sidebar.import')
+                @include('layouts.admin.sidebar-unit-sekolah.ppdb')
+                {{-- @include('layouts.admin.sidebar-unit-sekolah.sekolah') --}}
+                @include('layouts.admin.sidebar-unit-sekolah.kelembagaan')
+                @include('layouts.admin.sidebar-unit-sekolah.akademik')
+                @include('layouts.admin.sidebar-unit-sekolah.siswa')
+                @include('layouts.admin.sidebar-unit-sekolah.alumni')
+                @include('layouts.admin.sidebar-unit-sekolah.laporan')
+                @include('layouts.admin.sidebar-unit-sekolah.import')
                 <li class="menu-title">Pengaturan</li>
-                @include('layouts.admin.sidebar.sistem')
 
             </ul>
-            @include('layouts.admin.sidebar.profil')
-            @include('layouts.admin.sidebar.logout')
+            @include('layouts.admin.sidebar-unit-sekolah.profil')
+            @include('layouts.admin.sidebar-unit-sekolah.logout')
         </div>
     </div>
 </div>

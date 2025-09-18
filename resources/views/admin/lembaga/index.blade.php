@@ -1,5 +1,5 @@
 @extends('layouts.admin.template')
-@section('title', 'Role')
+@section('title', 'Lembaga')
 @section('content')
     <!-- Page Header -->
     <div class="page-header">

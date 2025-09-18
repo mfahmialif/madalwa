@@ -8,8 +8,18 @@ class Siswa extends Model
 {
     use HasFactory;
 
-    protected $table  = 'siswa';
-    protected $guarad = [];
+    protected $table   = 'siswa';
+    protected $guarded = [];
+    protected $appends = ['kelas_sekarang'];
+
+    public function getKelasSekarangAttribute()
+    {
+        // get last kelasSiswa
+        $kelasSiswa = $this->kelasSiswa()->orderBy('id', 'desc')->first();
+        $kelas      = $this->kelas;
+        $response   = $kelasSiswa ? $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')' . ' - ' . $kelasSiswa->kelasSub->sub : $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')';
+        return $response;
+    }
 
     public function tahunPelajaran()
     {
@@ -46,10 +56,12 @@ class Siswa extends Model
         return $this->hasMany(Nilai::class, 'siswa_id');
     }
 
-    public function kurikulum(){
+    public function kurikulum()
+    {
         return $this->belongsTo(Kurikulum::class);
     }
-    function mutasi() {
+    public function mutasi()
+    {
         return $this->hasMany(Mutasi::class);
     }
 }

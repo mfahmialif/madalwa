@@ -46,10 +46,13 @@
 <body>
     <div class="main-wrapper">
         @include('layouts.admin.navbar')
+
         @if (\Auth::user()->role->nama == 'guru')
             @include('layouts.admin.sidebar-guru')
         @elseif (\Auth::user()->role->nama == 'admin')
             @include('layouts.admin.sidebar')
+        @elseif (\Auth::user()->role->nama == 'unit sekolah')
+            @include('layouts.admin.sidebar-unit-sekolah')
         @elseif (\Auth::user()->role->nama == 'kepala sekolah')
             @include('layouts.admin.sidebar-kepala')
         @else

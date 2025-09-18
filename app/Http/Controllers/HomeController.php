@@ -25,7 +25,7 @@ class HomeController extends Controller
     public function index()
     {
         $user = \Auth::user();
-       
+
 
         if ($user->role->nama == 'admin') {
             return redirect()->route('admin.dashboard.index');
@@ -38,6 +38,9 @@ class HomeController extends Controller
         }
         if ($user->role->nama == 'siswa') {
             return redirect()->route('siswa.dashboard.index');
+        }
+        if ($user->role->nama == 'unit sekolah') {
+            return redirect()->route('admin.dashboard.index');
         }
         return view('home');
     }

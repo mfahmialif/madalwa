@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\AbsensiRekapController;
+use App\Http\Controllers\Admin\AlumniController;
 use App\Http\Controllers\Admin\CetakLaporanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\JadwalController;
 use App\Http\Controllers\Admin\JadwalDetailController;
+use App\Http\Controllers\Admin\JurusanController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\KelasSiswaController;
 use App\Http\Controllers\Admin\KelasSubController;
@@ -14,7 +17,10 @@ use App\Http\Controllers\Admin\KelasWaliController;
 use App\Http\Controllers\Admin\KepalaSekolahController;
 use App\Http\Controllers\Admin\KurikulumController;
 use App\Http\Controllers\Admin\LaporanAkademikController;
+use App\Http\Controllers\Admin\LembagaController;
 use App\Http\Controllers\Admin\MataPelajaranController;
+use App\Http\Controllers\Admin\MutasiKeluarController;
+use App\Http\Controllers\Admin\MutasiMasukController;
 use App\Http\Controllers\Admin\NilaiBobotController;
 use App\Http\Controllers\Admin\NilaiController;
 use App\Http\Controllers\Admin\NilaiInputController;
@@ -23,6 +29,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\TahunPelajaranController;
+use App\Http\Controllers\Admin\UnitSekolahController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Guru\AbsensiController as GuruAbsensiController;
@@ -34,9 +41,9 @@ use App\Http\Controllers\Guru\NilaiInputController as GuruNilaiInputController;
 use App\Http\Controllers\Guru\ProfileController as GuruProfileController;
 use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Siswa\KelasSiswaController as SiswaKelasSiswaController;
 use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
+use App\Http\Controllers\Siswa\KelasSiswaController as SiswaKelasSiswaController;
 use App\Http\Controllers\Siswa\NilaiController as SiswaNilaiController;
 use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
 use Illuminate\Support\Facades\Route;
@@ -52,9 +59,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-require __DIR__ . '/web/fah.php';
-require __DIR__ . '/web/yah.php';
+// require __DIR__ . '/web/fah.php';
+// require __DIR__ . '/web/yah.php';
 
 Auth::routes();
 
@@ -64,7 +70,95 @@ Route::post('/', [LoginController::class, 'login']);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin,unit sekolah')->group(function () {
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard.index');
+        });
+        Route::prefix('laporan-akademik')->group(function () {
+            Route::get('/', [LaporanAkademikController::class, 'index'])->name('admin.laporan-akademik.index');
+            Route::get('/laporanJadwal', [LaporanAkademikController::class, 'laporanJadwal'])->name('admin.laporan-akademik.laporanJadwal');
+        });
+        Route::prefix('cetak-laporan')->group(function () {
+            Route::get('/', [CetakLaporanController::class, 'index'])->name('admin.cetak-laporan.index');
+            Route::get('/data', [CetakLaporanController::class, 'data'])->name('admin.cetak-laporan.data');
+            Route::get('/cetakNilai', [CetakLaporanController::class, 'cetakNilai'])->name('admin.cetak-laporan.cetakNilai');
+            Route::get('/cetakAbsensi', [CetakLaporanController::class, 'cetakAbsensi'])->name('admin.cetak-laporan.cetakAbsensi');
+        });
+        Route::prefix('profile')->group(function () {
+            Route::get('/', [ProfileController::class, 'index'])->name('admin.profile.index');
+            Route::put('/', [ProfileController::class, 'update'])->name('admin.profile.update');
+        });
+        Route::prefix('/lembaga')->group(function () {
+            Route::get('/', [LembagaController::class, 'index'])->name('admin.lembaga.index');
+            Route::post('/store', [LembagaController::class, 'store'])->name('admin.lembaga.store');
+        });
+        Route::prefix('/alumni')->group(function () {
+            Route::get('/', [AlumniController::class, 'index'])->name('admin.alumni.index');
+            Route::get('/data', [AlumniController::class, 'data'])->name('admin.alumni.data');
+            Route::prefix('/show')->group(function () {
+                Route::get('/{id}', [AlumniController::class, 'show'])->name('admin.alumni.show');
+                Route::get('/{id}/pertahun', [AlumniController::class, 'alumniPerTahun'])->name('admin.alumni.pertahun');
+            });
+        });
+        Route::prefix('mutasi-masuk')->group(function () {
+            Route::get('/', [MutasiMasukController::class, 'index'])->name('admin.mutasi-masuk.index');
+            Route::get('/data', [MutasiMasukController::class, 'data'])->name('admin.mutasi-masuk.data');
+            Route::get('/add', [MutasiMasukController::class, 'add'])->name('admin.mutasi-masuk.add');
+            Route::post('/', [MutasiMasukController::class, 'store'])->name('admin.mutasi-masuk.store');
+            Route::get('/{mutasi}/edit', [MutasiMasukController::class, 'edit'])->name('admin.mutasi-masuk.edit');
+            Route::put('/{mutasi}/update', [MutasiMasukController::class, 'update'])->name('admin.mutasi-masuk.update');
+            Route::delete('/{mutasi}/destroy', [MutasiMasukController::class, 'destroy'])->name('admin.mutasi-masuk.destroy');
+        });
+        Route::prefix('mutasi-keluar')->group(function () {
+            Route::get('/', [MutasiKeluarController::class, 'index'])->name('admin.mutasi-keluar.index');
+            Route::get('/data', [MutasiKeluarController::class, 'data'])->name('admin.mutasi-keluar.data');
+            Route::get('/add', [MutasiKeluarController::class, 'add'])->name('admin.mutasi-keluar.add');
+            Route::post('/', [MutasiKeluarController::class, 'store'])->name('admin.mutasi-keluar.store');
+            Route::get('/{mutasi}/edit', [MutasiKeluarController::class, 'edit'])->name('admin.mutasi-keluar.edit');
+            Route::put('/{mutasi}/update', [MutasiKeluarController::class, 'update'])->name('admin.mutasi-keluar.update');
+            Route::delete('/{mutasi}/destroy', [MutasiKeluarController::class, 'destroy'])->name('admin.mutasi-keluar.destroy');
+        });
+        Route::prefix('import')->group(function () {
+
+            Route::prefix('siswa')->group(function () {
+                Route::get('/', [ImportController::class, 'showSiswa'])->name('admin.import.siswa.show');
+                Route::post('/save', [ImportController::class, 'importSiswa'])->name('admin.import.siswa.save');
+            });
+
+            Route::prefix('mataPelajaran')->group(function () {
+                Route::get('/', [ImportController::class, 'showMataPelajaran'])->name('admin.import.mata-pelajaran.show');
+                Route::post('/save', [ImportController::class, 'importMataPelajaran'])->name('admin.import.mata-pelajaran.save');
+            });
+
+            Route::prefix('kelas')->group(function () {
+                Route::get('/', [ImportController::class, 'showKelas'])->name('admin.import.kelas.show');
+                Route::post('/save', [ImportController::class, 'importKelas'])->name('admin.import.kelas.save');
+            });
+
+            Route::prefix('kurikulum')->group(function () {
+                Route::get('/', [ImportController::class, 'showKurikulum'])->name('admin.import.kurikulum.show');
+                Route::post('/save', [ImportController::class, 'importKurikulum'])->name('admin.import.kurikulum.save');
+            });
+
+        });
+        Route::prefix('jurusan')->group(function () {
+            Route::get('/', [JurusanController::class, 'index'])->name('admin.jurusan.index');
+            Route::get('/data', [JurusanController::class, 'data'])->name('admin.jurusan.data');
+            Route::get('/add', [JurusanController::class, 'add'])->name('admin.jurusan.add');
+            Route::post('/', [JurusanController::class, 'store'])->name('admin.jurusan.store');
+            Route::get('/{jurusan}/edit', [JurusanController::class, 'edit'])->name('admin.jurusan.edit');
+            Route::put('/{jurusan}/update', [JurusanController::class, 'update'])->name('admin.jurusan.update');
+            Route::delete('/{jurusan}/destroy', [JurusanController::class, 'destroy'])->name('admin.jurusan.destroy');
+        });
+        Route::prefix('unit-sekolah')->group(function () {
+            Route::get('/', [UnitSekolahController::class, 'index'])->name('admin.unit-sekolah.index');
+            Route::get('/data', [UnitSekolahController::class, 'data'])->name('admin.unit-sekolah.data');
+            Route::get('/add', [UnitSekolahController::class, 'add'])->name('admin.unit-sekolah.add');
+            Route::post('/', [UnitSekolahController::class, 'store'])->name('admin.unit-sekolah.store');
+            Route::get('/{unitSekolah}/edit', [UnitSekolahController::class, 'edit'])->name('admin.unit-sekolah.edit');
+            Route::put('/{unitSekolah}/update', [UnitSekolahController::class, 'update'])->name('admin.unit-sekolah.update');
+            Route::delete('/{unitSekolah}/destroy', [UnitSekolahController::class, 'destroy'])->name('admin.unit-sekolah.destroy');
+        });
         Route::prefix('pendaftaran-siswa-baru')->group(function () {
             Route::get('/', [PendaftaranSiswaBaruController::class, 'index'])->name('admin.pendaftaran-siswa-baru.index');
             Route::get('/data', [PendaftaranSiswaBaruController::class, 'data'])->name('admin.pendaftaran-siswa-baru.data');
@@ -243,26 +337,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         });
     });
 
-    Route::middleware('role:admin,kepala sekolah')->group(function () {
-        Route::prefix('dashboard')->group(function () {
-            Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard.index');
-        });
-        Route::prefix('laporan-akademik')->group(function () {
-            Route::get('/', [LaporanAkademikController::class, 'index'])->name('admin.laporan-akademik.index');
-            Route::get('/laporanJadwal', [LaporanAkademikController::class, 'laporanJadwal'])->name('admin.laporan-akademik.laporanJadwal');
-        });
-        Route::prefix('cetak-laporan')->group(function () {
-            Route::get('/', [CetakLaporanController::class, 'index'])->name('admin.cetak-laporan.index');
-            Route::get('/data', [CetakLaporanController::class, 'data'])->name('admin.cetak-laporan.data');
-            Route::get('/cetakNilai', [CetakLaporanController::class, 'cetakNilai'])->name('admin.cetak-laporan.cetakNilai');
-            Route::get('/cetakAbsensi', [CetakLaporanController::class, 'cetakAbsensi'])->name('admin.cetak-laporan.cetakAbsensi');
-        });
-        Route::prefix('profile')->group(function () {
-            Route::get('/', [ProfileController::class, 'index'])->name('admin.profile.index');
-            Route::put('/', [ProfileController::class, 'update'])->name('admin.profile.update');
-        });
-    });
-
 });
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function () {
     Route::prefix('dashboard')->group(function () {
@@ -325,11 +399,10 @@ Route::prefix('siswa')->middleware(['auth', 'role:siswa'])->group(function () {
         Route::put('/update', [SiswaDashboardController::class, 'update'])->name('siswa.dashboard.update');
     });
 
-     Route::prefix('kelas/{kelasSub}')->group(function () {
+    Route::prefix('kelas/{kelasSub}')->group(function () {
         Route::get('/', [SiswaKelasSiswaController::class, 'index'])->name('siswa.kelas.index');
         Route::get('/data', [SiswaKelasSiswaController::class, 'data'])->name('siswa.kelas.data');
     });
-
 
     Route::prefix('absensi/{kelasSub}')->group(function () {
         Route::get('/', [SiswaAbsensiController::class, 'index'])->name('siswa.absensi.index');

@@ -8,10 +8,10 @@ use App\Models\Kurikulum;
 use App\Models\Role;
 use App\Models\Siswa;
 use App\Models\TahunPelajaran;
+use App\Models\UnitSekolah;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class PendaftaranSiswaBaruController extends Controller
@@ -110,8 +110,8 @@ class PendaftaranSiswaBaruController extends Controller
         $jenisKelamin   = Helper::getEnumValues('siswa', 'jenis_kelamin');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $statusDaftar   = Helper::getEnumValues('siswa', 'status_daftar');
-
-        return view('admin.pendaftaran-siswa-baru.index', compact('jenisKelamin', 'tahunPelajaran', 'statusDaftar'));
+        $unitSekolah    = UnitSekolah::all();
+        return view('admin.pendaftaran-siswa-baru.index', compact('jenisKelamin', 'tahunPelajaran', 'statusDaftar', 'unitSekolah'));
     }
 
     public function data(Request $request)
@@ -123,6 +123,11 @@ class PendaftaranSiswaBaruController extends Controller
             ->filter(function ($query) use ($search, $request) {
                 $query->when($request->tahun_pelajaran_id, function ($q) use ($request) {
                     $q->where('siswa.tahun_pelajaran_id', $request->tahun_pelajaran_id);
+                });
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->whereHas('kelas', function ($q) use ($request) {
+                        $q->where('kelas.unit_sekolah_id', $request->unit_sekolah_id);
+                    });
                 });
                 $query->when($request->jenis_kelamin, function ($q) use ($request) {
                     $q->where('siswa.jenis_kelamin', $request->jenis_kelamin);
@@ -143,7 +148,8 @@ class PendaftaranSiswaBaruController extends Controller
                         <div>
                             <a href="' . route("admin.pendaftaran-siswa-baru.edit", $row) . '">' . $row->nama_siswa . '</a><br>
                             <small>NIS: ' . ($row->nis ?? '-') . '</small><br>
-                            <small>NISN: ' . ($row->nisn ?? '-') . '</small>
+                            <small>NISN: ' . ($row->nisn ?? '-') . '</small><br>
+                            <small>Kelas: ' . ($row->kelas_sekarang ?? '-') . '</small>
                         </div>
                     </div>
                 ';
@@ -178,8 +184,10 @@ class PendaftaranSiswaBaruController extends Controller
         $agama          = Helper::getEnumValues('siswa', 'agama');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $statusDaftar   = Helper::getEnumValues('siswa', 'status_daftar');
-        $kelas          = Kelas::orderBy('angka')->get();
-        $kurikulum      = Kurikulum::all();
+        $kelas          = Kelas::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('unit_sekolah_id', \Auth::user()->unitSekolah->id);
+        })->orderBy('angka')->get();
+        $kurikulum = Kurikulum::all();
         return view('admin.pendaftaran-siswa-baru.add', compact('jenisKelamin',
             'agama', 'tahunPelajaran', 'statusDaftar', 'kelas', 'kurikulum'));
     }
@@ -324,8 +332,10 @@ class PendaftaranSiswaBaruController extends Controller
         $agama          = Helper::getEnumValues('siswa', 'agama');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $statusDaftar   = Helper::getEnumValues('siswa', 'status_daftar');
-        $kelas          = Kelas::orderBy('angka')->get();
-        $kurikulum      = Kurikulum::all();
+        $kelas          = Kelas::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('unit_sekolah_id', \Auth::user()->unitSekolah->id);
+        })->orderBy('angka')->get();
+        $kurikulum = Kurikulum::all();
 
         $siswa = $siswa->load('user');
         return view('admin.pendaftaran-siswa-baru.edit', compact('siswa', 'agama', 'jenisKelamin',

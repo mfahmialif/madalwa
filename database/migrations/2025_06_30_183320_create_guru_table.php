@@ -16,13 +16,13 @@ class CreateGuruTable extends Migration
         Schema::create('guru', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('unit_sekolah_id')->constrained('unit_sekolah');
 
             // Kolom data pribadi dan identitas
             $table->string('nip', 20)->unique();
             $table->string('nama', 150);
             $table->string('nuptk', 20)->unique()->nullable();
             $table->string('npwp', 25)->nullable();
-            $table->foreignId('unit_sekolah_id')->constrained('unit_sekolah_user');
             $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
             $table->string('tempat_lahir', 100);
             $table->date('tanggal_lahir');
