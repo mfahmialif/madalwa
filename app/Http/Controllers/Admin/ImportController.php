@@ -1,33 +1,36 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\UnitSekolah;
 use App\Imports\KelasImport;
-use App\Imports\KurikulumImport;
-use App\Imports\MataPelajaranImport;
 use App\Imports\SiswaImport;
 use Illuminate\Http\Request;
+use App\Imports\KurikulumImport;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Imports\MataPelajaranImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportController extends Controller
 {
-    function showSiswa()
+    public function showSiswa()
     {
-        return view('admin.import.siswa.index');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.import.siswa.index', compact('unitSekolah'));
     }
-    function importSiswa(Request $request)
+    public function importSiswa(Request $request)
     {
         try {
 
             $request->validate([
-                'import_siswa' => 'required|mimes:xls,xlsx'
+                'import_siswa' => 'required|mimes:xls,xlsx',
             ]);
 
-            Excel::import(new SiswaImport(), $request->import_siswa);
+            $import = new SiswaImport($request->all());
+            Excel::import($import, $request->import_siswa);
 
-            return redirect()->back()->with('success', 'Data berhasil diimport!');
+            $responseImport = $import->getResponse();
+            return redirect()->back()->with('success', 'Data berhasil diimport! '. $responseImport);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Kalau error validasi
             return redirect()->back()
@@ -35,20 +38,20 @@ class ImportController extends Controller
                 ->with('error', 'Validasi gagal: pastikan file xls/xlsx sudah dipilih.');
         } catch (\Throwable $th) {
             // Kalau error lain
-            Log::error($th->getMessage());
+            dd($th->getMessage());
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    function showKelas()
+    public function showKelas()
     {
         return view('admin.import.kelas.index');
     }
-    function importKelas(Request $request)
+    public function importKelas(Request $request)
     {
         try {
 
             $request->validate([
-                'import_kelas' => 'required|mimes:xls,xlsx'
+                'import_kelas' => 'required|mimes:xls,xlsx',
             ]);
 
             Excel::import(new KelasImport(), $request->import_kelas);
@@ -64,15 +67,15 @@ class ImportController extends Controller
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    function showMataPelajaran()
+    public function showMataPelajaran()
     {
         return view('admin.import.mata-pelajaran.index');
     }
-    function importMataPelajaran(Request $request)
+    public function importMataPelajaran(Request $request)
     {
         try {
             $request->validate([
-                'import_mata_pelajaran' => 'required|mimes:xls,xlsx'
+                'import_mata_pelajaran' => 'required|mimes:xls,xlsx',
             ]);
 
             Excel::import(new MataPelajaranImport(), $request->file('import_mata_pelajaran'));
@@ -90,15 +93,15 @@ class ImportController extends Controller
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    function showKurikulum()
+    public function showKurikulum()
     {
         return view('admin.import.kurikulum.index');
     }
-    function importKurikulum(Request $request)
+    public function importKurikulum(Request $request)
     {
         try {
             $request->validate([
-                'import_kurikulum' => 'required|mimes:xls,xlsx'
+                'import_kurikulum' => 'required|mimes:xls,xlsx',
             ]);
 
             Excel::import(new KurikulumImport(), $request->import_kurikulum);

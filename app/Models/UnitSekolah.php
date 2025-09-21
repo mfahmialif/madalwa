@@ -19,4 +19,7 @@ class UnitSekolah extends Model
     public function user() {
         return $this->hasOne(UnitSekolahUser::class);
     }
+    public function kurikulum(){
+        return $this->hasMany(Kurikulum::class);
+    }
 }

@@ -13,7 +13,7 @@ class GuruFactory extends Factory
     {
         $nip  = $this->faker->unique()->numerify('1970##########');
         $nama = $this->faker->name;
-        $jenisKelamin = $this->faker->randomElement(['Laki-Laki', 'Perempuan']);
+        $jenisKelamin = $this->faker->randomElement(['Laki-laki', 'Perempuan']);
 
         return [
             'user_id' => User::factory()->state(function () use ($nip, $nama, $jenisKelamin) {

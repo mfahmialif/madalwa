@@ -41,7 +41,7 @@
                     <div class="input-block local-forms">
                         <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
                             @if (Auth::user()->role->nama == 'unit sekolah')
-                                <option value="{{ Auth::user()->unitSekolah->id }}">
+                                <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
                                     {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
                                 </option>
                             @else

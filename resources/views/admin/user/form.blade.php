@@ -1,3 +1,21 @@
+<div class="col-12 col-md-12">
+    <div class="input-block local-forms">
+        <label>Unit Sekolah</label>
+        <select class="form-control select2 @error('unit_sekolah_id') is-invalid @enderror" name="unit_sekolah_id">
+            <option value="">Pilih Unit Sekolah</option>
+            @foreach ($unitSekolah as $item)
+                <option value="{{ $item->id }}" {{ old('unit_sekolah_id') == $item ? 'selected' : '' }}>
+                    {{ $item->nama_unit }}
+                </option>
+            @endforeach
+        </select>
+        @error('jenis_kelamin')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
 <div class="col-12">
     <div class="input-block local-forms">
         <label>Name <span class="login-danger">*</span></label>

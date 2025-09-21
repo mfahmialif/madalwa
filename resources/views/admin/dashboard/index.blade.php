@@ -7,9 +7,9 @@
         <div class="row">
             <div class="col-sm-12">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard </a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Admin </a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Akademik Dashboard</li>
+                    <li class="breadcrumb-item active">Dashboard</li>
                 </ul>
             </div>
         </div>
@@ -78,6 +78,54 @@
                     <h4>Jadwal</h4>
                     <h2><span class="counter-up">{{ $jadwal }}</span></h2>
                     <p><span class="passive-view">Jadwal</span> mata pelajaran</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <div class="dash-boxs comman-flex-center bg-success">
+                    <img src="{{ asset('template') }}/assets/img/icons/profile-add.svg" alt="">
+                </div>
+                <div class="dash-content dash-count">
+                    <h4>Siswa Aktif Laki-laki</h4>
+                    <h2><span class="counter-up">{{ $siswaAktif['L'] }}</span></h2>
+                    <p><span class="passive-view">Siswa aktif</span>  laki-laki</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <div class="dash-boxs comman-flex-center bg-danger">
+                    <img src="{{ asset('template') }}/assets/img/icons/profile-add.svg" alt="">
+                </div>
+                <div class="dash-content dash-count">
+                    <h4>Siswa Non Aktif Laki-laki</h4>
+                    <h2><span class="counter-up">{{ $siswaNonAktif['L'] }}</span></h2>
+                    <p><span class="passive-view">Siswa non aktif</span> laki-laki</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <div class="dash-boxs comman-flex-center bg-success">
+                    <img src="{{ asset('template') }}/assets/img/icons/profile-add.svg" alt="">
+                </div>
+                <div class="dash-content dash-count">
+                    <h4>Siswa Aktif Perempuan</h4>
+                    <h2><span class="counter-up">{{ $siswaAktif['P'] }}</span></h2>
+                    <p><span class="passive-view">Siswa aktif</span> Perempuan</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <div class="dash-boxs comman-flex-center bg-danger">
+                    <img src="{{ asset('template') }}/assets/img/icons/profile-add.svg" alt="">
+                </div>
+                <div class="dash-content dash-count">
+                    <h4>Siswa Non Aktif Perempuan</h4>
+                    <h2><span class="counter-up">{{ $siswaNonAktif['P'] }}</span></h2>
+                    <p><span class="passive-view">Siswa non aktif</span>  Perempuan</p>
                 </div>
             </div>
         </div>

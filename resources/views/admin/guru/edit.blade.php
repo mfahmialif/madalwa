@@ -46,7 +46,7 @@
                 const element = form.find(`[name="${key}"]`);
 
                 const assetUrl = {
-                    'foto': "{{ asset('foto_guru') }}",
+                    'foto': "{{ asset('foto_siswa') }}",
                     'sk_spns': "{{ asset('sk_spns') }}",
                     'sk_pengangkatan': "{{ asset('sk_pengangkatan') }}",
                 }
@@ -113,9 +113,6 @@
             setFormEdit(guru, form);
             form.find('input[name="username"]').val(guru.user.username);
             form.find('input[name="email"]').val(getValue('user.email'));
-
-
-
 
             // if (!hasOldData && guru.foto) {
             //     $('#file-info').text(guru.foto);

@@ -26,10 +26,9 @@
                     Anda sedang melihat data jadwal untuk mata pelajaran: <br>
                     <strong>{{ $kurikulumDetail->mataPelajaran->kode }} /
                         {{ $kurikulumDetail->mataPelajaran->nama }}</strong><br>
-                    Kelas: <strong>{{ $kurikulumDetail->mataPelajaran->kelas->angka ?? '-' }}</strong>
+                    Kelas: <strong>{{ $kurikulumDetail->mataPelajaran->kelas->angka ?? '-' }} ({{ $kurikulumDetail->mataPelajaran->kelas->unitSekolah->nama_unit }})</strong>
                 </div>
             </div>
-
 
             <div class="card card-table show-entire">
                 <div class="card-body">

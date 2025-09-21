@@ -16,7 +16,7 @@ class UserFactory extends Factory
             'name'              => $this->faker->name,
             'email'             => $this->faker->unique()->email,
             'role_id'           => 2, // default siswa
-            'jenis_kelamin'     => $this->faker->randomElement(['Laki-Laki', 'Perempuan']),
+            'jenis_kelamin'     => $this->faker->randomElement(['Laki-laki', 'Perempuan']),
             'email_verified_at' => now(),
             'avatar'            => null,
             'password'          => bcrypt('password'),

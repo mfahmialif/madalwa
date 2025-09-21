@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Jurusan;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -10,29 +11,32 @@ use Yajra\DataTables\Facades\DataTables;
 class JurusanController extends Controller
 {
     private $rules = [
-        "kode_jurusan" => "required|string",
-        "nama_jurusan" => "required|string",
-        "kuota"        => "required|string",
-        "status"       => "required|string",
+        "unit_sekolah_id" => "required|string",
+        "kode_jurusan"    => "required|string",
+        "nama_jurusan"    => "required|string",
+        "kuota"           => "required|string",
+        "status"          => "required|string",
     ];
     public function index()
     {
-        return view('admin.jurusan.index');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.jurusan.index', compact('unitSekolah'));
     }
     public function data(Request $request)
     {
         $search = request('search.value');
-        $data   = Jurusan::select('*')
-                  ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('unit_sekolah_id',Auth::user()->unitSekolah->id);
-                });
-                
+        $data   = Jurusan::join('unit_sekolah', 'unit_sekolah.id', '=', 'jurusan.unit_sekolah_id')
+            ->select('jurusan.*', 'unit_sekolah.nama_unit as nama_unit_sekolah');
+
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
-                    $query->orWhere('kode_jurusan', 'LIKE', "%$search%");
-                    $query->orWhere('nama_jurusan', 'LIKE', "%$search%");
-                    $query->orWhere('kuota', 'LIKE', "%$search%");
+                    $query->orWhere('jurusan.kode_jurusan', 'LIKE', "%$search%");
+                    $query->orWhere('jurusan.nama_jurusan', 'LIKE', "%$search%");
+                });
+
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('jurusan.unit_sekolah_id', $request->unit_sekolah_id);
                 });
             })
             ->editColumn('status', function ($row) {
@@ -64,17 +68,21 @@ class JurusanController extends Controller
     }
     public function add()
     {
-        return view('admin.jurusan.add');
+        $unitSekolah = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
+        return view('admin.jurusan.add', compact('unitSekolah'));
     }
     public function store(Request $request)
     {
         try {
             $request->validate($this->rules);
-            $jurusan               = new Jurusan();
-            $jurusan->kode_jurusan = $request->kode_jurusan;
-            $jurusan->nama_jurusan = $request->nama_jurusan;
-            $jurusan->kuota        = $request->kuota;
-            $jurusan->status       = $request->status;
+            $jurusan                  = new Jurusan();
+            $jurusan->unit_sekolah_id = $request->unit_sekolah_id;
+            $jurusan->kode_jurusan    = $request->kode_jurusan;
+            $jurusan->nama_jurusan    = $request->nama_jurusan;
+            $jurusan->kuota           = $request->kuota;
+            $jurusan->status          = $request->status;
             $jurusan->save();
             return redirect()->route('admin.jurusan.index')->with('success', 'Jurusan berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -88,7 +96,10 @@ class JurusanController extends Controller
     }
     public function edit(Jurusan $jurusan)
     {
-        return view('admin.jurusan.edit', compact('jurusan'));
+        $unitSekolah = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
+        return view('admin.jurusan.edit', compact('jurusan', 'unitSekolah'));
     }
     public function update(Request $request, Jurusan $jurusan)
     {
@@ -98,10 +109,11 @@ class JurusanController extends Controller
             $rules["id"] = "required";
             $request->validate($this->rules);
 
-            $jurusan->kode_jurusan = $request->kode_jurusan;
-            $jurusan->nama_jurusan = $request->nama_jurusan;
-            $jurusan->kuota        = $request->kuota;
-            $jurusan->status       = $request->status;
+            $jurusan->unit_sekolah_id = $request->unit_sekolah_id;
+            $jurusan->kode_jurusan    = $request->kode_jurusan;
+            $jurusan->nama_jurusan    = $request->nama_jurusan;
+            $jurusan->kuota           = $request->kuota;
+            $jurusan->status          = $request->status;
             $jurusan->save();
             return redirect()->route('admin.jurusan.index')->with('success', 'Jurusan berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {

@@ -13,58 +13,91 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title">Import Data Siswa</h5>
             <a class="mb-1 btn clip-btn btn-sm btn-primary" href="javascript:;" data-clipboard-target="#input-copy"><i
                     class="fa fa-download"></i>download format</a>
         </div>
         <div class="card-body">
-            <div class="clipboard">
-                <form class="form-horizontal" method="POST" action="{{ route('admin.import.siswa.save') }}"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" class="form-control mb-4" id="import_siswa" name="import_siswa">
-                    <div class="text-end">
-                        <button type="submit" class="mb-1 btn btn-sm btn-primary">
-                            <i class="fa fa-upload"></i> Upload
-                        </button>
+            <form class="form-horizontal" method="POST" action="{{ route('admin.import.siswa.save') }}"
+                enctype="multipart/form-data">
+                @csrf
+                <div class="col-12 col-md-12">
+                    <div class="input-block local-forms">
+                        <label>Unit Sekolah <span class="login-danger">*</span></label>
+                        <select class="form-control select2 filter-dt" name="unit_sekolah_id" required>
+                            @if (Auth::user()->role->nama == 'unit sekolah')
+                                <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                                    {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
+                                </option>
+                            @else
+                                <option value="">Pilih Unit Sekolah</option>
+                                @foreach ($unitSekolah as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->nama_unit }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
+                </div>
+                <div class="col-12">
+                    <div class="input-block local-top-form">
+                        <label class="local-top">
+                            Upload File <span class="login-danger">*</span>
+                        </label>
 
-                </form>
-            </div>
+                        <div class="settings-btn upload-files-avator">
+                            <input type="file" name="import_siswa" id="import_siswa"
+                                class="hide-input @error('import_siswa') is-invalid @enderror" accept=".xlsx, .xls"
+                                onchange="handleFileUpload(this, 'file-info', 'upload-label')" required />
+
+                            <label for="import_siswa" id="file-info" class="file-info-text">Belum ada file</label>
+                            <label for="import_siswa" class="upload" id="upload-label">Pilih File</label>
+                        </div>
+                        @error('avatar')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                        <div class="ms-2 mb-4 view-foto d-none">
+                            <small class="text-decoration-underline"><a href="" id="view-foto">Lihat Berkas <i
+                                        class="fa fa-eye"></i></a></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="mb-1 btn btn-sm btn-primary">
+                        <i class="fa fa-upload"></i> Upload
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 @endsection
-@push('scripts')
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: '{{ session("success") }}'
-            });
-        </script>
-    @endif
 
-    {{-- Error umum --}}
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-                text: '{{ session("error") }}'
-            });
-        </script>
-    @endif
+@push('script')
+    <script>
+        function handleFileUpload(input, fileInfoId, uploadLabelId) {
+            const fileInfo = document.getElementById(fileInfoId);
+            const uploadLabel = document.getElementById(uploadLabelId);
+            const file = input.files[0];
 
-    {{-- Error validasi (bisa lebih dari 1) --}}
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Validasi Gagal',
-                html: `{!! implode('<br>', $errors->all()) !!}` // ditampilkan per baris
-            });
-        </script>
-    @endif
+            if (file) {
+                const isImage = file.type.startsWith("image/");
+                if (!isImage) {
+                    fileInfo.innerText = "Belum ada file";
+                    uploadLabel.innerText = "Pilih File";
+                    return;
+                }
+
+                fileInfo.innerText = file.name;
+                uploadLabel.innerText = "Ganti File";
+            } else {
+                fileInfo.innerText = "Belum ada file";
+                uploadLabel.innerText = "Pilih File";
+            }
+        }
+    </script>
 @endpush

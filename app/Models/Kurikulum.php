@@ -18,4 +18,8 @@ class Kurikulum extends Model
     public function detail(){
         return $this->hasMany(KurikulumDetail::class);
     }
+
+    public function unitSekolah(){
+        return $this->belongsTo(UnitSekolah::class);
+    }
 }

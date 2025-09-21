@@ -5,7 +5,7 @@ namespace App\Http\Services;
 class BulkData
 {
     public const gender = [
-        "Laki-Laki",
+        "Laki-laki",
         "Perempuan"
     ];
 

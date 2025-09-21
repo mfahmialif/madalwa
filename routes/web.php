@@ -281,7 +281,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/add', [MataPelajaranController::class, 'add'])->name('admin.mata-pelajaran.add');
             Route::post('/', [MataPelajaranController::class, 'store'])->name('admin.mata-pelajaran.store');
             Route::get('/{mataPelajaran}/edit', [MataPelajaranController::class, 'edit'])->name('admin.mata-pelajaran.edit');
-            Route::put('/{mata-pelajaran}/update', [MataPelajaranController::class, 'update'])->name('admin.mata-pelajaran.update');
+            Route::put('/{mataPelajaran}/update', [MataPelajaranController::class, 'update'])->name('admin.mata-pelajaran.update');
             Route::delete('/{mataPelajaran}/destroy', [MataPelajaranController::class, 'destroy'])->name('admin.mata-pelajaran.destroy');
         });
         Route::prefix('tahun-pelajaran')->group(function () {
@@ -296,6 +296,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::prefix('kurikulum')->group(function () {
             Route::get('/', [KurikulumController::class, 'index'])->name('admin.kurikulum.index');
             Route::get('/data', [KurikulumController::class, 'data'])->name('admin.kurikulum.data');
+            Route::get('/dataMataPelajaran', [KurikulumController::class, 'dataMataPelajaran'])->name('admin.kurikulum.dataMataPelajaran');
             Route::get('/add', [KurikulumController::class, 'add'])->name('admin.kurikulum.add');
             Route::post('/', [KurikulumController::class, 'store'])->name('admin.kurikulum.store');
             Route::get('/{kurikulum}/edit', [KurikulumController::class, 'edit'])->name('admin.kurikulum.edit');
@@ -320,7 +321,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::prefix('user')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.user.index');
             Route::get('/data', [UserController::class, 'data'])->name('admin.user.data');
-            Route::get('/add', [UserController::class, 'add'])->name('admin.user.add');
+            Route::get('/add', [UserController::class, 'add'])->name('admin.user.add')->middleware('role:admin');
             Route::post('/', [UserController::class, 'store'])->name('admin.user.store');
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('admin.user.edit');
             Route::put('/{user}/update', [UserController::class, 'update'])->name('admin.user.update');

@@ -190,7 +190,7 @@
                                                 <h4>Kabupaten</h4><span>{{ $siswa->kabupaten_anak }}</span>
                                             </li>
                                             <li>
-                                                <h4>Kode Pos</h4><span>{{ $siswa->kode_pos_anak }}</span>
+                                                <h4>Kode Pos</h4><span>{{ $siswa->kodepos_anak }}</span>
                                             </li>
                                             <li>
                                                 <h4>RT/RW</h4><span>{{ $siswa->rt_anak }}/{{ $siswa->rw_anak }}</span>
@@ -313,7 +313,7 @@
                                                 <h4>Kabupaten Wali</h4><span>{{ $siswa->kabupaten_wali }}</span>
                                             </li>
                                             <li>
-                                                <h4>Kode Pos Wali</h4><span>{{ $siswa->kode_pos_wali }}</span>
+                                                <h4>Kode Pos Wali</h4><span>{{ $siswa->kodepos_wali }}</span>
                                             </li>
                                             <li>
                                                 <h4>Nomor Telepon Wali</h4><span>{{ $siswa->nomor_telepon_wali }}</span>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kurikulum;
 use App\Models\TahunPelajaran;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 
 class JadwalController extends Controller
@@ -11,7 +12,8 @@ class JadwalController extends Controller
     public function index()
     {
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        return view('admin.jadwal.index', compact('tahunPelajaran'));
+        $unitSekolah    = UnitSekolah::all();
+        return view('admin.jadwal.index', compact('tahunPelajaran', 'unitSekolah'));
     }
 
     public function data(Request $request)
@@ -26,9 +28,13 @@ class JadwalController extends Controller
             'detail.mataPelajaran.kelas',
         ])->get();
 
-        $kurikulum = Kurikulum::with('detail.mataPelajaran.kelas')->get();
+        $kurikulum = Kurikulum::when($request->filled('unit_sekolah_id'), function ($q) use ($request) {
+            $q->where('unit_sekolah_id', $request->unit_sekolah_id);
+        })
+            ->with('detail.mataPelajaran.kelas')->get();
 
         $tahunPelajaran = TahunPelajaran::find($request->tahun_pelajaran_id);
-        return view('admin.jadwal.kurikulum', compact('kurikulum', 'tahunPelajaran'));
+        $unitSekolah    = UnitSekolah::find($request->unit_sekolah_id);
+        return view('admin.jadwal.kurikulum', compact('kurikulum', 'tahunPelajaran', 'unitSekolah'));
     }
 }

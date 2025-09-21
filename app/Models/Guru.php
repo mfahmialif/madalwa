@@ -31,4 +31,8 @@ class Guru extends Model
         return $this->hasMany(Jadwal::class, 'guru_id');
     }
 
+    public function unitSekolah(){
+        return $this->belongsTo(UnitSekolah::class);
+    }
+
 }

@@ -19,7 +19,7 @@ class DashboardController extends Controller
         'nik'                  => 'required|string|digits:16|unique:guru,nik',
         'no_kk'                => 'nullable|string|max:20',
         'npwp'                 => 'nullable|string|max:25',
-        'jenis_kelamin'        => 'required|in:Laki-Laki,Perempuan',
+        'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
         'tempat_lahir'         => 'required|string|max:100',
         'tanggal_lahir'        => 'required|date',
         'agama'                => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Khonghucu',

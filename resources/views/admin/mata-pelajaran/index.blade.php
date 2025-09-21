@@ -18,6 +18,25 @@
     <div class="row">
         <div class="col-sm-12">
 
+            <div class="col-12 col-md-12">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
+                        @if (Auth::user()->role->nama == 'unit sekolah')
+                            <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                                {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
+                            </option>
+                        @else
+                            <option value="">Semua Unit Sekolah</option>
+                            @foreach ($unitSekolah as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->nama_unit }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
@@ -28,9 +47,11 @@
                                     <h3>Data Mata Pelajaran</h3>
                                     <div class="doctor-search-blk mt-3 mt-md-0">
                                         <div class="top-nav-search table-search-blk">
-                                            <form onsubmit="event.preventDefault(); searchDataTable('#tableMataPelajaran');">
+                                            <form
+                                                onsubmit="event.preventDefault(); searchDataTable('#tableMataPelajaran');">
                                                 <input type="text" class="form-control" id="search-table"
-                                                    oninput="searchDataTable('#tableMataPelajaran')" placeholder="Search here">
+                                                    oninput="searchDataTable('#tableMataPelajaran')"
+                                                    placeholder="Search here">
                                                 <a class="btn"><img
                                                         src="{{ asset('template') }}/assets/img/icons/search-normal.svg"
                                                         alt=""></a>
@@ -41,7 +62,8 @@
                                                 class="btn btn-primary add-pluss ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/plus.svg"
                                                     alt=""></a>
-                                            <a href="javascript:void(0);" onclick="searchDataTable('#tableMataPelajaran', true)"
+                                            <a href="javascript:void(0);"
+                                                onclick="searchDataTable('#tableMataPelajaran', true)"
                                                 class="btn btn-primary doctor-refresh ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/re-fresh.svg"
                                                     alt=""></a>
@@ -65,10 +87,12 @@
                     <!-- /Table Header -->
 
                     <div class="table-responsive">
-                        <table id="tableMataPelajaran" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
+                        <table id="tableMataPelajaran"
+                            class="table border-0 custom-table comman-table datatable mb-0 table-hover">
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
+                                    <th>Unit Sekolah</th>
                                     <th>Nama</th>
                                     <th>Kode</th>
                                     <th>Status</th>
@@ -89,6 +113,11 @@
     <script>
         var table1 = dataTable('#tableMataPelajaran');
         $('#search-table').focus();
+
+        $('.filter-dt').change(function(e) {
+            e.preventDefault();
+            table1.ajax.reload();
+        });
 
         var searchTimeout = null;
 
@@ -119,6 +148,7 @@
                 ajax: {
                     url: url,
                     data: function(d) {
+                        d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                         // d.search = $('#search-table').val();
                     },
                 },
@@ -128,6 +158,11 @@
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'nama_unit',
+                        name: 'nama_unit',
+                        className: "text-middle"
                     },
                     {
                         data: 'nama',

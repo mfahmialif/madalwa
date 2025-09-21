@@ -17,7 +17,7 @@ class Siswa extends Model
         // get last kelasSiswa
         $kelasSiswa = $this->kelasSiswa()->orderBy('id', 'desc')->first();
         $kelas      = $this->kelas;
-        $response   = $kelasSiswa ? $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')' . ' - ' . $kelasSiswa->kelasSub->sub : $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')';
+        $response   = $kelasSiswa ? $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')' . ' - ' . $kelasSiswa->kelasSub->sub : 'Belum ada kelas';
         return $response;
     }
 

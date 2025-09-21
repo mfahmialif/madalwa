@@ -16,4 +16,9 @@ class Jurusan extends Model
     {
         return $this->hasMany(KelasSub::class, 'jurusan_id');
     }
+
+    public function unitSekolah()
+    {
+        return $this->belongsTo(UnitSekolah::class, 'unit_sekolah_id');
+    }
 }

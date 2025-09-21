@@ -39,11 +39,11 @@ class MutasiMasukController extends Controller
         'nis'                      => 'nullable|string|max:255|unique:siswa,nis',
         'nisn'                     => 'nullable|string|max:255|unique:siswa,nisn',
         'nama_siswa'               => 'required|string|max:255',
-        'jenis_kelamin'            => 'required|in:Laki-Laki,Perempuan',
+        'jenis_kelamin'            => 'required|in:Laki-laki,Perempuan',
         'tempat_lahir'             => 'required|string|max:255',
         'tanggal_lahir'            => 'required|date',
         'agama'                    => 'required|string|max:255',
-        'nik_anak'                 => 'nullable|string|digits:16',
+        'nik'                 => 'nullable|string|digits:16',
         'no_registrasi_akta_lahir' => 'nullable|string|max:255',
         'kk'                       => 'nullable|string|max:255',
         'akta_lahir_path'          => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:10240', // Diubah dari akta_lahir_path agar cocok dengan handle upload
@@ -64,7 +64,7 @@ class MutasiMasukController extends Controller
         'desa_kelurahan_anak'      => 'required|string|max:255',
         'kecamatan_anak'           => 'required|string|max:255',
         'kabupaten_anak'           => 'required|string|max:255',
-        'kode_pos_anak'            => 'nullable|string|max:10',
+        'kodepos_anak'            => 'nullable|string|max:10',
         'rt_anak'                  => 'nullable|string|max:5',
         'rw_anak'                  => 'nullable|string|max:5',
         'lintang'                  => 'nullable|numeric',
@@ -109,7 +109,7 @@ class MutasiMasukController extends Controller
         'desa_kelurahan_wali'      => 'nullable|string|max:255',
         'kecamatan_wali'           => 'nullable|string|max:255',
         'kabupaten_wali'           => 'nullable|string|max:255',
-        'kode_pos_wali'            => 'nullable|string|max:10',
+        'kodepos_wali'            => 'nullable|string|max:10',
         'nomor_telepon_wali'       => 'nullable|string|max:20',
 
         // Status
@@ -128,7 +128,7 @@ class MutasiMasukController extends Controller
                 ->join('kelas','kelas.id','=','siswa.kelas_id')
             ->where('mutasi.jenis', 'masuk')
             ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
             ->select([
                 'mutasi.*',
@@ -218,7 +218,7 @@ class MutasiMasukController extends Controller
             $siswa->tempat_lahir             = $request->tempat_lahir;
             $siswa->tanggal_lahir            = $request->tanggal_lahir;
             $siswa->agama                    = $request->agama;
-            $siswa->nik_anak                 = $request->nik_anak;
+            $siswa->nik                 = $request->nik;
             $siswa->no_registrasi_akta_lahir = $request->no_registrasi_akta_lahir;
             $siswa->kk                       = $request->kk;
             $siswa->anak_ke                  = $request->anak_ke;
@@ -237,7 +237,7 @@ class MutasiMasukController extends Controller
             $siswa->desa_kelurahan_anak   = $request->desa_kelurahan_anak;
             $siswa->kecamatan_anak        = $request->kecamatan_anak;
             $siswa->kabupaten_anak        = $request->kabupaten_anak;
-            $siswa->kode_pos_anak         = $request->kode_pos_anak;
+            $siswa->kodepos_anak         = $request->kodepos_anak;
             $siswa->rt_anak               = $request->rt_anak;
             $siswa->rw_anak               = $request->rw_anak;
             $siswa->lintang               = $request->lintang;
@@ -282,7 +282,7 @@ class MutasiMasukController extends Controller
             $siswa->desa_kelurahan_wali      = $request->desa_kelurahan_wali;
             $siswa->kecamatan_wali           = $request->kecamatan_wali;
             $siswa->kabupaten_wali           = $request->kabupaten_wali;
-            $siswa->kode_pos_wali            = $request->kode_pos_wali;
+            $siswa->kodepos_wali            = $request->kodepos_wali;
             $siswa->nomor_telepon_wali       = $request->nomor_telepon_wali;
 
             $siswa->status = $request->status;
@@ -386,7 +386,7 @@ class MutasiMasukController extends Controller
             $siswa->tempat_lahir             = $request->tempat_lahir;
             $siswa->tanggal_lahir            = $request->tanggal_lahir;
             $siswa->agama                    = $request->agama;
-            $siswa->nik_anak                 = $request->nik_anak;
+            $siswa->nik                 = $request->nik;
             $siswa->no_registrasi_akta_lahir = $request->no_registrasi_akta_lahir;
             $siswa->kk                       = $request->kk;
             $siswa->anak_ke                  = $request->anak_ke;
@@ -405,7 +405,7 @@ class MutasiMasukController extends Controller
             $siswa->desa_kelurahan_anak   = $request->desa_kelurahan_anak;
             $siswa->kecamatan_anak        = $request->kecamatan_anak;
             $siswa->kabupaten_anak        = $request->kabupaten_anak;
-            $siswa->kode_pos_anak         = $request->kode_pos_anak;
+            $siswa->kodepos_anak         = $request->kodepos_anak;
             $siswa->rt_anak               = $request->rt_anak;
             $siswa->rw_anak               = $request->rw_anak;
             $siswa->lintang               = $request->lintang;
@@ -450,7 +450,7 @@ class MutasiMasukController extends Controller
             $siswa->desa_kelurahan_wali      = $request->desa_kelurahan_wali;
             $siswa->kecamatan_wali           = $request->kecamatan_wali;
             $siswa->kabupaten_wali           = $request->kabupaten_wali;
-            $siswa->kode_pos_wali            = $request->kode_pos_wali;
+            $siswa->kodepos_wali            = $request->kodepos_wali;
             $siswa->nomor_telepon_wali       = $request->nomor_telepon_wali;
 
             $siswa->status = $request->status;

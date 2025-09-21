@@ -85,7 +85,7 @@ class NilaiInputController extends Controller
                     $query->orWhere('siswa.jenis_kelamin', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nis', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nisn', 'LIKE', "%$search%");
-                    $query->orWhere('siswa.nik_anak', 'LIKE', "%$search%");
+                    $query->orWhere('siswa.nik', 'LIKE', "%$search%");
                 });
             })
             ->editColumn('nama_siswa', function ($row) {

@@ -42,7 +42,7 @@ class KepalaSekolahController extends Controller
         $search = request('search.value');
         $data   = KepalaSekolah::join('guru', 'guru.id', '=', 'kepala_sekolah.guru_id')
             ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
-                $query->where('kepala_sekolah.unit_sekolah_id', Auth::user()->unitSekolah->id);
+                $query->where('kepala_sekolah.unit_sekolah_id', Auth::user()->unitSekolah->unit_sekolah_id);
             })
             ->select('kepala_sekolah.*', 'guru.nama');
         return DataTables::of($data)

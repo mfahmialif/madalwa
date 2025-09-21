@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\Helper;
 use App\Models\Jurusan;
 use App\Models\Kelas;
 use App\Models\KelasSub;
@@ -20,6 +21,8 @@ class KelasSubController extends Controller
 
     public function index(Kelas $kelas)
     {
+        Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $jurusan        = Jurusan::all();
         return view('admin.kelas.sub.index', compact('kelas', 'tahunPelajaran', 'jurusan'));
@@ -85,15 +88,19 @@ class KelasSubController extends Controller
 
     public function add(Kelas $kelas)
     {
+        Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        $jurusan        = Jurusan::where('unit_sekolah_id',$kelas->unit_sekolah_id)->get();
+        $jurusan        = Jurusan::where('unit_sekolah_id', $kelas->unit_sekolah_id)->get();
         return view('admin.kelas.sub.add', compact('dataKelas', 'kelas', 'tahunPelajaran', 'jurusan'));
     }
 
     public function store(Kelas $kelas, Request $request)
     {
         try {
+            Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
             $request->validate($this->rules);
 
             $cek = KelasSub::where('kelas_id', $kelas->id)
@@ -114,7 +121,7 @@ class KelasSubController extends Controller
             $kelasSub->keterangan         = $request->keterangan;
             $kelasSub->save();
 
-            return redirect()->route('admin.kelas.sub.index', ['kelas' => $kelas])->with('success')->with('success', 'KelasSub Sub berhasil ditambahkan');
+            return redirect()->route('admin.kelas.sub.index', ['kelas' => $kelas])->with('success')->with('success', 'Data Sub berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.kelas.sub.add', ['kelas' => $kelas])
                 ->withErrors($e->validator)
@@ -127,15 +134,19 @@ class KelasSubController extends Controller
 
     public function edit(Kelas $kelas, KelasSub $kelasSub)
     {
+        Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
         $dataKelas      = Kelas::orderBy('angka', 'asc')->get();
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
-        $jurusan        = Jurusan::where('unit_sekolah_id',$kelas->unit_sekolah_id)->get();
+        $jurusan        = Jurusan::where('unit_sekolah_id', $kelas->unit_sekolah_id)->get();
         return view('admin.kelas.sub.edit', compact('kelas', 'dataKelas', 'kelasSub', 'tahunPelajaran', 'jurusan'));
     }
 
     public function update(Kelas $kelas, Request $request, KelasSub $kelasSub)
     {
         try {
+            Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
             $request->validate($this->rules);
 
             $cek = KelasSub::where('kelas_id', $kelas->id)
@@ -145,6 +156,8 @@ class KelasSubController extends Controller
                 ->where('id', '!=', $kelasSub->id)->first();
             if ($cek) {
                 throw new \Exception('Data Sub Kelas sudah ada');
+            } else {
+                abort(403);
             }
 
             $kelasSub->tahun_pelajaran_id = $request->tahun_pelajaran_id;
@@ -154,7 +167,7 @@ class KelasSubController extends Controller
 
             $kelasSub->save();
 
-            return redirect()->route('admin.kelas.sub.index', ['kelas' => $kelas])->with('success', 'KelasSub berhasil diupdate');
+            return redirect()->route('admin.kelas.sub.index', ['kelas' => $kelas])->with('success', 'Data berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.kelas.sub.edit', ['kelasSub' => $kelasSub], ['kelas' => $kelas])
                 ->withErrors($e->validator)
@@ -171,14 +184,14 @@ class KelasSubController extends Controller
             $kelasSub->delete();
             return response()->json([
                 'status'  => true,
-                'message' => 'KelasSub berhasil dihapus',
+                'message' => 'Data berhasil dihapus',
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
 
             if ($e->getCode() == '23000') {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'KelasSub tidak dapat dihapus karena masih digunakan oleh user.',
+                    'message' => 'Data tidak dapat dihapus karena masih digunakan oleh user.',
                 ]);
             }
 

@@ -25,12 +25,12 @@
 <div class="col-12 col-md-12">
     <div class="input-block local-forms">
         <label>Kelas<span class="login-danger">*</span></label>
-        <select class="form-control select2 @error('kelas') is-invalid @enderror" name="kelas" required>
+        <select class="form-control select2 @error('kelas') is-invalid @enderror" name="kelas_id" required>
             <option value="">Pilih Kelas</option>
             @foreach ($kelas as $item)
-                <option value="{{ $item->id }}">{{ $item->angka }}</option>
+                <option value="{{ $item->id }}">{{ $item->angka }} ({{ $item->unitSekolah->nama_unit }})</option>
             @endforeach
-            
+
         </select>
         @error('romawi')
             <div class="invalid-feedback">

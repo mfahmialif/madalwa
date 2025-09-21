@@ -3,6 +3,26 @@
     <h5 class="form-title"><span>Data Pribadi & Identitas</span></h5>
 </div>
 
+<div class="col-12">
+    <div class="input-block local-forms">
+        <label>Unit Sekolah <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('unit_sekolah_id') is-invalid @enderror" name="unit_sekolah_id"
+            required>
+            <option value="">Pilih Unit Sekolah</option>
+            @foreach ($unitSekolah as $item)
+                <option value="{{ $item->id }}" {{ old('unit_sekolah_id') == $item->id ? 'selected' : '' }}>
+                    {{ $item->nama_unit }}</option>
+            @endforeach
+        </select>
+        @error('tahun_pelajaran_id')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
+
+
 <div class="col-12 col-sm-6">
     <div class="input-block local-forms">
         <label>Nama Lengkap <span class="login-danger">*</span></label>
@@ -74,7 +94,7 @@
         <label>Jenis Kelamin <span class="login-danger">*</span></label>
         <select class="form-control select2 @error('jenis_kelamin') is-invalid @enderror" name="jenis_kelamin" required>
             <option value="">Pilih Jenis Kelamin</option>
-            <option value="Laki-Laki" {{ old('jenis_kelamin') == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
+            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
             <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
         </select>
         @error('jenis_kelamin')
@@ -517,8 +537,7 @@
 <div class="col-12 mt-5">
     <div class="doctor-submit text-end">
         <button type="submit" class="btn btn-primary submit-form me-2">Simpan</button>
-        <a href="{{ route('admin.guru.index') }}"
-            class="btn btn-secondary cancel-form">Batalkan</a>
+        <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary cancel-form">Batalkan</a>
     </div>
 </div>
 

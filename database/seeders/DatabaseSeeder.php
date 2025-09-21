@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
                 'name'          => 'Admin2',
                 'password'      => bcrypt('admin'),
                 'email'         => 'admin2@admin.com',
-                'jenis_kelamin' => 'Laki-Laki',
+                'jenis_kelamin' => 'Laki-laki',
                 'role_id'       => 1, // tambahkan jika kolom ini wajib
             ],
             [
@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
                 'name'          => 'Kepala Sekolah',
                 'password'      => bcrypt('password'),
                 'email'         => 'ks@admin.com',
-                'jenis_kelamin' => 'Laki-Laki',
+                'jenis_kelamin' => 'Laki-laki',
                 'role_id'       => 3, // tambahkan jika kolom ini wajib
             ],
             [
@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
                 'name'          => 'Dalwa 3',
                 'password'      => bcrypt('password'),
                 'email'         => 'dalwa3@gmail.com',
-                'jenis_kelamin' => 'Laki-Laki',
+                'jenis_kelamin' => 'Laki-laki',
                 'role_id'       => 5, // tambahkan jika kolom ini wajib
             ],
         ]);
@@ -93,7 +93,7 @@ class DatabaseSeeder extends Seeder
 
         \DB::table('unit_sekolah_user')->insert([
             'unit_sekolah_id' => 1,
-            'user_id' => 4
+            'user_id'         => 4,
         ]);
 
         \DB::table('kelas')->insert([
@@ -130,25 +130,25 @@ class DatabaseSeeder extends Seeder
         ]);
         \DB::table('jurusan')->insert([
             [
-                'kode_jurusan' => 'BAHASA',
+                'kode_jurusan'    => 'BAHASA',
                 'unit_sekolah_id' => 1,
-                'nama_jurusan' => 'Bahasa',
-                'kuota'        => 1000,
-                'status'       => 'aktif',
+                'nama_jurusan'    => 'Bahasa',
+                'kuota'           => 1000,
+                'status'          => 'aktif',
             ],
             [
-                'kode_jurusan' => 'IPA',
+                'kode_jurusan'    => 'IPA',
                 'unit_sekolah_id' => 1,
-                'nama_jurusan' => 'IPA',
-                'kuota'        => 1000,
-                'status'       => 'aktif',
+                'nama_jurusan'    => 'IPA',
+                'kuota'           => 1000,
+                'status'          => 'aktif',
             ],
             [
-                'kode_jurusan' => 'IPS',
+                'kode_jurusan'    => 'IPS',
                 'unit_sekolah_id' => 1,
-                'nama_jurusan' => 'IPS',
-                'kuota'        => 1000,
-                'status'       => 'aktif',
+                'nama_jurusan'    => 'IPS',
+                'kuota'           => 1000,
+                'status'          => 'aktif',
             ],
         ]);
         \DB::table('kelas_sub')->insert([
@@ -182,12 +182,14 @@ class DatabaseSeeder extends Seeder
         ]);
         \DB::table('kurikulum')->insert([
             [
+                'unit_sekolah_id'    => 1,
                 'nama'               => 'Kurikulum Lama',
                 'tahun_pelajaran_id' => 1,
             ],
         ]);
         \DB::table('kurikulum')->insert([
             [
+                'unit_sekolah_id'    => 1,
                 'nama'               => 'Kurikulum Merdeka',
                 'tahun_pelajaran_id' => 2,
             ],
@@ -280,7 +282,7 @@ class DatabaseSeeder extends Seeder
         //         'name'          => 'Siswa' . $i,
         //         'password'      => bcrypt('siswa'),
         //         'email'         => 'siswa' . $i . '@siswa.com',
-        //         'jenis_kelamin' => ['Laki-Laki', 'Perempuan'][rand(0, 1)],
+        //         'jenis_kelamin' => ['Laki-laki', 'Perempuan'][rand(0, 1)],
         //         'role_id'       => 4,
         //     ];
 

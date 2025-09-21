@@ -1,34 +1,34 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\Helper;
 use App\Models\Guru;
+use App\Models\Jadwal;
 use App\Models\Role;
 use App\Models\TahunPelajaran;
+use App\Models\UnitSekolah;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
-use App\Models\Jadwal;
-use Illuminate\Support\Facades\Auth;
 
 class GuruController extends Controller
 {
     protected $rules = [
 
         // Data Pribadi & Identitas
+        'unit_sekolah_id'      => 'required|exists:unit_sekolah,id',
+
         'nama'                 => 'required|string|max:150',
         'nip'                  => 'required|string|max:20|unique:guru,nip', // Tambahkan $this->guruId untuk handle update
         'nuptk'                => 'nullable|string|max:20|unique:guru,nuptk',
-        'nik'                  => 'required|string|digits:16|unique:guru,nik',
+        'nik'                  => 'required|string|unique:guru,nik',
         'no_kk'                => 'nullable|string|max:20',
         'npwp'                 => 'nullable|string|max:25',
-        'jenis_kelamin'        => 'required|in:Laki-Laki,Perempuan',
+        'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
         'tempat_lahir'         => 'required|string|max:100',
         'tanggal_lahir'        => 'required|date',
         'agama'                => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Khonghucu',
@@ -67,20 +67,23 @@ class GuruController extends Controller
     public function index()
     {
         $jenisKelamin = Helper::getEnumValues('siswa', 'jenis_kelamin');
-
-        return view('admin.guru.index', compact('jenisKelamin'));
+        $unitSekolah  = UnitSekolah::all();
+        return view('admin.guru.index', compact('jenisKelamin', 'unitSekolah'));
     }
 
     public function data(Request $request)
     {
         $search = request('search.value');
         $data   = Guru::select('*');
-            // ->join('unit_sekolah_user','unit_sekolah_user.id','=','guru.unit_sekolah_id')
-            // ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
-            //     $query->where('unit_sekolah_user.unit_sekolah_id', Auth::user()->unitSekolah->id);
-            // });
+        // ->join('unit_sekolah_user','unit_sekolah_user.id','=','guru.unit_sekolah_id')
+        // ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+        //     $query->where('unit_sekolah_user.unit_sekolah_id', Auth::user()->unitSekolah->unit_sekolah_id);
+        // });
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('unit_sekolah_id', $request->unit_sekolah_id);
+                });
                 $query->when($request->jenis_kelamin, function ($q) use ($request) {
                     $q->where('jenis_kelamin', $request->jenis_kelamin);
                 });
@@ -97,7 +100,8 @@ class GuruController extends Controller
                         <div>
                             <a href="' . route("admin.guru.show", $row) . '">' . $row->nama . '</a><br>
                             <small>NIK: ' . ($row->nik ?? '-') . '</small><br>
-                            <small>NIP: ' . ($row->nip ?? '-') . '</small>
+                            <small>NIP: ' . ($row->nip ?? '-') . '</small><br>
+                            <small>Unit Sekolah: ' . ($row->unitSekolah->nama_unit ?? '-') . '</small>
                         </div>
                     </div>
                 ';
@@ -130,7 +134,10 @@ class GuruController extends Controller
         $agama          = Helper::getEnumValues('siswa', 'agama');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $statusDaftar   = Helper::getEnumValues('siswa', 'status_daftar');
-        return view('admin.guru.add', compact('jenisKelamin', 'agama', 'tahunPelajaran', 'statusDaftar'));
+        $unitSekolah    = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
+        return view('admin.guru.add', compact('jenisKelamin', 'agama', 'tahunPelajaran', 'statusDaftar', 'unitSekolah'));
     }
 
     public function store(Request $request)
@@ -148,14 +155,14 @@ class GuruController extends Controller
                 throw new \Exception('Role "guru" tidak ditemukan. Silakan buat role terlebih dahulu.');
             }
 
-            $password = Str::random(8); // Buat password acak
+            $password = 'password';
             $user     = User::create([
                 'username'      => 'guru-' . time(),
                 'name'          => $request->nama,
                 'email'         => $request->email,
                 'password'      => Hash::make($password),
                 'role_id'       => $role->id,
-                'jenis_kelamin' => $request->jenis_kelamin, // Hapus jika tidak ada di tabel users
+                'jenis_kelamin' => $request->jenis_kelamin,
             ]);
 
             // 4. Menyiapkan dan Menyimpan Data Guru
@@ -206,8 +213,11 @@ class GuruController extends Controller
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $status         = Helper::getEnumValues('guru', 'status');
 
+        $unitSekolah = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
         $guru = $guru->load('user');
-        return view('admin.guru.edit', compact('guru', 'agama', 'jenisKelamin', 'tahunPelajaran', 'status'));
+        return view('admin.guru.edit', compact('guru', 'agama', 'jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah'));
     }
 
     public function update(Request $request, Guru $guru)

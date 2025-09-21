@@ -18,6 +18,25 @@
     <div class="row">
         <div class="col-sm-12">
 
+            <div class="col-12 col-md-12">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
+                        @if (Auth::user()->role->nama == 'unit sekolah')
+                            <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                                {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
+                            </option>
+                        @else
+                            <option value="">Semua Unit Sekolah</option>
+                            @foreach ($unitSekolah as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->nama_unit }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+
             <div class="card card-table show-entire">
                 <div class="card-body">
                     <!-- Table Header -->
@@ -69,6 +88,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
+                                    <th>Unit Sekolah</th>
                                     <th>Kode Jurusan</th>
                                     <th class="text-start">Nama Jurusan</th>
                                     <th>Kuota</th>
@@ -91,6 +111,11 @@
         $('#search-table').focus();
 
         var searchTimeout = null;
+
+        $('.filter-dt').change(function(e) {
+            e.preventDefault();
+            table1.ajax.reload();
+        });
 
         function searchDataTable(tableId, refresh = false) {
             var time = refresh ? 0 : 700;
@@ -121,6 +146,7 @@
                 ajax: {
                     url: url,
                     data: function(d) {
+                        d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                         // d.search = $('#search-table').val();
                     },
                 },
@@ -130,6 +156,11 @@
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'nama_unit_sekolah',
+                        name: 'nama_unit_sekolah',
+                        className: "text-middle"
                     },
                     {
                         data: 'kode_jurusan',

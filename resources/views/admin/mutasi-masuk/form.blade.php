@@ -115,7 +115,7 @@
         <label>Jenis Kelamin <span class="login-danger">*</span></label>
         <select class="form-control select2 @error('jenis_kelamin') is-invalid @enderror" name="jenis_kelamin" required>
             <option value="">Pilih Jenis Kelamin</option>
-            @foreach (['Laki-Laki', 'Perempuan'] as $item)
+            @foreach (['Laki-laki', 'Perempuan'] as $item)
                 <option value="{{ $item }}" {{ old('jenis_kelamin',$siswa->jenis_kelamin ?? '') == $item ? 'selected' : '' }}>
                     {{ $item }}</option>
             @endforeach
@@ -183,9 +183,9 @@
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIK Anak</label>
-        <input class="form-control @error('nik_anak') is-invalid @enderror" name="nik_anak" type="text"
-            value="{{ old('nik_anak',$siswa->nik_anak ?? '') }}">
-        @error('nik_anak')
+        <input class="form-control @error('nik') is-invalid @enderror" name="nik" type="text"
+            value="{{ old('nik',$siswa->nik ?? '') }}">
+        @error('nik')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
@@ -385,9 +385,9 @@
 <div class="col-12 col-md-6 col-lg-3">
     <div class="input-block local-forms">
         <label>Kode Pos</label>
-        <input class="form-control @error('kode_pos_anak') is-invalid @enderror" name="kode_pos_anak" type="text"
-            value="{{ old('kode_pos_anak',$siswa->kode_pos_anak ?? '') }}">
-        @error('kode_pos_anak')
+        <input class="form-control @error('kodepos_anak') is-invalid @enderror" name="kodepos_anak" type="text"
+            value="{{ old('kodepos_anak',$siswa->kodepos_anak ?? '') }}">
+        @error('kodepos_anak')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>

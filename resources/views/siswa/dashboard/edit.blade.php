@@ -85,7 +85,7 @@
             form.find('input[name="nama_siswa"]').val(getValue('nama_siswa'));
             form.find('input[name="tempat_lahir"]').val(getValue('tempat_lahir'));
             form.find('input[name="tanggal_lahir"]').val(getValue('tanggal_lahir'));
-            form.find('input[name="nik_anak"]').val(getValue('nik_anak'));
+            form.find('input[name="nik"]').val(getValue('nik'));
             form.find('input[name="kk"]').val(getValue('kk'));
             form.find('input[name="no_registrasi_akta_lahir"]').val(getValue('no_registrasi_akta_lahir'));
             form.find('input[name="anak_ke"]').val(getValue('anak_ke'));
@@ -103,7 +103,7 @@
             form.find('input[name="desa_kelurahan_anak"]').val(getValue('desa_kelurahan_anak'));
             form.find('input[name="kecamatan_anak"]').val(getValue('kecamatan_anak'));
             form.find('input[name="kabupaten_anak"]').val(getValue('kabupaten_anak'));
-            form.find('input[name="kode_pos_anak"]').val(getValue('kode_pos_anak'));
+            form.find('input[name="kodepos_anak"]').val(getValue('kodepos_anak'));
             form.find('input[name="rt_anak"]').val(getValue('rt_anak'));
             form.find('input[name="rw_anak"]').val(getValue('rw_anak'));
             form.find('input[name="lintang"]').val(getValue('lintang'));
@@ -147,7 +147,7 @@
             form.find('input[name="desa_kelurahan_wali"]').val(getValue('desa_kelurahan_wali'));
             form.find('input[name="kecamatan_wali"]').val(getValue('kecamatan_wali'));
             form.find('input[name="kabupaten_wali"]').val(getValue('kabupaten_wali'));
-            form.find('input[name="kode_pos_wali"]').val(getValue('kode_pos_wali'));
+            form.find('input[name="kodepos_wali"]').val(getValue('kodepos_wali'));
             form.find('input[name="nomor_telepon_wali"]').val(getValue('nomor_telepon_wali'));
 
             // -------------------------------------------------------------------

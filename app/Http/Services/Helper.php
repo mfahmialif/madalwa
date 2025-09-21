@@ -502,4 +502,24 @@ class Helper
         return Carbon::parse($tanggalLahir)->age;
     }
 
+    public static function roleAccess($access, $role)
+    {
+        $user = \Auth::user();
+        if ($user->role->nama == $role) {
+            if ($access->id != $user[$role]->id) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static function checkUnitSekolahAccess($unitSekolahId)
+    {
+        if (\Auth::user()->role->nama == 'unit sekolah') {
+            if ($unitSekolahId != \Auth::user()->unitSekolah->unit_sekolah_id) {
+                abort(403, 'Tidak punya akses, karena beda unit sekolah');
+            }
+        }
+    }
 }

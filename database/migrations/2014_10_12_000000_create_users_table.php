@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->foreignId('role_id')->constrained('role');
-            $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan', '*']);
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan', '*']);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('avatar')->nullable();
             $table->string('password');

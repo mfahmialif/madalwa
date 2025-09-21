@@ -39,6 +39,7 @@
 @push('script')
     <script>
         const jurusan = @json($jurusan);
+        $('#form_edit').find('[name="unit_sekolah_id"]').val(jurusan.unit_sekolah_id).trigger('change');
         $('#form_edit').find('[name="kode_jurusan"]').val(jurusan.kode_jurusan);
         $('#form_edit').find('[name="nama_jurusan"]').val(jurusan.nama_jurusan);
         $('#form_edit').find('[name="kuota"]').val(jurusan.kuota);

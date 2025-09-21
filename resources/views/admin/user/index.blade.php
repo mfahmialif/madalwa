@@ -50,10 +50,12 @@
                                             </form>
                                         </div>
                                         <div class="add-group">
-                                            <a href="{{ route('admin.user.add') }}"
-                                                class="btn btn-primary add-pluss ms-2"><img
-                                                    src="{{ asset('template') }}/assets/img/icons/plus.svg"
-                                                    alt=""></a>
+                                            @if (\Auth::user()->role->nama == 'admin')
+                                                <a href="{{ route('admin.user.add') }}"
+                                                    class="btn btn-primary add-pluss ms-2"><img
+                                                        src="{{ asset('template') }}/assets/img/icons/plus.svg"
+                                                        alt=""></a>
+                                            @endif
                                             <a href="javascript:void(0);" onclick="searchDataTable('#table1', true)"
                                                 class="btn btn-primary doctor-refresh ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/re-fresh.svg"

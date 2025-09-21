@@ -1,20 +1,39 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Guru;
-use App\Models\Siswa;
-use App\Models\Jadwal;
-use App\Models\KelasSub;
+use App\Http\Controllers\Controller;
 use App\Http\Services\Helper;
 use App\Models\AbsensiDetail;
+use App\Models\Guru;
+use App\Models\Jadwal;
+use App\Models\KelasSub;
+use App\Models\Siswa;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $siswa    = Siswa::count();
+        $siswa         = Siswa::count();
+        $siswaNonAktif =
+        [
+         'L' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
+                $query->where('jenis_kelamin', 'Laki-laki');
+            })->count(),
+         'P' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
+                $query->where('jenis_kelamin', 'Perempuan');
+            })->count(),
+        ];
+        $siswaAktif =
+        [
+         'L' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
+                $query->where('jenis_kelamin', 'Laki-laki');
+            })->count(),
+         'P' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
+                $query->where('jenis_kelamin', 'Perempuan');
+            })->count(),
+        ];
+
         $kelasSub = KelasSub::count();
         $guru     = Guru::count();
         $jadwal   = Jadwal::count();
@@ -56,7 +75,6 @@ class DashboardController extends Controller
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
 
-
-        return view('admin.dashboard.index', compact('siswa', 'kelasSub', 'guru', 'jadwal', 'series', 'xaxis'));
+        return view('admin.dashboard.index', compact('siswa', 'kelasSub', 'guru', 'jadwal', 'series', 'xaxis', 'siswaNonAktif', 'siswaAktif'));
     }
 }

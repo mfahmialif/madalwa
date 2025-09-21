@@ -18,7 +18,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.mata-pelajaran.update', ['mata-pelajaran' => $mataPelajaran]) }}" onsubmit="submitForm(this)"
+                    <form action="{{ route('admin.mata-pelajaran.update', ['mataPelajaran' => $mataPelajaran]) }}" onsubmit="submitForm(this)"
                         method="POST" enctype="multipart/form-data" id="form_edit">
                         @csrf
                         @method('PUT')
@@ -39,7 +39,7 @@
 @push('script')
     <script>
         const mataPelajaran = @json($mataPelajaran);
-        $('#form_edit').find('select[name="kelas"]').val(mataPelajaran.kelas_id).trigger('change');
+        $('#form_edit').find('select[name="kelas_id"]').val(mataPelajaran.kelas_id).trigger('change');
         $('#form_edit').find('input[name="kode"]').val(mataPelajaran.kode);
         $('#form_edit').find('input[name="nama"]').val(mataPelajaran.nama);
         $('#form_edit').find('select[name="status"]').val(mataPelajaran.status).trigger('change');

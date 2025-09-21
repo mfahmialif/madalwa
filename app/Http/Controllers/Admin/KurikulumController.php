@@ -6,27 +6,32 @@ use App\Models\Kurikulum;
 use App\Models\KurikulumDetail;
 use App\Models\MataPelajaran;
 use App\Models\TahunPelajaran;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class KurikulumController extends Controller
 {
     private $rules = [
+        "unit_sekolah_id"    => "required",
         "tahun_pelajaran_id" => "required",
         "nama"               => "required",
         "mata_pelajaran_id"  => "required",
     ];
     public function index()
     {
-        return view('admin.kurikulum.index');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.kurikulum.index', compact('unitSekolah'));
     }
     public function data(Request $request)
     {
         $search = request('search.value');
         $data   = Kurikulum::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'kurikulum.tahun_pelajaran_id')
+            ->join('unit_sekolah', 'unit_sekolah.id', '=', 'kurikulum.unit_sekolah_id')
             ->select('kurikulum.*',
                 'tahun_pelajaran.nama as tahun_pelajaran_nama',
                 'tahun_pelajaran.semester as tahun_pelajaran_semester',
+                'unit_sekolah.nama_unit as nama_unit'
             );
         return DataTables::eloquent($data)
             ->filter(function ($query) use ($search, $request) {
@@ -35,6 +40,9 @@ class KurikulumController extends Controller
                     $query->orWhere('tahun_pelajaran.nama', 'LIKE', "%$search%");
                     $query->orWhere('tahun_pelajaran.semester', 'LIKE', "%$search%");
                     $query->orWhere('tahun_pelajaran.kode', 'LIKE', "%$search%");
+                });
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('kurikulum.unit_sekolah_id', $request->unit_sekolah_id);
                 });
             })
             ->addColumn('action', function ($row) {
@@ -57,11 +65,23 @@ class KurikulumController extends Controller
             ->rawColumns(['action'])
             ->toJson();
     }
+    public function dataMataPelajaran(Request $request)
+    {
+        $mataPelajaran = MataPelajaran::whereHas('kelas', function ($q) use ($request) {
+            if ($request->filled('unit_sekolah_id')) {
+                $q->where('unit_sekolah_id', $request->unit_sekolah_id);
+            }
+        })->get();
+        return view('admin.kurikulum.form.mata-pelajaran', compact('mataPelajaran'));
+    }
     public function add()
     {
         $tahunPelajaran = TahunPelajaran::all();
         $mataPelajaran  = MataPelajaran::all();
-        return view('admin.kurikulum.add', compact('tahunPelajaran', 'mataPelajaran'));
+        $unitSekolah    = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
+        return view('admin.kurikulum.add', compact('tahunPelajaran', 'mataPelajaran', 'unitSekolah'));
     }
     public function store(Request $request)
     {
@@ -71,6 +91,7 @@ class KurikulumController extends Controller
             \DB::beginTransaction();
 
             $kurikulum                     = new Kurikulum();
+            $kurikulum->unit_sekolah_id    = $request->unit_sekolah_id;
             $kurikulum->tahun_pelajaran_id = $request->tahun_pelajaran_id;
             $kurikulum->nama               = $request->nama;
             $kurikulum->save();
@@ -102,7 +123,10 @@ class KurikulumController extends Controller
         $tahunPelajaran = TahunPelajaran::all();
         $mataPelajaran  = MataPelajaran::all();
         $kurikulum      = $kurikulum->load('detail.jadwal');
-        return view('admin.kurikulum.edit', compact('kurikulum', 'tahunPelajaran', 'mataPelajaran'));
+        $unitSekolah    = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
+        return view('admin.kurikulum.edit', compact('kurikulum', 'tahunPelajaran', 'mataPelajaran', 'unitSekolah'));
     }
     public function update(Request $request, Kurikulum $kurikulum)
     {
@@ -114,6 +138,7 @@ class KurikulumController extends Controller
 
             \DB::beginTransaction();
 
+            $kurikulum->unit_sekolah_id    = $request->unit_sekolah_id;
             $kurikulum->tahun_pelajaran_id = $request->tahun_pelajaran_id;
             $kurikulum->nama               = $request->nama;
             $kurikulum->save();

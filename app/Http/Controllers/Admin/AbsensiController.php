@@ -35,7 +35,7 @@ class AbsensiController extends Controller
             ->join('kelas', 'kelas.id', '=', 'kelas_sub.kelas_id')
             ->join('guru', 'guru.id', '=', 'jadwal.guru_id')
             ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
             ->select(
                 'jadwal.*',

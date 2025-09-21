@@ -111,7 +111,7 @@ class KelasSiswaController extends Controller
                     $query->orWhere('siswa.jenis_kelamin', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nis', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nisn', 'LIKE', "%$search%");
-                    $query->orWhere('siswa.nik_anak', 'LIKE', "%$search%");
+                    $query->orWhere('siswa.nik', 'LIKE', "%$search%");
                 });
             })
             ->editColumn('nama_siswa', function ($row) {
@@ -122,7 +122,7 @@ class KelasSiswaController extends Controller
                         <div>
                             <a href="' . route("admin.siswa.show", $row) . '">' . $row->nama_siswa . '</a><br>
                             <small>NIS: ' . ($row->nis ?? '-') . '</small><br>
-                            <small>Kelas: ' . ($row->kelas_angka ?? '-') . ' ' . ($row->kelas_sub ?? '-') . '</small><br>
+                            <small>Kelas: ' . ($row->kelas_sekarang) . '</small><br>
                             <small>' . ($row->jenis_kelamin ?? '-') . '</small>
                         </div>
                     </div>

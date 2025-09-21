@@ -40,7 +40,18 @@
 @push('script')
     <script>
         const user = @json($user);
-
+        let unitKelasId = null;
+        if (user.role.nama == 'siswa') {
+            unitKelasId = user.siswa.kelas.unit_sekolah_id;
+            $('#form_edit').find('select[name="unit_sekolah_id"]').val(unitKelasId).change();
+            $('#form_edit').find('select[name="unit_sekolah_id"]').attr('disabled', true);
+        }else if(user.role.nama == 'guru') {
+            unitKelasId = user.guru.unit_sekolah_id;
+            $('#form_edit').find('select[name="unit_sekolah_id"]').val(unitKelasId).change();
+        } else {
+            unitKelasId = user?.unit_sekolah?.unit_sekolah_id
+            $('#form_edit').find('select[name="unit_sekolah_id"]').val(unitKelasId).change();
+        }
         $('#form_edit').find('input[name="name"]').val(user.name);
         $('#form_edit').find('input[name="username"]').val(user.username);
         $('#form_edit').find('input[name="email"]').val(user.email);

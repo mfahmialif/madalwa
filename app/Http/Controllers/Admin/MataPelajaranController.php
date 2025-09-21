@@ -1,29 +1,32 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\MataPelajaran;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class MataPelajaranController extends Controller
 {
     private $rules = [
-        "nama" => "required|string",
-        "kode" => "required|string",
-        "status"=>"required|string",
-        "kelas" => "required|string"
+        "nama"   => "required|string",
+        "kode"   => "required|string",
+        "status" => "required|string",
+        "kelas_id"  => "required|string",
     ];
-    function index()
+    public function index()
     {
-        return view('admin.mata-pelajaran.index');
+        $unitSekolah = UnitSekolah::all();
+        return view('admin.mata-pelajaran.index', compact('unitSekolah'));
     }
-    function data(Request $request)
+    public function data(Request $request)
     {
         $search = request('search.value');
-        $data   = MataPelajaran::with('kelas')->select('*');
+        $data   = MataPelajaran::join('kelas', 'kelas.id', '=', 'mata_pelajaran.kelas_id')
+            ->join('unit_sekolah', 'unit_sekolah.id', '=', 'kelas.unit_sekolah_id')
+            ->select('mata_pelajaran.*', 'kelas.angka as kelas', 'unit_sekolah.nama_unit');
         return DataTables::eloquent($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
@@ -31,9 +34,10 @@ class MataPelajaranController extends Controller
                     $query->orWhere('kode', 'LIKE', "%$search%");
                     $query->orWhere('status', 'LIKE', "%$search%");
                 });
-            })
-            ->addColumn('kelas',function($row){
-                return $row->kelas->angka;
+
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('kelas.unit_sekolah_id', $request->unit_sekolah_id);
+                });
             })
             ->addColumn('action', function ($row) {
                 $content = '<div class="dropdown dropdown-action">
@@ -52,23 +56,23 @@ class MataPelajaranController extends Controller
                     </div>';
                 return $content;
             })
-            ->rawColumns(['action', 'name','kelas'])
+            ->rawColumns(['action', 'name', 'kelas'])
             ->toJson();
     }
-    function add()
+    public function add()
     {
         $kelas = Kelas::all();
-        return view('admin.mata-pelajaran.add',compact('kelas'));
+        return view('admin.mata-pelajaran.add', compact('kelas'));
     }
-    function store(Request $request)
+    public function store(Request $request)
     {
         try {
             $request->validate($this->rules);
-            $mataPelajaran = new MataPelajaran();
-            $mataPelajaran->nama = $request->nama;
-            $mataPelajaran->kode = $request->kode;
-            $mataPelajaran->status = $request->status;
-            $mataPelajaran->kelas_id = $request->kelas;
+            $mataPelajaran           = new MataPelajaran();
+            $mataPelajaran->nama     = $request->nama;
+            $mataPelajaran->kode     = $request->kode;
+            $mataPelajaran->status   = $request->status;
+            $mataPelajaran->kelas_id = $request->kelas_id;
             $mataPelajaran->save();
             return redirect()->route('admin.mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -80,31 +84,32 @@ class MataPelajaranController extends Controller
             return redirect()->route('admin.mata-pelajaran.add')->with('error', $th->getMessage())->withInput();
         }
     }
-    function edit(MataPelajaran $mataPelajaran)
+    public function edit(MataPelajaran $mataPelajaran)
     {
         $kelas = Kelas::all();
-        return view('admin.mata-pelajaran.edit',compact('mataPelajaran','kelas'));
+        return view('admin.mata-pelajaran.edit', compact('mataPelajaran', 'kelas'));
     }
-    function update(Request $request, MataPelajaran $mataPelajaran)
+    public function update(Request $request, MataPelajaran $mataPelajaran)
     {
         try {
             $request->validate($this->rules);
-                $mataPelajaran->nama   = $request->nama;
-                $mataPelajaran->kode   = $request->kode;
-                $mataPelajaran->status = $request->status;
-                $mataPelajaran->kelas  = $request->kelas;
-                $mataPelajaran->save();
+            $mataPelajaran->nama     = $request->nama;
+            $mataPelajaran->kode     = $request->kode;
+            $mataPelajaran->status   = $request->status;
+            $mataPelajaran->kelas_id = $request->kelas_id;
+            $mataPelajaran->save();
             return redirect()->route('admin.mata-pelajaran.index')->with('success', 'Mata Pelajaran berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->route('admin.mata-pelajaran.edit')
+            return redirect()->route('admin.mata-pelajaran.edit', ['mataPelajaran' => $mataPelajaran])
                 ->withErrors($e->validator)
                 ->withInput()
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
-           return redirect()->route('admin.mata-pelajaran.edit', ['mataPelajaran' => $mataPelajaran])->with('error', $th->getMessage())->withInput();
+            return redirect()->route('admin.mata-pelajaran.edit', ['mataPelajaran' => $mataPelajaran])->with('error', $th->getMessage())->withInput();
         }
     }
-    function destroy(MataPelajaran $mataPelajaran){
+    public function destroy(MataPelajaran $mataPelajaran)
+    {
         try {
             $mataPelajaran->delete();
             return response()->json([
@@ -119,7 +124,7 @@ class MataPelajaranController extends Controller
                     'message' => 'Mata Pelajaran tidak dapat dihapus karena masih digunakan oleh user.',
                 ]);
             }
-            
+
             return response()->json([
                 'status'  => false,
                 'message' => 'Terjadi kesalahan pada database: ' . $e->getMessage(),

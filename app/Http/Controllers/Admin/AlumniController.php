@@ -35,7 +35,7 @@ class AlumniController extends Controller
         $data   = Siswa::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'siswa.tahun_pelajaran_id')
             ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
             ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
             ->where('siswa.status', 'lulus')
             ->select('siswa.*', 'tahun_pelajaran.kode as tahun_pelajaran_kode', 'kelas.angka as kelas_angka');
@@ -56,7 +56,7 @@ class AlumniController extends Controller
                     $query->orWhere('siswa.jenis_kelamin', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nis', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nisn', 'LIKE', "%$search%");
-                    $query->orWhere('siswa.nik_anak', 'LIKE', "%$search%");
+                    $query->orWhere('siswa.nik', 'LIKE', "%$search%");
                 });
             })
             ->editColumn('nama_siswa', function ($row) {
@@ -109,7 +109,7 @@ class AlumniController extends Controller
     function alumniPerTahun($tahunPelajaranId,Request $request)
     {
         Log::info($tahunPelajaranId);
-        
+
         try {
              header('Content-Type: application/json');
             $search = request('search.value');
@@ -118,7 +118,7 @@ class AlumniController extends Controller
                 ->join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
                 ->where('siswa.status', 'lulus')
                 ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
                 ->where('siswa.tahun_pelajaran_id',$tahunPelajaranId)
                 ->select(
@@ -143,7 +143,7 @@ class AlumniController extends Controller
                     $query->orWhere('siswa.jenis_kelamin', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nis', 'LIKE', "%$search%");
                     $query->orWhere('siswa.nisn', 'LIKE', "%$search%");
-                    $query->orWhere('siswa.nik_anak', 'LIKE', "%$search%");
+                    $query->orWhere('siswa.nik', 'LIKE', "%$search%");
                 });
             })
             ->editColumn('nama_siswa', function ($row) {
@@ -187,6 +187,6 @@ class AlumniController extends Controller
              Log::error('DataTables Error: ' . $th->getMessage());
         }
 
-        
+
     }
 }

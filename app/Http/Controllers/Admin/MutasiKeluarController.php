@@ -34,7 +34,7 @@ class MutasiKeluarController extends Controller
                 ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
                 ->where('mutasi.jenis', 'keluar')
                 ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
                 ->select([
                     'mutasi.*',
@@ -78,7 +78,7 @@ class MutasiKeluarController extends Controller
     {
         $siswa = Siswa::join('kelas','kelas.id','=','siswa.kelas_id')
         ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })->get();
         return view('admin.mutasi-keluar.add', compact('siswa'));
     }

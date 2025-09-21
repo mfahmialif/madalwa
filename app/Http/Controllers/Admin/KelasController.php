@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
+use App\Http\Services\Helper;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -27,7 +28,7 @@ class KelasController extends Controller
         $data   = Kelas::join('unit_sekolah', 'unit_sekolah.id', '=', 'kelas.unit_sekolah_id')
                   ->select('kelas.*', 'unit_sekolah.nama_unit')
                   ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->id);
+                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 });
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
@@ -64,13 +65,15 @@ class KelasController extends Controller
     }
     public function add()
     {
-        $unitSekolah = UnitSekolah::all();
+        $unitSekolah = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
         return view('admin.kelas.add', compact('unitSekolah'));
     }
     public function store(Request $request)
     {
         try {
-            
+
             $request->validate($this->rules);
             $cek = Kelas::where('unit_sekolah_id', $request->unit_sekolah_id)
                 ->where('romawi', $request->romawi)
@@ -98,12 +101,18 @@ class KelasController extends Controller
     }
     public function edit(Kelas $kelas)
     {
-        $unitSekolah = UnitSekolah::all();
+        Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
+
+        $unitSekolah = UnitSekolah::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
+            $q->where('id', \Auth::user()->unitSekolah->unit_sekolah_id);
+        })->get();
         return view('admin.kelas.edit', compact('kelas', 'unitSekolah'));
     }
     public function update(Request $request, Kelas $kelas)
     {
         try {
+
+            Helper::checkUnitSekolahAccess($kelas->unit_sekolah_id);
 
             $rules       = $this->rules;
             $rules["id"] = "required";

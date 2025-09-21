@@ -22,7 +22,7 @@
                                 </span>
                                 <span class="text-dark">
                                     {{ $detail->mataPelajaran->nama }}
-                                    <small class="text-muted">- Kelas {{ $detail->mataPelajaran->kelas->angka }}</small>
+                                    <small class="text-muted">- Kelas {{ $detail->mataPelajaran->kelas->angka }} ({{ $detail->mataPelajaran->kelas->unitSekolah->nama_unit }})</small>
                                 </span>
                             </div>
                             <div>

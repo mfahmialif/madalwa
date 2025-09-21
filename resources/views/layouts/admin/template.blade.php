@@ -324,6 +324,8 @@
 
     <script src="{{ asset('template') }}/assets/plugins/toastr-new/toastr.min.js"></script>
     <script src="{{ asset('template') }}/assets/plugins/sweetalert-1/sweetalert.min.js"></script>
+
+    <script src="{{ asset('template') }}/assets/js/jquery.loading.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ asset('template') }}/assets/js/toastrconfig.js"></script>
     <script src="{{ asset('template') }}/assets/js/custom.js"></script>

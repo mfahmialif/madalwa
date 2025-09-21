@@ -49,6 +49,7 @@ class User extends Authenticatable
     public function siswa(){
         return $this->hasOne(Siswa::class);
     }
+
     public function unitSekolah() {
         return $this->hasOne(UnitSekolahUser::class);
     }

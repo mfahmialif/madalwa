@@ -21,12 +21,18 @@
             <div class="col-12 col-md-12">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
-                        <option value="">Semua Unit Sekolah</option>
-                        @foreach ($unitSekolah as $item)
-                            <option value="{{ $item->id }}">
-                                {{ $item->nama_unit }}
+                        @if (Auth::user()->role->nama == 'unit sekolah')
+                            <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                                {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
                             </option>
-                        @endforeach
+                        @else
+                            <option value="">Semua Unit Sekolah</option>
+                            @foreach ($unitSekolah as $item)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->nama_unit }}
+                                </option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>

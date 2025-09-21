@@ -1,5 +1,5 @@
 @extends('layouts.admin.template')
-@section('title', 'Edit Data User')
+@section('title', 'Edit Data Kelas')
 @section('content')
     <!-- Page Header -->
     <div class="page-header">
