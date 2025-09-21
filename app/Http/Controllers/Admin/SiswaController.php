@@ -97,6 +97,8 @@ class SiswaController extends Controller
         'provinsi_ayah'              => 'nullable|string|max:255',
         'kodepos_ayah'               => 'nullable|string|max:10',
         'alamat_ayah'                => 'nullable|string|max:500',
+        'alamat_ibu'                => 'nullable|string|max:500',
+        'alamat_wali'                => 'nullable|string|max:500',
 
         // Ibu
         'nama_ibu'                   => 'nullable|string|max:255',

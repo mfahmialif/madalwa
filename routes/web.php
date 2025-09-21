@@ -31,7 +31,6 @@ use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\TahunPelajaranController;
 use App\Http\Controllers\Admin\UnitSekolahController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Guru\AbsensiController as GuruAbsensiController;
 use App\Http\Controllers\Guru\AbsensiRekapController as GuruAbsensiRekapController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
@@ -65,8 +64,11 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 // remake halaman utama menjadi login
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/', [LoginController::class, 'login']);
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+// Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+// Route::post('/', [LoginController::class, 'login']);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::prefix('admin')->middleware(['auth'])->group(function () {

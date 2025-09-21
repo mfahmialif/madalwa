@@ -310,56 +310,14 @@
     </div>
 </div>
 
-<div class="col-12 col-md-6">
+@include('components.form.wilayah', ['postFix' => ''])
+
+<div class="col-12 col-md-12">
     <div class="input-block local-forms">
         <label>Jalan/Dusun</label>
         <input class="form-control @error('jalan_dusun') is-invalid @enderror" name="jalan_dusun" type="text"
             value="{{ old('jalan_dusun') }}">
         @error('jalan_dusun')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Desa / Kelurahan</label>
-        <input class="form-control @error('desa_kelurahan') is-invalid @enderror" name="desa_kelurahan"
-            type="text" value="{{ old('desa_kelurahan') }}">
-        @error('desa_kelurahan')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Kecamatan</label>
-        <input class="form-control @error('kecamatan') is-invalid @enderror" name="kecamatan" type="text"
-            value="{{ old('kecamatan') }}">
-        @error('kecamatan')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Kabupaten/Kota</label>
-        <input class="form-control @error('kab_kota') is-invalid @enderror" name="kab_kota" type="text"
-            value="{{ old('kab_kota') }}">
-        @error('kab_kota')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Provinsi</label>
-        <input class="form-control @error('provinsi') is-invalid @enderror" name="provinsi" type="text"
-            value="{{ old('provinsi') }}">
-        @error('provinsi')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
@@ -650,47 +608,19 @@
     </div>
 </div>
 
-{{-- alamat ayah - per kolom --}}
-<div class="col-12 col-md-6">
+<div class="col-12">
     <div class="input-block local-forms">
-        <label>Desa/Kelurahan Ayah</label>
-        <input class="form-control @error('desa_keluarahan_ayah') is-invalid @enderror" name="desa_keluarahan_ayah"
-            type="text" value="{{ old('desa_keluarahan_ayah') }}">
-        @error('desa_keluarahan_ayah')
+        <label>Alamat Lengkap</label>
+        <textarea class="form-control @error('alamat_ayah') is-invalid @enderror" name="alamat_ayah"
+            rows="3">{{ old('alamat_ayah') }}</textarea>
+        @error('alamat_ayah')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kecamatan Ayah</label>
-        <input class="form-control @error('kecamatan_ayah') is-invalid @enderror" name="kecamatan_ayah"
-            type="text" value="{{ old('kecamatan_ayah') }}">
-        @error('kecamatan_ayah')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kabupaten/Kota Ayah</label>
-        <input class="form-control @error('kab_kota_ayah') is-invalid @enderror" name="kab_kota_ayah" type="text"
-            value="{{ old('kab_kota_ayah') }}">
-        @error('kab_kota_ayah')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Provinsi Ayah</label>
-        <input class="form-control @error('provinsi_ayah') is-invalid @enderror" name="provinsi_ayah" type="text"
-            value="{{ old('provinsi_ayah') }}">
-        @error('provinsi_ayah')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+
+@include('components.form.wilayah', ['postFix' => '_ayah'])
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Kode Pos Ayah</label>
@@ -893,47 +823,20 @@
     </div>
 </div>
 
-{{-- alamat ibu satu-satu (ikuti ejaan migration: "keluarahan") --}}
-<div class="col-12 col-md-6">
+
+<div class="col-12">
     <div class="input-block local-forms">
-        <label>Desa/Kelurahan Ibu</label>
-        <input class="form-control @error('desa_keluarahan_ibu') is-invalid @enderror" name="desa_keluarahan_ibu"
-            type="text" value="{{ old('desa_keluarahan_ibu') }}">
-        @error('desa_keluarahan_ibu')
+        <label>Alamat Lengkap</label>
+        <textarea class="form-control @error('alamat_ibu') is-invalid @enderror" name="alamat_ibu"
+            rows="3">{{ old('alamat_ibu') }}</textarea>
+        @error('alamat_ibu')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kecamatan Ibu</label>
-        <input class="form-control @error('kecamatan_ibu') is-invalid @enderror" name="kecamatan_ibu" type="text"
-            value="{{ old('kecamatan_ibu') }}">
-        @error('kecamatan_ibu')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kabupaten/Kota Ibu</label>
-        <input class="form-control @error('kab_kota_ibu') is-invalid @enderror" name="kab_kota_ibu" type="text"
-            value="{{ old('kab_kota_ibu') }}">
-        @error('kab_kota_ibu')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Provinsi Ibu</label>
-        <input class="form-control @error('provinsi_ibu') is-invalid @enderror" name="provinsi_ibu" type="text"
-            value="{{ old('provinsi_ibu') }}">
-        @error('provinsi_ibu')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+
+@include('components.form.wilayah', ['postFix' => '_ibu'])
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Kode Pos Ibu</label>
@@ -1119,47 +1022,18 @@
     </div>
 </div>
 
-{{-- alamat wali per kolom (ikuti ejaan migration: "keluarahan") --}}
-<div class="col-12 col-md-6">
+<div class="col-12">
     <div class="input-block local-forms">
-        <label>Desa/Kelurahan Wali</label>
-        <input class="form-control @error('desa_keluarahan_wali') is-invalid @enderror" name="desa_keluarahan_wali"
-            type="text" value="{{ old('desa_keluarahan_wali') }}">
-        @error('desa_keluarahan_wali')
+        <label>Alamat Lengkap</label>
+        <textarea class="form-control @error('alamat_wali') is-invalid @enderror" name="alamat_wali"
+            rows="3">{{ old('alamat_wali') }}</textarea>
+        @error('alamat_wali')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kecamatan Wali</label>
-        <input class="form-control @error('kecamatan_wali') is-invalid @enderror" name="kecamatan_wali"
-            type="text" value="{{ old('kecamatan_wali') }}">
-        @error('kecamatan_wali')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Kabupaten/Kota Wali</label>
-        <input class="form-control @error('kab_kota_wali') is-invalid @enderror" name="kab_kota_wali" type="text"
-            value="{{ old('kab_kota_wali') }}">
-        @error('kab_kota_wali')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Provinsi Wali</label>
-        <input class="form-control @error('provinsi_wali') is-invalid @enderror" name="provinsi_wali" type="text"
-            value="{{ old('provinsi_wali') }}">
-        @error('provinsi_wali')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+@include('components.form.wilayah', ['postFix' => '_wali'])
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Kode Pos Wali</label>
@@ -1290,7 +1164,8 @@
                 class="hide-input @error('ijazah') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
                 onchange="handleFileUpload(this, 'file-info-pakta_integritas', 'upload-label-pakta_integritas')" />
 
-            <label for="pakta_integritas" id="file-info-pakta_integritas" class="file-info-text">Belum ada file</label>
+            <label for="pakta_integritas" id="file-info-pakta_integritas" class="file-info-text">Belum ada
+                file</label>
             <label for="pakta_integritas" class="upload" id="upload-label-pakta_integritas">Pilih File</label>
         </div>
         @error('pakta_integritas')
