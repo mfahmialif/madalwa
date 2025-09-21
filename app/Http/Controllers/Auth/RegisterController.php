@@ -122,7 +122,7 @@ class RegisterController extends Controller
         'provinsi_ayah'              => 'nullable|string|max:255',
         'kodepos_ayah'               => 'nullable|string|max:10',
         'alamat_ayah'                => 'nullable|string|max:500',
-        'alamat_ibu'                => 'nullable|string|max:500',
+        'alamat_ibu'                 => 'nullable|string|max:500',
         'alamat_wali'                => 'nullable|string|max:500',
 
         // Ibu
@@ -243,7 +243,7 @@ class RegisterController extends Controller
             if ($request->hasFile('foto')) {
                 $data["foto"] = Helper::uploadFile($request->file('foto'), $request->nama_siswa, 'foto_siswa');
             }
-             if ($request->hasFile('kk')) {
+            if ($request->hasFile('kk')) {
                 $data['kk'] = Helper::uploadFile($request->file('kk'), $request->nama_siswa, 'kk');
             }
             if ($request->hasFile('akta_kelahiran')) {
@@ -266,7 +266,6 @@ class RegisterController extends Controller
 
             return redirect($this->redirectPath());
         } catch (\Illuminate\Validation\ValidationException $e) {
-            dd($e->error());
             DB::rollback();
             return redirect()->back()
                 ->withErrors($e->validator)
@@ -274,7 +273,6 @@ class RegisterController extends Controller
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th->getMessage(), 'asd');
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $th->getMessage())
                 ->withInput();
