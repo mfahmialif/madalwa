@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98aceb12a3e0d69760ecd0ef99df720a",
+    "content-hash": "62c0b96808a94ad56ff93766533ac45c",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2479,6 +2479,51 @@
                 "source": "https://github.com/Masterminds/html5-php/tree/2.10.0"
             },
             "time": "2025-07-25T09:04:22+00:00"
+        },
+        {
+            "name": "mfahmialif/ed",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mfahmialif/ed.git",
+                "reference": "031af27a80dc3fc3a0676d54a53f2c040267168d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mfahmialif/ed/zipball/031af27a80dc3fc3a0676d54a53f2c040267168d",
+                "reference": "031af27a80dc3fc3a0676d54a53f2c040267168d",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mfahmialif\\Ed\\EDServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mfahmialif\\Ed\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mfahmialif",
+                    "email": "mfahmialif@gmail.com"
+                }
+            ],
+            "description": "Ez deploy laravel",
+            "support": {
+                "issues": "https://github.com/mfahmialif/ed/issues",
+                "source": "https://github.com/mfahmialif/ed/tree/master"
+            },
+            "time": "2022-11-12T04:47:40+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8852,7 +8897,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "mfahmialif/ed": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

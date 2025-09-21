@@ -281,6 +281,30 @@ class SiswaController extends Controller
                 }
                 $data['foto'] = Helper::uploadFile($request->file('foto'), $request->nama_siswa, 'foto_siswa');
             }
+             if ($request->hasFile('kk')) {
+                if ($siswa->kk) {
+                    Helper::deleteFile($siswa->kk, 'kk');
+                }
+                $data['kk'] = Helper::uploadFile($request->file('kk'), $request->nama_siswa, 'kk');
+            }
+            if ($request->hasFile('akta_kelahiran')) {
+                if ($siswa->akta_kelahiran) {
+                    Helper::deleteFile($siswa->akta_kelahiran, 'akta_kelahiran');
+                }
+                $data['akta_kelahiran'] = Helper::uploadFile($request->file('akta_kelahiran'), $request->nama_siswa, 'akta_kelahiran');
+            }
+            if ($request->hasFile('ijazah')) {
+                if ($siswa->ijazah) {
+                    Helper::deleteFile($siswa->ijazah, 'ijazah');
+                }
+                $data['ijazah'] = Helper::uploadFile($request->file('ijazah'), $request->nama_siswa, 'ijazah');
+            }
+            if ($request->hasFile('pakta_integritas')) {
+                if ($siswa->pakta_integritas) {
+                    Helper::deleteFile($siswa->pakta_integritas, 'pakta_integritas');
+                }
+                $data['pakta_integritas'] = Helper::uploadFile($request->file('pakta_integritas'), $request->nama_siswa, 'pakta_integritas');
+            }
 
             $siswa->update($data);
 

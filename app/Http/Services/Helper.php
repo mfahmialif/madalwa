@@ -471,7 +471,7 @@ class Helper
     public static function uploadFile($file, $prefixName, $destination)
     {
         $extension = $file->getClientOriginalExtension();
-        $filename  = $prefixName . '-' . time() . '.' . $extension;
+        $filename  = $prefixName . '-' . uniqid() . '.' . $extension;
         $path      = public_path($destination);
 
         if (! file_exists($path)) {

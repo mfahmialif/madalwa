@@ -49,6 +49,10 @@
 
                 const assetUrl = {
                     'foto': "{{ asset('foto_siswa') }}",
+                    'kk': "{{ asset('kk') }}",
+                    'akta_kelahiran': "{{ asset('akta_kelahiran') }}",
+                    'ijazah': "{{ asset('ijazah') }}",
+                    'pakta_integritas': "{{ asset('pakta_integritas') }}",
                 }
 
                 if (element.length > 0) {

@@ -129,6 +129,11 @@ class CreateSiswaTable extends Migration
             $table->string('kodepos_wali')->nullable();
             $table->string('alamat_wali')->nullable();
 
+            $table->string('kk')->nullable();
+            $table->string('akta_kelahiran')->nullable();
+            $table->string('ijazah')->nullable();
+            $table->string('pakta_integritas')->nullable();
+
             $table->enum('status_daftar', ['daftar', 'diterima', 'tidak diterima'])->default('daftar');
             $table->enum('status', ['aktif', 'tidak aktif', 'cuti', 'pindah', 'lulus'])->default('aktif');
             $table->timestamps(); // Adds created_at and updated_at columns

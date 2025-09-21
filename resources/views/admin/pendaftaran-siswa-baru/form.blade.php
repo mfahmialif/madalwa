@@ -1200,10 +1200,10 @@
         <div class="settings-btn upload-files-avator">
             <input type="file" name="foto" id="foto"
                 class="hide-input @error('foto') is-invalid @enderror" accept=".jpg, .jpeg, .png"
-                onchange="handleFileUpload(this, 'file-info', 'upload-label')" />
+                onchange="handleFileUpload(this, 'file-info-foto', 'upload-label-foto')" />
 
-            <label for="foto" id="file-info" class="file-info-text">Belum ada file</label>
-            <label for="foto" class="upload" id="upload-label">Pilih File</label>
+            <label for="foto" id="file-info-foto" class="file-info-text">Belum ada file</label>
+            <label for="foto" class="upload" id="upload-label-foto">Pilih File</label>
         </div>
         @error('avatar')
             <div class="invalid-feedback d-block">
@@ -1219,29 +1219,108 @@
 <div class="col-12">
     <div class="input-block local-top-form">
         <label class="local-top">
-            Akta Kelahiran
+            KK
         </label>
 
         <div class="settings-btn upload-files-avator">
-            <input type="file" name="akta_lahir_path" id="akta_lahir_path"
-                class="hide-input @error('akta_lahir_path') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
-                onchange="handleFileUpload(this, 'file-info-akta', 'upload-label-akta')" />
+            <input type="file" name="kk" id="kk"
+                class="hide-input @error('kk') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-kk', 'upload-label-kk')" />
 
-            <label for="akta_lahir_path" id="file-info-akta" class="file-info-text">Belum ada file</label>
-            <label for="akta_lahir_path" class="upload" id="upload-label-akta">Pilih File</label>
+            <label for="kk" id="file-info-kk" class="file-info-text">Belum ada file</label>
+            <label for="kk" class="upload" id="upload-label-kk">Pilih File</label>
         </div>
-        @error('akta_lahir_path')
+        @error('kk')
             <div class="invalid-feedback d-block">
                 {{ $message }}
             </div>
         @enderror
-        <div class="ms-2 mb-4 view-akta d-none">
-            <small class="text-decoration-underline"><a href="" id="view-akta">Lihat Berkas <i
+        <div class="ms-2 mb-4 view-kk d-none">
+            <small class="text-decoration-underline"><a href="" id="view-kk">Lihat Berkas <i
                         class="fa fa-eye"></i></a></small>
         </div>
 
     </div>
 </div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Akta Kelahiran
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="akta_kelahiran" id="akta_kelahiran"
+                class="hide-input @error('akta_kelahiran') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-akta', 'upload-label-akta')" />
+
+            <label for="akta_kelahiran" id="file-info-akta" class="file-info-text">Belum ada file</label>
+            <label for="akta_kelahiran" class="upload" id="upload-label-akta">Pilih File</label>
+        </div>
+        @error('akta_kelahiran')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-akta_kelahiran d-none">
+            <small class="text-decoration-underline"><a href="" id="view-akta_kelahiran">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Ijazah
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="ijazah" id="ijazah"
+                class="hide-input @error('ijazah') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-ijazah', 'upload-label-ijazah')" />
+
+            <label for="ijazah" id="file-info-ijazah" class="file-info-text">Belum ada file</label>
+            <label for="ijazah" class="upload" id="upload-label-ijazah">Pilih File</label>
+        </div>
+        @error('ijazah')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-ijazah d-none">
+            <small class="text-decoration-underline"><a href="" id="view-ijazah">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Pakta Integritas
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="pakta_integritas" id="pakta_integritas"
+                class="hide-input @error('ijazah') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-pakta_integritas', 'upload-label-pakta_integritas')" />
+
+            <label for="pakta_integritas" id="file-info-pakta_integritas" class="file-info-text">Belum ada file</label>
+            <label for="pakta_integritas" class="upload" id="upload-label-pakta_integritas">Pilih File</label>
+        </div>
+        @error('pakta_integritas')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-pakta_integritas d-none">
+            <small class="text-decoration-underline"><a href="" id="view-pakta_integritas">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+
 
 {{-- TOMBOL SUBMIT --}}
 <div class="col-12 mt-5">

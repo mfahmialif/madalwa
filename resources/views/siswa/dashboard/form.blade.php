@@ -2,6 +2,22 @@
 <div class="col-12">
     <h5 class="form-title"><span>Data Akun & Akademik</span></h5>
 </div>
+<div class="col-12 col-md-12">
+    <div class="input-block local-forms">
+        <label>Kelas <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('kelas_id') is-invalid @enderror" name="kelas_id" required>
+            <option value="">Pilih Kelas</option>
+            @foreach ($kelas as $item)
+                <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>
+                    {{ $item->angka }} ({{ $item->unitSekolah->nama_unit }})
+                </option>
+            @endforeach
+        </select>
+        @error('tahun_pelajaran_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
 <div class="col-12">
     <div class="input-block local-forms">
         <label>Email</label>
@@ -15,10 +31,11 @@
 
 <hr>
 
-{{-- INFORMASI PRIBADI SISWA --}}
+{{-- ===================== INFORMASI PRIBADI SISWA ===================== --}}
 <div class="col-12 mt-4">
     <h5 class="form-title"><span>Informasi Pribadi Siswa</span></h5>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Nama Lengkap Siswa <span class="login-danger">*</span></label>
@@ -29,14 +46,30 @@
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Kewarganegaraan <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('kewarganegaraan') is-invalid @enderror" name="kewarganegaraan"
+            required>
+            @foreach (\Helper::getEnumValues('siswa', 'kewarganegaraan') as $opt)
+                <option value="{{ $opt }}" {{ old('kewarganegaraan', 'WNI') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('kewarganegaraan')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
     <div class="input-block local-forms">
         <label>Jenis Kelamin <span class="login-danger">*</span></label>
         <select class="form-control select2 @error('jenis_kelamin') is-invalid @enderror" name="jenis_kelamin" required>
-            <option value="">Pilih Jenis Kelamin</option>
-            @foreach (['Laki-laki', 'Perempuan'] as $item)
-                <option value="{{ $item }}" {{ old('jenis_kelamin') == $item ? 'selected' : '' }}>
-                    {{ $item }}</option>
+            @foreach (\Helper::getEnumValues('siswa', 'jenis_kelamin') as $opt)
+                <option value="{{ $opt }}" {{ old('jenis_kelamin') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
             @endforeach
         </select>
         @error('jenis_kelamin')
@@ -44,6 +77,25 @@
         @enderror
     </div>
 </div>
+
+{{-- jurusan_id --}}
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Program/Jurusan <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('jurusan_id') is-invalid @enderror" name="jurusan_id" required>
+            <option value="">Pilih Jurusan</option>
+            @foreach ($jurusan as $j)
+                <option value="{{ $j->id }}" {{ old('jurusan_id') == $j->id ? 'selected' : '' }}>
+                    {{ $j->nama_jurusan }} ({{ $j->unitSekolah->nama_unit }})
+                </option>
+            @endforeach
+        </select>
+        @error('jurusan_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIS</label>
@@ -54,7 +106,8 @@
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
+
+<div class="col-12 col-md-3">
     <div class="input-block local-forms">
         <label>NISN</label>
         <input class="form-control @error('nisn') is-invalid @enderror" name="nisn" type="text"
@@ -64,41 +117,7 @@
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Tempat Lahir <span class="login-danger">*</span></label>
-        <input class="form-control @error('tempat_lahir') is-invalid @enderror" name="tempat_lahir" type="text"
-            value="{{ old('tempat_lahir') }}" required>
-        @error('tempat_lahir')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Tanggal Lahir <span class="login-danger">*</span></label>
-        <input class="form-control @error('tanggal_lahir') is-invalid @enderror" name="tanggal_lahir" type="date"
-            value="{{ old('tanggal_lahir') }}" required>
-        @error('tanggal_lahir')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Agama <span class="login-danger">*</span></label>
-        <select class="form-control select2 @error('agama') is-invalid @enderror" name="agama" required>
-            <option value="">Pilih Agama</option>
-            @foreach ($agama as $item)
-                <option value="{{ $item }}" {{ old('agama', 'Islam') == $item ? 'selected' : '' }}>
-                    {{ $item }}</option>
-            @endforeach
-        </select>
-        @error('agama')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIK Anak</label>
@@ -109,27 +128,56 @@
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>KK</label>
-        <input class="form-control @error('kk') is-invalid @enderror" name="kk" type="text"
-            value="{{ old('kk') }}">
-        @error('kk')
+        <label>Tempat Lahir <span class="login-danger">*</span></label>
+        <input class="form-control @error('tempat_lahir') is-invalid @enderror" name="tempat_lahir" type="text"
+            value="{{ old('tempat_lahir') }}" required>
+        @error('tempat_lahir')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>No Registrasi Akta Lahir</label>
-        <input class="form-control @error('no_registrasi_akta_lahir') is-invalid @enderror"
-            name="no_registrasi_akta_lahir" type="text" value="{{ old('no_registrasi_akta_lahir') }}">
-        @error('no_registrasi_akta_lahir')
+        <label>Tanggal Lahir <span class="login-danger">*</span></label>
+        <input class="form-control @error('tanggal_lahir') is-invalid @enderror" name="tanggal_lahir" type="date"
+            value="{{ old('tanggal_lahir') }}" required>
+        @error('tanggal_lahir')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Agama <span class="login-danger">*</span></label>
+        <select class="form-control select2 @error('agama') is-invalid @enderror" name="agama" required>
+            @foreach (\Helper::getEnumValues('siswa', 'agama') as $opt)
+                <option value="{{ $opt }}" {{ old('agama', 'Islam') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('agama')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Asal Sekolah</label>
+        <input class="form-control @error('asal_sekolah') is-invalid @enderror" name="asal_sekolah" type="text"
+            value="{{ old('asal_sekolah') }}">
+        @error('asal_sekolah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
     <div class="input-block local-forms">
         <label>Anak Ke-</label>
         <input class="form-control @error('anak_ke') is-invalid @enderror" name="anak_ke" type="number"
@@ -139,185 +187,269 @@
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
+
+<div class="col-12 col-md-3">
     <div class="input-block local-forms">
-        <label>Jumlah Saudara Kandung</label>
-        <input class="form-control @error('jumlah_saudara_kandung') is-invalid @enderror"
-            name="jumlah_saudara_kandung" type="number" value="{{ old('jumlah_saudara_kandung') }}">
-        @error('jumlah_saudara_kandung')
+        <label>Jumlah Saudara</label>
+        <input class="form-control @error('jml_saudara') is-invalid @enderror" name="jml_saudara" type="number"
+            value="{{ old('jml_saudara') }}">
+        @error('jml_saudara')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Masuk Sekolah Sebagai</label>
-        <input class="form-control @error('masuk_sekolah_sebagai') is-invalid @enderror" name="masuk_sekolah_sebagai"
-            type="text" value="{{ old('masuk_sekolah_sebagai') }}">
-        @error('masuk_sekolah_sebagai')
+        <label>Cita-cita</label>
+        <select class="form-control select2 @error('cita_cita') is-invalid @enderror" name="cita_cita">
+            <option value="">Pilih Cita-cita</option>
+            @foreach (\Helper::getEnumValues('siswa', 'cita_cita') as $opt)
+                <option value="{{ $opt }}" {{ old('cita_cita') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('cita_cita')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6">
+
+<div class="col-12 col-md-3">
     <div class="input-block local-forms">
-        <label>Asal Sekolah/TK</label>
-        <input class="form-control @error('asal_sekolah_tk') is-invalid @enderror" name="asal_sekolah_tk"
-            type="text" value="{{ old('asal_sekolah_tk') }}">
-        @error('asal_sekolah_tk')
+        <label>No. HP</label>
+        <input class="form-control @error('no_hp') is-invalid @enderror" name="no_hp" type="text"
+            value="{{ old('no_hp') }}">
+        @error('no_hp')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Hobi</label>
+        <select class="form-control select2 @error('hobi') is-invalid @enderror" name="hobi">
+            <option value="">Pilih Hobi</option>
+            @foreach (\Helper::getEnumValues('siswa', 'hobi') as $opt)
+                <option value="{{ $opt }}" {{ old('hobi') === $opt ? 'selected' : '' }}>{{ $opt }}
+                </option>
+            @endforeach
+        </select>
+        @error('hobi')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <hr>
 
-{{-- INFORMASI FISIK & LAINNYA --}}
+{{-- ===================== ALAMAT SISWA (SES. KK) ===================== --}}
 <div class="col-12 mt-4">
-    <h5 class="form-title"><span>Informasi Fisik & Lainnya</span></h5>
+    <h5 class="form-title"><span>Alamat Siswa (Sesuai KK)</span></h5>
 </div>
-<div class="col-12 col-md-3">
-    <div class="input-block local-forms">
-        <label>Tinggi Badan (cm)</label>
-        <input class="form-control @error('tinggi_badan') is-invalid @enderror" name="tinggi_badan" type="number"
-            value="{{ old('tinggi_badan') }}">
-        @error('tinggi_badan')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-3">
-    <div class="input-block local-forms">
-        <label>Berat Badan (kg)</label>
-        <input class="form-control @error('berat_badan') is-invalid @enderror" name="berat_badan" type="number"
-            value="{{ old('berat_badan') }}">
-        @error('berat_badan')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-3">
-    <div class="input-block local-forms">
-        <label>Lingkar Kepala (cm)</label>
-        <input class="form-control @error('lingkar_kepala') is-invalid @enderror" name="lingkar_kepala"
-            type="number" value="{{ old('lingkar_kepala') }}">
-        @error('lingkar_kepala')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-3">
-    <div class="input-block local-forms">
-        <label>Golongan Darah</label>
-        <input class="form-control @error('gol_darah') is-invalid @enderror" name="gol_darah" type="text"
-            value="{{ old('gol_darah') }}">
-        @error('gol_darah')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Tinggal Bersama</label>
-        <input class="form-control @error('tinggal_bersama') is-invalid @enderror" name="tinggal_bersama"
-            type="text" value="{{ old('tinggal_bersama') }}" placeholder="Orang Tua / Wali / Lainnya">
-        @error('tinggal_bersama')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6">
-    <div class="input-block local-forms">
-        <label>Transportasi ke Sekolah</label>
-        <input class="form-control @error('transportasi_ke_sekolah') is-invalid @enderror"
-            name="transportasi_ke_sekolah" type="text" value="{{ old('transportasi_ke_sekolah') }}">
-        @error('transportasi_ke_sekolah')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<hr>
 
-{{-- ALAMAT SISWA --}}
-<div class="col-12 mt-4">
-    <h5 class="form-title"><span>Alamat Siswa (Sesuai Kartu Keluarga)</span></h5>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Tempat Tinggal</label>
+        <select class="form-control select2 @error('tempat_tinggal_siswa') is-invalid @enderror"
+            name="tempat_tinggal_siswa">
+            <option value="">Pilih Status</option>
+            @foreach (\Helper::getEnumValues('siswa', 'tempat_tinggal_siswa') as $opt)
+                <option value="{{ $opt }}" {{ old('tempat_tinggal_siswa') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('tempat_tinggal_siswa')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 </div>
+
 <div class="col-12">
     <div class="input-block local-forms">
-        <label>Alamat Lengkap <span class="login-danger">*</span></label>
+        <label>Alamat Lengkap</label>
         <textarea class="form-control @error('alamat_anak_sesuai_kk') is-invalid @enderror" name="alamat_anak_sesuai_kk"
-            rows="3" required>{{ old('alamat_anak_sesuai_kk') }}</textarea>
+            rows="3">{{ old('alamat_anak_sesuai_kk') }}</textarea>
         @error('alamat_anak_sesuai_kk')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12 col-md-6 col-lg-3">
+
+<div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>RT</label>
-        <input class="form-control @error('rt_anak') is-invalid @enderror" name="rt_anak" type="text"
-            value="{{ old('rt_anak') }}">
-        @error('rt_anak')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>RW</label>
-        <input class="form-control @error('rw_anak') is-invalid @enderror" name="rw_anak" type="text"
-            value="{{ old('rw_anak') }}">
-        @error('rw_anak')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Desa / Kelurahan <span class="login-danger">*</span></label>
-        <input class="form-control @error('desa_kelurahan_anak') is-invalid @enderror" name="desa_kelurahan_anak"
-            type="text" value="{{ old('desa_kelurahan_anak') }}" required>
-        @error('desa_kelurahan_anak')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Kecamatan <span class="login-danger">*</span></label>
-        <input class="form-control @error('kecamatan_anak') is-invalid @enderror" name="kecamatan_anak"
-            type="text" value="{{ old('kecamatan_anak') }}" required>
-        @error('kecamatan_anak')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Kabupaten / Kota <span class="login-danger">*</span></label>
-        <input class="form-control @error('kabupaten_anak') is-invalid @enderror" name="kabupaten_anak"
-            type="text" value="{{ old('kabupaten_anak') }}" required>
-        @error('kabupaten_anak')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-</div>
-<div class="col-12 col-md-6 col-lg-3">
-    <div class="input-block local-forms">
-        <label>Kode Pos</label>
-        <input class="form-control @error('kodepos_anak') is-invalid @enderror" name="kodepos_anak" type="text"
-            value="{{ old('kodepos_anak') }}">
-        @error('kodepos_anak')
+        <label>Jalan/Dusun</label>
+        <input class="form-control @error('jalan_dusun') is-invalid @enderror" name="jalan_dusun" type="text"
+            value="{{ old('jalan_dusun') }}">
+        @error('jalan_dusun')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
 
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="input-block local-forms">
+        <label>Desa / Kelurahan</label>
+        <input class="form-control @error('desa_kelurahan') is-invalid @enderror" name="desa_kelurahan"
+            type="text" value="{{ old('desa_kelurahan') }}">
+        @error('desa_kelurahan')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="input-block local-forms">
+        <label>Kecamatan</label>
+        <input class="form-control @error('kecamatan') is-invalid @enderror" name="kecamatan" type="text"
+            value="{{ old('kecamatan') }}">
+        @error('kecamatan')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="input-block local-forms">
+        <label>Kabupaten/Kota</label>
+        <input class="form-control @error('kab_kota') is-invalid @enderror" name="kab_kota" type="text"
+            value="{{ old('kab_kota') }}">
+        @error('kab_kota')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="input-block local-forms">
+        <label>Provinsi</label>
+        <input class="form-control @error('provinsi') is-invalid @enderror" name="provinsi" type="text"
+            value="{{ old('provinsi') }}">
+        @error('provinsi')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-4">
+    <div class="input-block local-forms">
+        <label>Koordinat Rumah</label>
+        <input class="form-control @error('kordinat_rumah') is-invalid @enderror" name="kordinat_rumah"
+            type="text" value="{{ old('kordinat_rumah') }}">
+        @error('kordinat_rumah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-4">
+    <div class="input-block local-forms">
+        <label>Kode Pos</label>
+        <input class="form-control @error('kodepos') is-invalid @enderror" name="kodepos" type="text"
+            value="{{ old('kodepos') }}">
+        @error('kodepos')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-4">
+    <div class="input-block local-forms">
+        <label>Transportasi</label>
+        <select class="form-control select2 @error('transportasi') is-invalid @enderror" name="transportasi">
+            <option value="">Pilih Transportasi</option>
+            @foreach (\Helper::getEnumValues('siswa', 'transportasi') as $opt)
+                <option value="{{ $opt }}" {{ old('transportasi') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('transportasi')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-4">
+    <div class="input-block local-forms">
+        <label>Jarak Rumah</label>
+        <select class="form-control select2 @error('jarak') is-invalid @enderror" name="jarak">
+            <option value="">Pilih Jarak</option>
+            @foreach (\Helper::getEnumValues('siswa', 'jarak') as $opt)
+                <option value="{{ $opt }}" {{ old('jarak') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('jarak')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-4">
+    <div class="input-block local-forms">
+        <label>Waktu Tempuh</label>
+        <select class="form-control select2 @error('waktu') is-invalid @enderror" name="waktu">
+            <option value="">Pilih Waktu</option>
+            @foreach (\Helper::getEnumValues('siswa', 'waktu') as $opt)
+                <option value="{{ $opt }}" {{ old('waktu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('waktu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>No KIP</label>
+        <input class="form-control @error('no_kip') is-invalid @enderror" name="no_kip" type="text"
+            value="{{ old('no_kip') }}">
+        @error('no_kip')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kepala Keluarga</label>
+        <input class="form-control @error('kepala_keluarga') is-invalid @enderror" name="kepala_keluarga"
+            type="text" value="{{ old('kepala_keluarga') }}">
+        @error('kepala_keluarga')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+{{-- Imunisasi / Riwayat --}}
+@foreach (['tk_ra' => 'Pernah TK/RA', 'paud' => 'PAUD', 'hepatitis_b' => 'Hepatitis B', 'polio' => 'Polio', 'bcg' => 'BCG', 'campak' => 'Campak', 'dpt' => 'DPT', 'covid' => 'COVID'] as $field => $label)
+    <div class="col-6 col-md-3">
+        <div class="input-block local-forms">
+            <label>{{ $label }}</label>
+            <select class="form-control select2 @error($field) is-invalid @enderror" name="{{ $field }}">
+                <option value="">Pilih...</option>
+                @foreach (\Helper::getEnumValues('siswa', $field) as $opt)
+                    <option value="{{ $opt }}" {{ old($field) === $opt ? 'selected' : '' }}>
+                        {{ $opt }}</option>
+                @endforeach
+            </select>
+            @error($field)
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+@endforeach
+
 <hr>
-{{-- DATA ORANG TUA --}}
+
+{{-- ===================== DATA ORANG TUA: AYAH ===================== --}}
 <div class="col-12 mt-4">
     <h5 class="form-title"><span>Data Orang Tua</span></h5>
 </div>
-{{-- AYAH --}}
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Nama Ayah</label>
@@ -328,6 +460,39 @@
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Status Ayah</label>
+        <select class="form-control select2 @error('status_ayah') is-invalid @enderror" name="status_ayah">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('status_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Kewarganegaraan Ayah</label>
+        <select class="form-control select2 @error('kewarganegaraan_ayah') is-invalid @enderror"
+            name="kewarganegaraan_ayah">
+            @foreach (\Helper::getEnumValues('siswa', 'kewarganegaraan_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('kewarganegaraan_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('kewarganegaraan_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIK Ayah</label>
@@ -338,38 +503,222 @@
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tempat Lahir Ayah</label>
+        <input class="form-control @error('tempat_lahir_ayah') is-invalid @enderror" name="tempat_lahir_ayah"
+            type="text" value="{{ old('tempat_lahir_ayah') }}">
+        @error('tempat_lahir_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tanggal Lahir Ayah</label>
+        <input class="form-control @error('tanggal_lahir_ayah') is-invalid @enderror" name="tanggal_lahir_ayah"
+            type="date" value="{{ old('tanggal_lahir_ayah') }}">
+        @error('tanggal_lahir_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Pendidikan Terakhir Ayah</label>
-        <input class="form-control @error('pendidikan_ayah') is-invalid @enderror" name="pendidikan_ayah"
-            type="text" value="{{ old('pendidikan_ayah') }}">
+        <label>Pendidikan Ayah</label>
+        <select class="form-control select2 @error('pendidikan_ayah') is-invalid @enderror" name="pendidikan_ayah">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pendidikan_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('pendidikan_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pendidikan_ayah')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Pekerjaan Ayah</label>
-        <input class="form-control @error('pekerjaan_ayah') is-invalid @enderror" name="pekerjaan_ayah"
-            type="text" value="{{ old('pekerjaan_ayah') }}">
+        <select class="form-control select2 @error('pekerjaan_ayah') is-invalid @enderror" name="pekerjaan_ayah">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pekerjaan_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('pekerjaan_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pekerjaan_ayah')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
 
-{{-- IBU --}}
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Nama Ibu Kandung</label>
-        <input class="form-control @error('nama_ibu_sesuai_ktp') is-invalid @enderror" name="nama_ibu_sesuai_ktp"
-            type="text" value="{{ old('nama_ibu_sesuai_ktp') }}">
-        @error('nama_ibu_sesuai_ktp')
+        <label>Penghasilan Ayah</label>
+        <select class="form-control select2 @error('penghasilan_ayah') is-invalid @enderror" name="penghasilan_ayah">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'penghasilan_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('penghasilan_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('penghasilan_ayah')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>No HP Ayah</label>
+        <input class="form-control @error('no_hp_ayah') is-invalid @enderror" name="no_hp_ayah" type="text"
+            value="{{ old('no_hp_ayah') }}">
+        @error('no_hp_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Domisili Ayah</label>
+        <select class="form-control select2 @error('domisili_ayah') is-invalid @enderror" name="domisili_ayah">
+            @foreach (\Helper::getEnumValues('siswa', 'domisili_ayah') as $opt)
+                <option value="{{ $opt }}" {{ old('domisili_ayah') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('domisili_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Tempat Tinggal Ayah</label>
+        <select class="form-control select2 @error('status_tempat_tinggal_ayah') is-invalid @enderror"
+            name="status_tempat_tinggal_ayah">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_tempat_tinggal_ayah') as $opt)
+                <option value="{{ $opt }}"
+                    {{ old('status_tempat_tinggal_ayah') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_tempat_tinggal_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+{{-- alamat ayah - per kolom --}}
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Desa/Kelurahan Ayah</label>
+        <input class="form-control @error('desa_keluarahan_ayah') is-invalid @enderror" name="desa_keluarahan_ayah"
+            type="text" value="{{ old('desa_keluarahan_ayah') }}">
+        @error('desa_keluarahan_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kecamatan Ayah</label>
+        <input class="form-control @error('kecamatan_ayah') is-invalid @enderror" name="kecamatan_ayah"
+            type="text" value="{{ old('kecamatan_ayah') }}">
+        @error('kecamatan_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kabupaten/Kota Ayah</label>
+        <input class="form-control @error('kab_kota_ayah') is-invalid @enderror" name="kab_kota_ayah" type="text"
+            value="{{ old('kab_kota_ayah') }}">
+        @error('kab_kota_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Provinsi Ayah</label>
+        <input class="form-control @error('provinsi_ayah') is-invalid @enderror" name="provinsi_ayah" type="text"
+            value="{{ old('provinsi_ayah') }}">
+        @error('provinsi_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kode Pos Ayah</label>
+        <input class="form-control @error('kodepos_ayah') is-invalid @enderror" name="kodepos_ayah" type="text"
+            value="{{ old('kodepos_ayah') }}">
+        @error('kodepos_ayah')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<hr>
+
+{{-- ===================== DATA IBU ===================== --}}
+<div class="col-12 mt-3">
+    <h6 class="form-title"><span>Ibu</span></h6>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Nama Ibu</label>
+        <input class="form-control @error('nama_ibu') is-invalid @enderror" name="nama_ibu" type="text"
+            value="{{ old('nama_ibu') }}">
+        @error('nama_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Ibu</label>
+        <select class="form-control select2 @error('status_ibu') is-invalid @enderror" name="status_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('status_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kewarnegaraan Ibu</label>
+        <select class="form-control select2 @error('kewarganegaraan_ibu') is-invalid @enderror"
+            name="kewarganegaraan_ibu">
+            @foreach (\Helper::getEnumValues('siswa', 'kewarganegaraan_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('kewarganegaraan_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('kewarganegaraan_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIK Ibu</label>
@@ -380,43 +729,196 @@
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tempat Lahir Ibu</label>
+        <input class="form-control @error('tempat_lahir_ibu') is-invalid @enderror" name="tempat_lahir_ibu"
+            type="text" value="{{ old('tempat_lahir_ibu') }}">
+        @error('tempat_lahir_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tanggal Lahir Ibu</label>
+        <input class="form-control @error('tanggal_lahir_ibu') is-invalid @enderror" name="tanggal_lahir_ibu"
+            type="date" value="{{ old('tanggal_lahir_ibu') }}">
+        @error('tanggal_lahir_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Pendidikan Terakhir Ibu</label>
-        <input class="form-control @error('pendidikan_ibu') is-invalid @enderror" name="pendidikan_ibu"
-            type="text" value="{{ old('pendidikan_ibu') }}">
+        <label>Pendidikan Ibu</label>
+        <select class="form-control select2 @error('pendidikan_ibu') is-invalid @enderror" name="pendidikan_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pendidikan_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('pendidikan_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pendidikan_ibu')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Pekerjaan Ibu</label>
-        <input class="form-control @error('pekerjaan_ibu') is-invalid @enderror" name="pekerjaan_ibu" type="text"
-            value="{{ old('pekerjaan_ibu') }}">
+        <select class="form-control select2 @error('pekerjaan_ibu') is-invalid @enderror" name="pekerjaan_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pekerjaan_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('pekerjaan_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pekerjaan_ibu')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-{{-- KONTAK ORTU --}}
-<div class="col-12">
+
+<div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>No. Telepon Orang Tua</label>
-        <input class="form-control @error('nomor_telepon_orang_tua') is-invalid @enderror"
-            name="nomor_telepon_orang_tua" type="text" value="{{ old('nomor_telepon_orang_tua') }}">
-        @error('nomor_telepon_orang_tua')
+        <label>Penghasilan Ibu</label>
+        <select class="form-control select2 @error('penghasilan_ibu') is-invalid @enderror" name="penghasilan_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'penghasilan_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('penghasilan_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('penghasilan_ibu')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>No HP Ibu</label>
+        <input class="form-control @error('no_hp_ibu') is-invalid @enderror" name="no_hp_ibu" type="text"
+            value="{{ old('no_hp_ibu') }}">
+        @error('no_hp_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Tinggal Ibu</label>
+        <select class="form-control select2 @error('status_tinggal_ibu') is-invalid @enderror"
+            name="status_tinggal_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_tinggal_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('status_tinggal_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_tinggal_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Domisili Ibu</label>
+        <select class="form-control select2 @error('domisili_ibu') is-invalid @enderror" name="domisili_ibu">
+            @foreach (\Helper::getEnumValues('siswa', 'domisili_ibu') as $opt)
+                <option value="{{ $opt }}" {{ old('domisili_ibu') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('domisili_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Tempat Tinggal Ibu</label>
+        <select class="form-control select2 @error('status_tempat_tinggal_ibu') is-invalid @enderror"
+            name="status_tempat_tinggal_ibu">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_tempat_tinggal_ibu') as $opt)
+                <option value="{{ $opt }}"
+                    {{ old('status_tempat_tinggal_ibu') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_tempat_tinggal_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+{{-- alamat ibu satu-satu (ikuti ejaan migration: "keluarahan") --}}
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Desa/Kelurahan Ibu</label>
+        <input class="form-control @error('desa_keluarahan_ibu') is-invalid @enderror" name="desa_keluarahan_ibu"
+            type="text" value="{{ old('desa_keluarahan_ibu') }}">
+        @error('desa_keluarahan_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kecamatan Ibu</label>
+        <input class="form-control @error('kecamatan_ibu') is-invalid @enderror" name="kecamatan_ibu" type="text"
+            value="{{ old('kecamatan_ibu') }}">
+        @error('kecamatan_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kabupaten/Kota Ibu</label>
+        <input class="form-control @error('kab_kota_ibu') is-invalid @enderror" name="kab_kota_ibu" type="text"
+            value="{{ old('kab_kota_ibu') }}">
+        @error('kab_kota_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Provinsi Ibu</label>
+        <input class="form-control @error('provinsi_ibu') is-invalid @enderror" name="provinsi_ibu" type="text"
+            value="{{ old('provinsi_ibu') }}">
+        @error('provinsi_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kode Pos Ibu</label>
+        <input class="form-control @error('kodepos_ibu') is-invalid @enderror" name="kodepos_ibu" type="text"
+            value="{{ old('kodepos_ibu') }}">
+        @error('kodepos_ibu')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <hr>
 
-{{-- DATA WALI --}}
+{{-- ===================== DATA WALI ===================== --}}
 <div class="col-12 mt-4">
-    <h5 class="form-title"><span>Data Wali (Isi jika berbeda dengan Orang Tua)</span></h5>
+    <h5 class="form-title"><span>Data Wali (Isi bila ada)</span></h5>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Nama Wali</label>
@@ -427,6 +929,39 @@
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Wali</label>
+        <select class="form-control select2 @error('status_wali') is-invalid @enderror" name="status_wali">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('status_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kewarnegaraan Wali</label>
+        <select class="form-control select2 @error('kewarganegaraan_wali') is-invalid @enderror"
+            name="kewarganegaraan_wali">
+            @foreach (\Helper::getEnumValues('siswa', 'kewarganegaraan_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('kewarganegaraan_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('kewarganegaraan_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>NIK Wali</label>
@@ -437,46 +972,171 @@
         @enderror
     </div>
 </div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tempat Lahir Wali</label>
+        <input class="form-control @error('tempat_lahir_wali') is-invalid @enderror" name="tempat_lahir_wali"
+            type="text" value="{{ old('tempat_lahir_wali') }}">
+        @error('tempat_lahir_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-3">
+    <div class="input-block local-forms">
+        <label>Tanggal Lahir Wali</label>
+        <input class="form-control @error('tanggal_lahir_wali') is-invalid @enderror" name="tanggal_lahir_wali"
+            type="date" value="{{ old('tanggal_lahir_wali') }}">
+        @error('tanggal_lahir_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Pendidikan Wali</label>
-        <input class="form-control @error('pendidikan_wali') is-invalid @enderror" name="pendidikan_wali"
-            type="text" value="{{ old('pendidikan_wali') }}">
+        <select class="form-control select2 @error('pendidikan_wali') is-invalid @enderror" name="pendidikan_wali">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pendidikan_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('pendidikan_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pendidikan_wali')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
+
 <div class="col-12 col-md-6">
     <div class="input-block local-forms">
         <label>Pekerjaan Wali</label>
-        <input class="form-control @error('pekerjaan_wali') is-invalid @enderror" name="pekerjaan_wali"
-            type="text" value="{{ old('pekerjaan_wali') }}">
+        <select class="form-control select2 @error('pekerjaan_wali') is-invalid @enderror" name="pekerjaan_wali">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'pekerjaan_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('pekerjaan_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
         @error('pekerjaan_wali')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12">
+
+<div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>Alamat Wali</label>
-        <textarea class="form-control @error('alamat_wali') is-invalid @enderror" name="alamat_wali" rows="3">{{ old('alamat_wali') }}</textarea>
-        @error('alamat_wali')
+        <label>Penghasilan Wali</label>
+        <select class="form-control select2 @error('penghasilan_wali') is-invalid @enderror" name="penghasilan_wali">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'penghasilan_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('penghasilan_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('penghasilan_wali')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<div class="col-12">
+
+<div class="col-12 col-md-6">
     <div class="input-block local-forms">
-        <label>No. Telepon Wali</label>
-        <input class="form-control @error('nomor_telepon_wali') is-invalid @enderror" name="nomor_telepon_wali"
-            type="text" value="{{ old('nomor_telepon_wali') }}">
-        @error('nomor_telepon_wali')
+        <label>No HP Wali</label>
+        <input class="form-control @error('no_hp_wali') is-invalid @enderror" name="no_hp_wali" type="text"
+            value="{{ old('no_hp_wali') }}">
+        @error('no_hp_wali')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 </div>
-<hr>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Domisili Wali</label>
+        <select class="form-control select2 @error('domisili_wali') is-invalid @enderror" name="domisili_wali">
+            @foreach (\Helper::getEnumValues('siswa', 'domisili_wali') as $opt)
+                <option value="{{ $opt }}" {{ old('domisili_wali') === $opt ? 'selected' : '' }}>
+                    {{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('domisili_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Status Tempat Tinggal Wali</label>
+        <select class="form-control select2 @error('status_tempat_tinggal_wali') is-invalid @enderror"
+            name="status_tempat_tinggal_wali">
+            <option value="">Pilih</option>
+            @foreach (\Helper::getEnumValues('siswa', 'status_tempat_tinggal_wali') as $opt)
+                <option value="{{ $opt }}"
+                    {{ old('status_tempat_tinggal_wali') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+            @endforeach
+        </select>
+        @error('status_tempat_tinggal_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+{{-- alamat wali per kolom (ikuti ejaan migration: "keluarahan") --}}
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Desa/Kelurahan Wali</label>
+        <input class="form-control @error('desa_keluarahan_wali') is-invalid @enderror" name="desa_keluarahan_wali"
+            type="text" value="{{ old('desa_keluarahan_wali') }}">
+        @error('desa_keluarahan_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kecamatan Wali</label>
+        <input class="form-control @error('kecamatan_wali') is-invalid @enderror" name="kecamatan_wali"
+            type="text" value="{{ old('kecamatan_wali') }}">
+        @error('kecamatan_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kabupaten/Kota Wali</label>
+        <input class="form-control @error('kab_kota_wali') is-invalid @enderror" name="kab_kota_wali" type="text"
+            value="{{ old('kab_kota_wali') }}">
+        @error('kab_kota_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Provinsi Wali</label>
+        <input class="form-control @error('provinsi_wali') is-invalid @enderror" name="provinsi_wali" type="text"
+            value="{{ old('provinsi_wali') }}">
+        @error('provinsi_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-md-6">
+    <div class="input-block local-forms">
+        <label>Kode Pos Wali</label>
+        <input class="form-control @error('kodepos_wali') is-invalid @enderror" name="kodepos_wali" type="text"
+            value="{{ old('kodepos_wali') }}">
+        @error('kodepos_wali')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
 
 {{-- UPLOAD FILE --}}
 <div class="col-12 mt-4">
@@ -491,10 +1151,10 @@
         <div class="settings-btn upload-files-avator">
             <input type="file" name="foto" id="foto"
                 class="hide-input @error('foto') is-invalid @enderror" accept=".jpg, .jpeg, .png"
-                onchange="handleFileUpload(this, 'file-info', 'upload-label')" />
+                onchange="handleFileUpload(this, 'file-info-foto', 'upload-label-foto')" />
 
-            <label for="foto" id="file-info" class="file-info-text">Belum ada file</label>
-            <label for="foto" class="upload" id="upload-label">Pilih File</label>
+            <label for="foto" id="file-info-foto" class="file-info-text">Belum ada file</label>
+            <label for="foto" class="upload" id="upload-label-foto">Pilih File</label>
         </div>
         @error('avatar')
             <div class="invalid-feedback d-block">
@@ -510,29 +1170,108 @@
 <div class="col-12">
     <div class="input-block local-top-form">
         <label class="local-top">
-            Akta Kelahiran
+            KK
         </label>
 
         <div class="settings-btn upload-files-avator">
-            <input type="file" name="akta_lahir_path" id="akta_lahir_path"
-                class="hide-input @error('akta_lahir_path') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
-                onchange="handleFileUpload(this, 'file-info-akta', 'upload-label-akta')" />
+            <input type="file" name="kk" id="kk"
+                class="hide-input @error('kk') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-kk', 'upload-label-kk')" />
 
-            <label for="akta_lahir_path" id="file-info-akta" class="file-info-text">Belum ada file</label>
-            <label for="akta_lahir_path" class="upload" id="upload-label-akta">Pilih File</label>
+            <label for="kk" id="file-info-kk" class="file-info-text">Belum ada file</label>
+            <label for="kk" class="upload" id="upload-label-kk">Pilih File</label>
         </div>
-        @error('akta_lahir_path')
+        @error('kk')
             <div class="invalid-feedback d-block">
                 {{ $message }}
             </div>
         @enderror
-        <div class="ms-2 mb-4 view-akta d-none">
-            <small class="text-decoration-underline"><a href="" id="view-akta">Lihat Berkas <i
+        <div class="ms-2 mb-4 view-kk d-none">
+            <small class="text-decoration-underline"><a href="" id="view-kk">Lihat Berkas <i
                         class="fa fa-eye"></i></a></small>
         </div>
 
     </div>
 </div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Akta Kelahiran
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="akta_kelahiran" id="akta_kelahiran"
+                class="hide-input @error('akta_kelahiran') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-akta', 'upload-label-akta')" />
+
+            <label for="akta_kelahiran" id="file-info-akta" class="file-info-text">Belum ada file</label>
+            <label for="akta_kelahiran" class="upload" id="upload-label-akta">Pilih File</label>
+        </div>
+        @error('akta_kelahiran')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-akta_kelahiran d-none">
+            <small class="text-decoration-underline"><a href="" id="view-akta_kelahiran">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Ijazah
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="ijazah" id="ijazah"
+                class="hide-input @error('ijazah') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-ijazah', 'upload-label-ijazah')" />
+
+            <label for="ijazah" id="file-info-ijazah" class="file-info-text">Belum ada file</label>
+            <label for="ijazah" class="upload" id="upload-label-ijazah">Pilih File</label>
+        </div>
+        @error('ijazah')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-ijazah d-none">
+            <small class="text-decoration-underline"><a href="" id="view-ijazah">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+<div class="col-12">
+    <div class="input-block local-top-form">
+        <label class="local-top">
+            Pakta Integritas
+        </label>
+
+        <div class="settings-btn upload-files-avator">
+            <input type="file" name="pakta_integritas" id="pakta_integritas"
+                class="hide-input @error('ijazah') is-invalid @enderror" accept=".pdf .jpg, .jpeg, .png"
+                onchange="handleFileUpload(this, 'file-info-pakta_integritas', 'upload-label-pakta_integritas')" />
+
+            <label for="pakta_integritas" id="file-info-pakta_integritas" class="file-info-text">Belum ada file</label>
+            <label for="pakta_integritas" class="upload" id="upload-label-pakta_integritas">Pilih File</label>
+        </div>
+        @error('pakta_integritas')
+            <div class="invalid-feedback d-block">
+                {{ $message }}
+            </div>
+        @enderror
+        <div class="ms-2 mb-4 view-pakta_integritas d-none">
+            <small class="text-decoration-underline"><a href="" id="view-pakta_integritas">Lihat Berkas <i
+                        class="fa fa-eye"></i></a></small>
+        </div>
+
+    </div>
+</div>
+
 
 {{-- TOMBOL SUBMIT --}}
 <div class="col-12 mt-5">

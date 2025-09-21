@@ -15,8 +15,8 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title">Import Data Siswa</h5>
-            <a class="mb-1 btn clip-btn btn-sm btn-primary" href="javascript:;" data-clipboard-target="#input-copy"><i
-                    class="fa fa-download"></i>download format</a>
+            <a class="mb-1 btn clip-btn btn-primary" href="{{ asset('import/importsiswa.xls') }}"><i
+                    class="fa fa-download" style="margin-right: 5px"></i> Download Format</a>
         </div>
         <div class="card-body">
             <form class="form-horizontal" method="POST" action="{{ route('admin.import.siswa.save') }}"
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <button type="submit" class="mb-1 btn btn-sm btn-primary">
+                    <button type="submit" class="mb-1 btn btn-primary">
                         <i class="fa fa-upload"></i> Upload
                     </button>
                 </div>

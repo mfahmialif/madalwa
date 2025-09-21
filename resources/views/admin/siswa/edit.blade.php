@@ -19,8 +19,8 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.siswa.update', ['siswa' => $siswa]) }}"
-                        onsubmit="submitForm(this)" method="POST" enctype="multipart/form-data" id="form_edit">
+                    <form action="{{ route('admin.siswa.update', ['siswa' => $siswa]) }}" onsubmit="submitForm(this)"
+                        method="POST" enctype="multipart/form-data" id="form_edit">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -40,7 +40,7 @@
 @push('script')
     <script>
         // Pastikan jQuery sudah dimuat sebelum skrip ini dijalankan
-          function setFormEdit(data, form) {
+        function setFormEdit(data, form) {
             Object.entries(data).forEach(([key, value]) => {
                 if (value === null) return; // Lewati jika nilainya null
 
@@ -48,6 +48,10 @@
 
                 const assetUrl = {
                     'foto': "{{ asset('foto_siswa') }}",
+                    'kk': "{{ asset('kk') }}",
+                    'akta_kelahiran': "{{ asset('akta_kelahiran') }}",
+                    'ijazah': "{{ asset('ijazah') }}",
+                    'pakta_integritas': "{{ asset('pakta_integritas') }}",
                 }
 
                 if (element.length > 0) {
@@ -119,4 +123,3 @@
         });
     </script>
 @endpush
-
