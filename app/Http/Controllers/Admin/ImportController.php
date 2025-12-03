@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Models\UnitSekolah;
@@ -6,6 +7,7 @@ use App\Imports\KelasImport;
 use App\Imports\SiswaImport;
 use Illuminate\Http\Request;
 use App\Imports\KurikulumImport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Imports\MataPelajaranImport;
@@ -22,6 +24,7 @@ class ImportController extends Controller
     {
         try {
 
+            DB::beginTransaction();
             $request->validate([
                 'import_siswa' => 'required|mimes:xls,xlsx',
             ]);
@@ -30,14 +33,17 @@ class ImportController extends Controller
             Excel::import($import, $request->import_siswa);
 
             $responseImport = $import->getResponse();
-            return redirect()->back()->with('success', 'Data berhasil diimport! '. $responseImport);
+            DB::commit();
+            return redirect()->back()->with('success', 'Data berhasil diimport! ' . $responseImport);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Kalau error validasi
+            DB::rollback();
             return redirect()->back()
                 ->withErrors($e->errors()) // tetap simpan untuk form error
                 ->with('error', 'Validasi gagal: pastikan file xls/xlsx sudah dipilih.');
         } catch (\Throwable $th) {
             // Kalau error lain
+            DB::rollback();
             dd($th->getMessage());
             return redirect()->back()->with('error', $th->getMessage());
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -71,6 +72,7 @@ class PendaftaranSiswaBaruController extends Controller
         'dpt'                        => 'nullable|in:Y,T',
         'covid'                      => 'nullable|in:Y,T',
 
+        'no_kk'                      => 'nullable|string|max:255',
         'no_kip'                     => 'nullable|string|max:255',
         'kepala_keluarga'            => 'nullable|string|max:255',
         'foto'                       => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
@@ -216,8 +218,6 @@ class PendaftaranSiswaBaruController extends Controller
 
     public function add()
     {
-        $jenisKelamin   = Helper::getEnumValues('users', 'jenis_kelamin');
-        $agama          = Helper::getEnumValues('siswa', 'agama');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $statusDaftar   = Helper::getEnumValues('siswa', 'status_daftar');
         $kelas          = Kelas::when(\Auth::user()->role->nama == 'unit sekolah', function ($q) {
@@ -229,8 +229,13 @@ class PendaftaranSiswaBaruController extends Controller
             $q->where('unit_sekolah_id', \Auth::user()->unitSekolah->unit_sekolah_id);
         })->get();
 
-        return view('admin.pendaftaran-siswa-baru.add', compact('jenisKelamin',
-            'agama', 'tahunPelajaran', 'statusDaftar', 'kelas', 'kurikulum', 'jurusan'));
+        return view('admin.pendaftaran-siswa-baru.add', compact(
+            'tahunPelajaran',
+            'statusDaftar',
+            'kelas',
+            'kurikulum',
+            'jurusan'
+        ));
     }
 
     public function store(Request $request)
@@ -261,7 +266,7 @@ class PendaftaranSiswaBaruController extends Controller
             if ($request->hasFile('foto')) {
                 $data["foto"] = Helper::uploadFile($request->file('foto'), $request->nama_siswa, 'foto_siswa');
             }
-             if ($request->hasFile('kk')) {
+            if ($request->hasFile('kk')) {
                 $data['kk'] = Helper::uploadFile($request->file('kk'), $request->nama_siswa, 'kk');
             }
             if ($request->hasFile('akta_kelahiran')) {
@@ -278,7 +283,6 @@ class PendaftaranSiswaBaruController extends Controller
 
             \DB::commit();
             return redirect()->route('admin.pendaftaran-siswa-baru.index')->with('success', 'Data siswa baru berhasil ditambahkan.');
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             \DB::rollback();
             return redirect()->route('admin.pendaftaran-siswa-baru.add')
@@ -310,8 +314,16 @@ class PendaftaranSiswaBaruController extends Controller
             $q->where('unit_sekolah_id', \Auth::user()->unitSekolah->unit_sekolah_id);
         })->get();
 
-        return view('admin.pendaftaran-siswa-baru.edit', compact('siswa', 'agama', 'jenisKelamin',
-            'tahunPelajaran', 'statusDaftar', 'kelas', 'kurikulum', 'jurusan'));
+        return view('admin.pendaftaran-siswa-baru.edit', compact(
+            'siswa',
+            'agama',
+            'jenisKelamin',
+            'tahunPelajaran',
+            'statusDaftar',
+            'kelas',
+            'kurikulum',
+            'jurusan'
+        ));
     }
 
     public function update(Request $request, Siswa $siswa)
@@ -345,7 +357,7 @@ class PendaftaranSiswaBaruController extends Controller
                 }
                 $data['foto'] = Helper::uploadFile($request->file('foto'), $request->nama_siswa, 'foto_siswa');
             }
-             if ($request->hasFile('kk')) {
+            if ($request->hasFile('kk')) {
                 if ($siswa->kk) {
                     Helper::deleteFile($siswa->kk, 'kk');
                 }

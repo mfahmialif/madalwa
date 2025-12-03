@@ -85,18 +85,18 @@
             const file = input.files[0];
 
             if (file) {
-                const isImage = file.type.startsWith("image/");
-                if (!isImage) {
-                    fileInfo.innerText = "Belum ada file";
-                    uploadLabel.innerText = "Pilih File";
-                    return;
-                }
-
+                // Modifikasi: Tidak hanya cek image/ tapi tampilkan nama file apapun yang dipilih (PDF/JPG)
+                // Karena di HTML accept sudah dibatasi
                 fileInfo.innerText = file.name;
-                uploadLabel.innerText = "Ganti File";
+                uploadLabel.innerText = "Ganti";
+
+                // Opsional: Cek tipe file jika ingin validasi strict via JS
+                // const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+                // if (!validTypes.includes(file.type)) { ... }
+
             } else {
                 fileInfo.innerText = "Belum ada file";
-                uploadLabel.innerText = "Pilih File";
+                uploadLabel.innerText = "Pilih";
             }
         }
     </script>

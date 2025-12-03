@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Imports;
 
 use App\Models\Jurusan;
@@ -83,11 +84,12 @@ class SiswaImport implements ToCollection, WithHeadingRow
                 'role_id'       => $role->id,
             ]);
 
-            unset($data['email']);
+            $jurusanKode = $data['jurusan'];
             unset($data['jurusan']);
+            unset($data['email']);
 
             $jurusan = Jurusan::firstOrCreate(
-                ['kode_jurusan' => 'MIPA'], // cari berdasarkan kode_jurusan
+                ['kode_jurusan' => $jurusanKode], // cari berdasarkan kode_jurusan
                 [
                     'unit_sekolah_id' => $unitSekolahId,
                     'nama_jurusan'    => 'Matematika',
@@ -101,15 +103,19 @@ class SiswaImport implements ToCollection, WithHeadingRow
 
             $data['kab_kota'] = $row['kabupaten_kota'];
             unset($data['kabupaten_kota']);
+            $data['npsn'] = $row['npsn_asal_sekolah'];
+            $data['nsm'] = $row['nsm_asal_sekolah'];
+            unset($data['npsn_asal_sekolah']);
+            unset($data['nsm_asal_sekolah']);
 
             $data['tahun_pelajaran_id'] = TahunPelajaran::where('status', 'aktif')->first()->id;
             $data['kurikulum_id']       = Kurikulum::where('unit_sekolah_id', $this->request['unit_sekolah_id'])->latest()->first()->id;
 
+            $data['status_daftar'] = 'diterima';
             Siswa::create($data);
 
             $this->total++;
         }
-
     }
 
     public function getResponse()

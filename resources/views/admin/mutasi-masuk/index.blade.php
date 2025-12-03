@@ -71,8 +71,9 @@
                                     <th style="width: 5%">No</th>
                                     <th>No Surat</th>
                                     <th>Nama Siswa</th>
+                                    <th>Jenis Kelamin</th>
                                     <th>Asal Sekolah</th>
-                                    <th>Alamat Siswa</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -140,13 +141,18 @@
                         className: "text-middle"
                     },
                     {
-                        data: 'alamat',
-                        name: 'alamat',
+                        data: 'sekolah_tujuan',
+                        name: 'sekolah_tujuan',
                         className: "text-middle"
                     },
                     {
-                        data: 'asal',
-                        name: 'asal',
+                        data: 'jenis_kelamin',
+                        name: 'jenis_kelamin',
+                        className: "text-middle"
+                    },
+                    {
+                        data: 'status_daftar',
+                        name: 'status_daftar',
                         className: "text-middle"
                     },
                     {

@@ -66,6 +66,7 @@ class CreateSiswaTable extends Migration
             $table->enum('dpt', ['Y', 'T'])->nullable();
             $table->enum('covid', ['Y', 'T'])->nullable();
             $table->string('no_kip')->nullable();
+            $table->string('no_kk')->nullable();
             $table->string('kepala_keluarga')->nullable();
 
             $table->string('foto')->nullable();

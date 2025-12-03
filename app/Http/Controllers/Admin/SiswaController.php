@@ -74,6 +74,7 @@ class SiswaController extends Controller
         'dpt'                        => 'nullable|in:Y,T',
         'covid'                      => 'nullable|in:Y,T',
 
+        'no_kk'                      => 'nullable|string|max:255',
         'no_kip'                     => 'nullable|string|max:255',
         'kepala_keluarga'            => 'nullable|string|max:255',
         'foto'                       => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
@@ -237,6 +238,10 @@ class SiswaController extends Controller
 
     public function edit(Siswa $siswa)
     {
+        if ($siswa->status_daftar != 'diterima') {
+            return redirect()->route('admin.siswa.index')->with('error', 'Siswa berstatus: ' . strtoupper($siswa->status_daftar));
+        }
+
         $jenisKelamin   = Helper::getEnumValues('users', 'jenis_kelamin');
         $agama          = Helper::getEnumValues('siswa', 'agama');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
