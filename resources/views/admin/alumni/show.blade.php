@@ -92,14 +92,11 @@
 @push('script')
     <script>
         $(document).ready(function() {
-             let params = window.location.pathname.split('/');
-            let idTahun = params[params.length - 1];
-
-            var url = window.location.origin + `/admin/alumni/show/${idTahun}/pertahun`;
-            console.log(url);
+            let idTahun = "{{ $tahunPelajaranId }}";
 
 
-            console.log('AJAX URL:', url);
+            var url = "{{ route('admin.alumni.pertahun', ['id' => '_tahunPelajaranId']) }}";
+            url = url.replace('_tahunPelajaranId', idTahun);
             // console.log(idTahun);
             if ($.fn.DataTable.isDataTable('#tableAlumniPertahun')) {
                 $('#tableAlumniPertahun').DataTable().destroy();
@@ -118,7 +115,7 @@
                     ).draw();
                 }, time);
             }
-           
+
 
             function dataTable(tableId) {
 

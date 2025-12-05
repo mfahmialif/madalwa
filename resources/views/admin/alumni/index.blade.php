@@ -37,7 +37,7 @@
                                             </form>
                                         </div>
                                         <div class="add-group">
-                                            <a href="{{ route('admin.mata-pelajaran.add') }}"
+                                            <a href="{{ route('admin.kelulusan.index') }}"
                                                 class="btn btn-primary add-pluss ms-2"><img
                                                     src="{{ asset('template') }}/assets/img/icons/plus.svg"
                                                     alt=""></a>
@@ -159,48 +159,6 @@
                 ],
             })
             return datatable;
-        }
-
-        function deleteData(event) {
-            event.preventDefault();
-            var id = event.target.querySelector('input[name="id"]').value;
-            var name = event.target.querySelector('input[name="name"]').value;
-            swal({
-                title: "Apa kamu yakin?",
-                text: "Data yang akan dihapus: " + name + ". Data tidak dapat dikembalikan!",
-                icon: "warning",
-                buttons: {
-                    confirm: {
-                        text: "OK",
-                        value: true,
-                        visible: true,
-                        className: "",
-                        closeModal: true
-                    },
-                    cancel: "Batalkan",
-                },
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    var url = "{{ route('admin.mata-pelajaran.destroy', ['mataPelajaran' => '_mataPelajaran']) }}";
-                    url = url.replace('_mataPelajaran', id);
-                    var fd = new FormData($(event.target)[0]);
-                    $.ajax({
-                        type: "post",
-                        url: url,
-                        data: fd,
-                        contentType: false,
-                        processData: false,
-                        beforeSend: function() {
-                            toastr.info('Loading...');
-                        },
-                        success: function(response) {
-                            searchDataTable('#tableMataPelajaran', true);
-                            showToastr(response.status, response.message);
-                        }
-                    });
-                }
-            });
         }
     </script>
 @endpush
