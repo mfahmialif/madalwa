@@ -2,12 +2,13 @@
 
 namespace App\Imports;
 
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Kelas;
+use App\Models\Siswa;
 use App\Models\Jurusan;
 use App\Models\Kurikulum;
-use App\Models\Role;
-use App\Models\Siswa;
 use App\Models\TahunPelajaran;
-use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -17,6 +18,7 @@ use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 class SiswaImport implements ToCollection, WithHeadingRow
 {
     private $newData = 0;
+    private $updateData = 0;
     private $total   = 0;
     private $request;
 
@@ -47,7 +49,6 @@ class SiswaImport implements ToCollection, WithHeadingRow
         foreach ($collection as $row) {
             $data = $row->toArray();
 
-            $this->newData++;
             if (isset($data['nama_siswa']) == false || $data['nama_siswa'] == null) {
                 continue;
             }
@@ -63,7 +64,6 @@ class SiswaImport implements ToCollection, WithHeadingRow
             $data['kewarganegaraan_wali'] = $data['warga_wali'];
             unset($data['warga_wali']);
 
-            $unitSekolahId = $this->request['unit_sekolah_id'];
             $role          = Role::where('nama', 'siswa')->first();
 
             // salin nis lokal ke nis
@@ -73,42 +73,60 @@ class SiswaImport implements ToCollection, WithHeadingRow
             // ubah kode jenis kelamin ke label
             $data['jenis_kelamin'] = $row['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan';
 
-            // random password
-            $password = 'password';
-            $user     = User::create([
-                'username'      => $data['nis'] ?? null,
-                'name'          => $data['nama_siswa'],
-                'email'         => $data['email'] ?? null,
-                'password'      => Hash::make($password),
-                'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
-                'role_id'       => $role->id,
-            ]);
-
             $jurusanKode = $data['jurusan'];
             unset($data['jurusan']);
-            unset($data['email']);
 
-            $jurusan = Jurusan::firstOrCreate(
-                ['kode_jurusan' => $jurusanKode], // cari berdasarkan kode_jurusan
-                [
-                    'unit_sekolah_id' => $unitSekolahId,
-                    'nama_jurusan'    => 'Matematika',
-                    'kuota'           => 1000,
-                    'status'          => 'aktif',
-                ]
-            );
+            $jurusan = Jurusan::where('kode_jurusan', $jurusanKode)->first();
+
+            if (!$jurusan) {
+                throw new \Exception('Tidak Ditemukan Jurusan '.$jurusanKode);
+            }
 
             $data['jurusan_id'] = $jurusan->id;
-            $data['user_id']    = $user->id;
 
             $data['kab_kota'] = $row['kabupaten_kota'];
             unset($data['kabupaten_kota']);
 
-            $data['tahun_pelajaran_id'] = TahunPelajaran::where('status', 'aktif')->first()->id;
-            $data['kurikulum_id']       = Kurikulum::where('unit_sekolah_id', $this->request['unit_sekolah_id'])->latest()->first()->id;
-
+            $data['tahun_pelajaran_id'] = @TahunPelajaran::where('kode', $data['tahun_pelajaran'])->first()->id;
+            if (!@$data['tahun_pelajaran_id']) {
+                throw new \Exception('Tidak Ditemukan Tahun Pelajaran');
+            }
+            unset($data['tahun_pelajaran']);
+            $data['kurikulum_id']       = @Kurikulum::where('unit_sekolah_id', $jurusan->unit_sekolah_id)
+                ->where('kode', $data['kurikulum'])->first()->id;
+            if (!@$data['kurikulum_id']) {
+                throw new \Exception('Tidak Ditemukan Kurikulum - ' . $jurusan->unitSekolah->nama_unit . ' - ' . $data['tahun_pelajaran'] . ' - ' . $data['kurikulum']);
+            }
+            unset($data['kurikulum']);
+            $data['kelas_id'] = @Kelas::where('unit_sekolah_id', $jurusan->unit_sekolah_id)
+                ->where('angka', $data['kelas'])->first()->id;
+            if (!@$data['kelas_id']) {
+                throw new \Exception('Tidak Ditemukan Kelas - ' . $jurusan->unitSekolah->nama_unit . ' - ' . $data['tahun_pelajaran'] . ' - ' . $data['kelas']);
+            }
+            unset($data['kelas']);
             $data['status_daftar'] = 'diterima';
-            Siswa::create($data);
+            $siswa = Siswa::where('nis', $data['nis'])->first();
+            if ($siswa) {
+                unset($data['email']);
+                $siswa->update($data);
+                $this->updateData++;
+            } else {
+                $password = 'password';
+                $user     = User::create([
+                    'username'      => $data['nis'] ?? null,
+                    'name'          => $data['nama_siswa'],
+                    'email'         => $data['email'] ?? null,
+                    'password'      => Hash::make($password),
+                    'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
+                    'role_id'       => $role->id,
+                ]);
+                $data['user_id']    = $user->id;
+                unset($data['email']);
+
+                Siswa::create($data);
+
+                $this->newData++;
+            }
 
             $this->total++;
         }
@@ -116,6 +134,6 @@ class SiswaImport implements ToCollection, WithHeadingRow
 
     public function getResponse()
     {
-        return "$this->newData data baru dari $this->total total data";
+        return "$this->newData data baru, $this->updateData data diperbarui dari $this->total total data";
     }
 }

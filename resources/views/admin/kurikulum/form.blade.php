@@ -27,8 +27,18 @@
             </div>
             <div class="col-12">
                 <div class="input-block local-forms">
+                    <label>Kode Kurikulum <span class="login-danger">*</span></label>
+                    <input class="form-control @error('kode') is-invalid @enderror" name="kode" type="text" required
+                        value="{{ old('kode') }}">
+                    @error('kode')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-block local-forms">
                     <label>Nama Kurikulum <span class="login-danger">*</span></label>
-                    <input class="form-control @error('nama') is-invalid @enderror" name="nama" type="text"
+                    <input class="form-control @error('nama') is-invalid @enderror" name="nama" type="text" required
                         value="{{ old('nama') }}">
                     @error('nama')
                         <div class="invalid-feedback">{{ $message }}</div>

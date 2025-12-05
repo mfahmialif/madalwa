@@ -22,25 +22,6 @@
             <form class="form-horizontal" method="POST" action="{{ route('admin.import.siswa.save') }}"
                 enctype="multipart/form-data">
                 @csrf
-                <div class="col-12 col-md-12">
-                    <div class="input-block local-forms">
-                        <label>Unit Sekolah <span class="login-danger">*</span></label>
-                        <select class="form-control select2 filter-dt" name="unit_sekolah_id" required>
-                            @if (Auth::user()->role->nama == 'unit sekolah')
-                                <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
-                                    {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
-                                </option>
-                            @else
-                                <option value="">Pilih Unit Sekolah</option>
-                                @foreach ($unitSekolah as $item)
-                                    <option value="{{ $item->id }}">
-                                        {{ $item->nama_unit }}
-                                    </option>
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
-                </div>
                 <div class="col-12">
                     <div class="input-block local-top-form">
                         <label class="local-top">

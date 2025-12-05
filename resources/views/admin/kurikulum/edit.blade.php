@@ -41,6 +41,7 @@
         const kurikulum = @json($kurikulum);
         $('#form_edit').find('select[name="unit_sekolah_id"]').val(kurikulum.unit_sekolah_id).trigger('change');
         $('#form_edit').find('select[name="tahun_pelajaran_id"]').val(kurikulum.tahun_pelajaran_id).trigger('change');
+        $('#form_edit').find('input[name="kode"]').val(kurikulum.kode);
         $('#form_edit').find('input[name="nama"]').val(kurikulum.nama);
 
         function setMataPelajaranKurikulum() {

@@ -87,6 +87,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
+                                    <th>Kode</th>
                                     <th>Unit Sekolah</th>
                                     <th>Tahun Pelajaran</th>
                                     <th>Nama</th>
@@ -151,6 +152,11 @@
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         },
+                    },
+                    {
+                        data: 'kode',
+                        name: 'kode',
+                        className: "text-middle"
                     },
                     {
                         data: 'nama_unit',

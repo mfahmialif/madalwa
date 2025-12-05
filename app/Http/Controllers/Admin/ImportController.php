@@ -17,8 +17,7 @@ class ImportController extends Controller
 {
     public function showSiswa()
     {
-        $unitSekolah = UnitSekolah::all();
-        return view('admin.import.siswa.index', compact('unitSekolah'));
+        return view('admin.import.siswa.index');
     }
     public function importSiswa(Request $request)
     {
@@ -44,7 +43,6 @@ class ImportController extends Controller
         } catch (\Throwable $th) {
             // Kalau error lain
             DB::rollback();
-            dd($th->getMessage());
             return redirect()->back()->with('error', $th->getMessage());
         }
     }

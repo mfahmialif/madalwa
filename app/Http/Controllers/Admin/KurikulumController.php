@@ -15,8 +15,9 @@ class KurikulumController extends Controller
     private $rules = [
         "unit_sekolah_id"    => "required",
         "tahun_pelajaran_id" => "required",
+        "kode"               => "required",
         "nama"               => "required",
-        "mata_pelajaran_id"  => "required",
+        "mata_pelajaran_id"  => "nullable",
     ];
     public function index()
     {
@@ -93,18 +94,21 @@ class KurikulumController extends Controller
             $kurikulum                     = new Kurikulum();
             $kurikulum->unit_sekolah_id    = $request->unit_sekolah_id;
             $kurikulum->tahun_pelajaran_id = $request->tahun_pelajaran_id;
+            $kurikulum->kode               = $request->kode;
             $kurikulum->nama               = $request->nama;
             $kurikulum->save();
 
-            $kurikulumDetail = [];
-            foreach ($request->mata_pelajaran_id as $key => $value) {
-                $kurikulumDetail[] = [
-                    'kurikulum_id'      => $kurikulum->id,
-                    'mata_pelajaran_id' => $value,
-                ];
+            if ($request->mata_pelajaran_id) {
+                $kurikulumDetail = [];
+                foreach ($request->mata_pelajaran_id as $key => $value) {
+                    $kurikulumDetail[] = [
+                        'kurikulum_id'      => $kurikulum->id,
+                        'mata_pelajaran_id' => $value,
+                    ];
+                }
+    
+                KurikulumDetail::insert($kurikulumDetail);
             }
-
-            KurikulumDetail::insert($kurikulumDetail);
 
             \DB::commit();
             return redirect()->route('admin.kurikulum.index')->with('success', 'Mata Pelajaran berhasil ditambahkan');
@@ -140,6 +144,7 @@ class KurikulumController extends Controller
 
             $kurikulum->unit_sekolah_id    = $request->unit_sekolah_id;
             $kurikulum->tahun_pelajaran_id = $request->tahun_pelajaran_id;
+            $kurikulum->kode               = $request->kode;
             $kurikulum->nama               = $request->nama;
             $kurikulum->save();
 

@@ -183,6 +183,7 @@ class DatabaseSeeder extends Seeder
         \DB::table('kurikulum')->insert([
             [
                 'unit_sekolah_id'    => 1,
+                'kode'               => 'KL',
                 'nama'               => 'Kurikulum Lama',
                 'tahun_pelajaran_id' => 1,
             ],
@@ -190,6 +191,7 @@ class DatabaseSeeder extends Seeder
         \DB::table('kurikulum')->insert([
             [
                 'unit_sekolah_id'    => 1,
+                'kode'               => 'KM',
                 'nama'               => 'Kurikulum Merdeka',
                 'tahun_pelajaran_id' => 2,
             ],

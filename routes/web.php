@@ -1,51 +1,52 @@
 <?php
 
-use App\Http\Controllers\Admin\AbsensiController;
-use App\Http\Controllers\Admin\AbsensiRekapController;
-use App\Http\Controllers\Admin\AlumniController;
-use App\Http\Controllers\Admin\CetakLaporanController;
-use App\Http\Controllers\Admin\DashboardController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\NilaiController;
+use App\Http\Controllers\Admin\SiswaController;
+use App\Http\Controllers\Admin\AlumniController;
 use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\JadwalController;
-use App\Http\Controllers\Admin\JadwalDetailController;
+use App\Http\Controllers\Admin\AbsensiController;
 use App\Http\Controllers\Admin\JurusanController;
-use App\Http\Controllers\Admin\KelasController;
-use App\Http\Controllers\Admin\KelasSiswaController;
-use App\Http\Controllers\Admin\KelasSubController;
-use App\Http\Controllers\Admin\KelasWaliController;
-use App\Http\Controllers\Admin\KepalaSekolahController;
-use App\Http\Controllers\Admin\KurikulumController;
-use App\Http\Controllers\Admin\LaporanAkademikController;
 use App\Http\Controllers\Admin\LembagaController;
-use App\Http\Controllers\Admin\MataPelajaranController;
-use App\Http\Controllers\Admin\MutasiKeluarController;
-use App\Http\Controllers\Admin\MutasiMasukController;
-use App\Http\Controllers\Admin\NilaiBobotController;
-use App\Http\Controllers\Admin\NilaiController;
-use App\Http\Controllers\Admin\NilaiInputController;
-use App\Http\Controllers\Admin\PendaftaranSiswaBaruController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\SiswaController;
-use App\Http\Controllers\Admin\TahunPelajaranController;
+use App\Http\Controllers\Admin\KelasSubController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\KelasWaliController;
+use App\Http\Controllers\Admin\KelulusanController;
+use App\Http\Controllers\Admin\KurikulumController;
+use App\Http\Controllers\Admin\KelasSiswaController;
+use App\Http\Controllers\Admin\NilaiBobotController;
+use App\Http\Controllers\Admin\NilaiInputController;
+use App\Http\Controllers\Admin\MutasiMasukController;
 use App\Http\Controllers\Admin\UnitSekolahController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AbsensiRekapController;
+use App\Http\Controllers\Admin\CetakLaporanController;
+use App\Http\Controllers\Admin\JadwalDetailController;
+use App\Http\Controllers\Admin\MutasiKeluarController;
+use App\Http\Controllers\Admin\KepalaSekolahController;
+use App\Http\Controllers\Admin\MataPelajaranController;
+use App\Http\Controllers\Admin\TahunPelajaranController;
+use App\Http\Controllers\Admin\LaporanAkademikController;
+use App\Http\Controllers\Admin\PendaftaranSiswaBaruController;
+use App\Http\Controllers\Guru\NilaiController as GuruNilaiController;
+use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
+use App\Http\Controllers\Siswa\NilaiController as SiswaNilaiController;
 use App\Http\Controllers\Guru\AbsensiController as GuruAbsensiController;
-use App\Http\Controllers\Guru\AbsensiRekapController as GuruAbsensiRekapController;
+use App\Http\Controllers\Guru\ProfileController as GuruProfileController;
+use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
+use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\NilaiBobotController as GuruNilaiBobotController;
-use App\Http\Controllers\Guru\NilaiController as GuruNilaiController;
 use App\Http\Controllers\Guru\NilaiInputController as GuruNilaiInputController;
-use App\Http\Controllers\Guru\ProfileController as GuruProfileController;
-use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Siswa\AbsensiController as SiswaAbsensiController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\KelasSiswaController as SiswaKelasSiswaController;
-use App\Http\Controllers\Siswa\NilaiController as SiswaNilaiController;
-use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Guru\AbsensiRekapController as GuruAbsensiRekapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,6 +121,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/{mutasi}/edit', [MutasiKeluarController::class, 'edit'])->name('admin.mutasi-keluar.edit');
             Route::put('/{mutasi}/update', [MutasiKeluarController::class, 'update'])->name('admin.mutasi-keluar.update');
             Route::delete('/{mutasi}/destroy', [MutasiKeluarController::class, 'destroy'])->name('admin.mutasi-keluar.destroy');
+        });
+         Route::prefix('kelulusan')->group(function () {
+            Route::get('/', [KelulusanController::class, 'index'])->name('admin.kelulusan.index');
+            Route::get('/data', [KelulusanController::class, 'data'])->name('admin.kelulusan.data');
+            Route::put('/update-status-lulus', [KelulusanController::class, 'updateStatusLulus'])->name('admin.kelulusan.update-status-lulus');
+            Route::delete('/{siswa}/destroy', [KelulusanController::class, 'destroy'])->name('admin.kelulusan.destroy');
         });
         Route::prefix('import')->group(function () {
 

@@ -9,6 +9,6 @@
             <li><a class="{{ request()->RouteIs('admin.jadwal.*') ? 'active' : '' }}" href="{{ route('admin.jadwal.index') }}">Jadwal</a></li>
          <li><a class="{{ request()->RouteIs('admin.mutasi-masuk.*') ? 'active' : '' }}" href="{{ route('admin.mutasi-masuk.index') }}">Mutasi Masuk</a></li>
          <li><a class="{{ request()->RouteIs('admin.mutasi-keluar.*') ? 'active' : '' }}" href="{{ route('admin.mutasi-keluar.index') }}">Mutasi Keluar</a></li>
-         <li><a class="{{ request()->RouteIs('admin.mata-pelajaran.*') ? 'active' : '' }}" href="{{ route('admin.mata-pelajaran.index') }}">Kelulusan</a></li>
+         <li><a class="{{ request()->RouteIs('admin.kelulusan.*') ? 'active' : '' }}" href="{{ route('admin.kelulusan.index') }}">Kelulusan</a></li>
      </ul>
  </li>
