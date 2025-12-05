@@ -81,14 +81,6 @@ class AlumniController extends Controller
                         <div class="dropdown-menu dropdown-menu-end">
                             <a class="dropdown-item" href="' . route("admin.siswa.show", $row) . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Tampilkan</a>
                             <a class="dropdown-item" href="' . route("admin.siswa.edit", $row) . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>
-                            <form action="" onsubmit="deleteData(event)" method="POST">
-                            ' . method_field('delete') . csrf_field() . '
-                                <input type="hidden" name="id" value="' . $row->id . '">
-                                <input type="hidden" name="nama" value="' . $row->nama . '">
-                                <button type="submit" class="dropdown-item text-danger">
-                                    <i class="fa fa-trash-alt m-r-5"></i> Delete
-                                </button>
-                            </form>
                         </div>
                     </div>';
                 return $content;
