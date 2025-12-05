@@ -1,28 +1,73 @@
 {{-- DATA AKUN & TAHUN AJARAN --}}
-<div class="col-12">
-    <h5 class="form-title"><span>Informasi Mutasi Siswa</span></h5>
-</div>
-<div class="col-12">
-    <div class="input-block local-forms">
-        <label>Siswa <span class="login-danger">*</span></label>
-        <select class="form-control select2 @error('siswa_id') is-invalid @enderror" name="siswa_id" required>
-            <option value="">Pilih Siswa</option>
-            @foreach ($siswa as $item)
-                <option value="{{ $item->id }}" {{ old('siswa_id',$mutasi->siswa_id ?? '') == $item->id ? 'selected' : '' }}>
-                    {{ $item->nama_siswa }}
-                </option>
-            @endforeach
-        </select>
-        @error('siswa_id')
-            <div class="invalid-feedback">{{ $message }}</div>
+<div class="col-12 hidden-edit">
+    <div class="input-block local-forms input-group">
+        <label>Pencarian Siswa <span class="login-danger">*</span></label>
+        <input class="form-control @error('nama') is-invalid @enderror" id="search" name="search" type="text"
+            placeholder="" value="{{ old('search') }}" tabindex="1" onfocus="this.select()">
+        <input type="hidden" name="siswa_id" id="siswa_id" value="{{ old('siswa_id') }}">
+        <button class="btn btn-danger" type="button" onclick="clearSearch()" data-bs-toggle="tooltip"
+            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+            data-bs-title="Bersihkan pencarian" aria-label="Bersihkan pencarian"><i class="fa fa-trash"></i></button>
+        @error('search')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
         @enderror
     </div>
 </div>
-<div class="col-12 ">
+<div class="col-12 hidden-edit">
+    <div class="input-block local-forms">
+        <label>Nama</label>
+        <input class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" type="text"
+            placeholder="dari pencarian..." value="{{ old('nama') }}">
+        @error('nama')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-sm-6 hidden-edit">
+    <div class="input-block local-forms">
+        <label>NIS</label>
+        <input class="form-control @error('nis') is-invalid @enderror" id="nis" name="nis" type="text"
+            placeholder="dari pencarian..." value="{{ old('nis') }}">
+        @error('nis')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 col-sm-6 hidden-edit">
+    <div class="input-block local-forms">
+        <label>NIK</label>
+        <input class="form-control @error('nik') is-invalid @enderror" id="nik" name="nik" type="text"
+            placeholder="dari pencarian..." value="{{ old('nik') }}">
+        @error('nik')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
+<div class="col-12 hidden-edit">
+    <div class="input-block local-forms">
+        <label>Jenis Kelamin</label>
+        <input class="form-control @error('jenis_kelamin') is-invalid @enderror" id="jenis_kelamin" name="jenis_kelamin"
+            type="text" placeholder="dari pencarian..." value="{{ old('jenis_kelamin') }}">
+        @error('jenis_kelamin')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
+<div class="col-12">
     <div class="input-block local-forms">
         <label>Tanggal Mutasi <span class="login-danger">*</span></label>
-        <input class="form-control @error('tgl_mutasi') is-invalid @enderror" name="tgl_mutasi" type="date"
-            value="{{ old('tgl_mutasi',$mutasi->tgl_mutasi ?? '')}}" required>
+        <input class="form-control @error('tgl_mutasi') is-invalid @enderror" name="tgl_mutasi" type="date" id="tgl_mutasi"
+            value="{{ old('tgl_mutasi', $mutasi->tgl_mutasi ?? '') }}" required>
         @error('tgl_mutasi')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -32,7 +77,7 @@
     <div class="input-block local-forms">
         <label>Sekolah Tujuan <span class="login-danger">*</span></label>
         <input class="form-control @error('sekolah_tujuan') is-invalid @enderror" name="sekolah_tujuan" type="text"
-            value="{{ old('sekolah_tujuan',$mutasi->sekolah_tujuan ?? '')}}" required>
+            value="{{ old('sekolah_tujuan', $mutasi->sekolah_tujuan ?? '') }}" required>
         @error('sekolah_tujuan')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -41,8 +86,8 @@
 <div class="col-12">
     <div class="input-block local-forms">
         <label>Alasan Mutasi <span class="login-danger">*</span></label>
-        <textarea class="form-control @error('alasan_mutasi') is-invalid @enderror" required
-                  name="alasan_mutasi" rows="3">{{ old('alasan_mutasi', $mutasi->alasan_mutasi ?? '')}}</textarea>
+        <textarea class="form-control @error('alasan_mutasi') is-invalid @enderror" required name="alasan_mutasi"
+            rows="3">{{ old('alasan_mutasi', $mutasi->alasan_mutasi ?? '') }}</textarea>
         @error('alasan_mutasi')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -51,10 +96,8 @@
 <div class="col-12">
     <div class="input-block local-forms">
         <label>No Surat <span class="login-danger">*</span></label>
-        <input type="text"
-               class="form-control @error('no_surat') is-invalid @enderror"
-               name="no_surat"
-               value="{{ old('no_surat', $mutasi->no_surat ?? '') }}" required>
+        <input type="text" class="form-control @error('no_surat') is-invalid @enderror" name="no_surat"
+            value="{{ old('no_surat', $mutasi->no_surat ?? '') }}" required>
         @error('no_surat')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -64,39 +107,58 @@
 <div class="col-12 mt-5">
     <div class="doctor-submit text-end">
         <button type="submit" class="btn btn-primary submit-form me-2">Simpan</button>
-        <a href="{{ route('admin.mutasi-masuk.index') }}"
-            class="btn btn-secondary cancel-form">Batalkan</a>
+        <a href="{{ route('admin.mutasi-keluar.index') }}" class="btn btn-secondary cancel-form">Batalkan</a>
     </div>
 </div>
 
 @push('script')
     <script>
-        function handleFileUpload(input, fileInfoId, uploadLabelId) {
-            const fileInfo = document.getElementById(fileInfoId);
-            const uploadLabel = document.getElementById(uploadLabelId);
-            const file = input.files[0];
+        $('#search').autocomplete({
+            source: function(request, response) {
+                var url = "{{ route('admin.mutasi-keluar.autocomplete', ['query' => 'query']) }}";
+                url = url.replace('query', request.term);
 
-            if (file) {
-                const isImage = file.type.startsWith("image/");
-                if (!isImage) {
-                    fileInfo.innerText = "Belum ada file";
-                    uploadLabel.innerText = "Pilih File";
-                    return;
-                }
+                $.ajax({
+                    type: "get",
+                    url: url,
+                    success: function(data) {
+                        response(data.map(item => ({
+                            label: item.label,
+                            value: item.value,
+                            data: item
+                        })));
+                    }
+                });
+            },
+            select: function(event, ui) {
+                // Set the label in the user input
+                $('#siswa_id').val(ui.item.value);
+                let data = ui.item.data.data;
+                $('#nama').val(data.nama_siswa);
+                $('#nis').val(data.nis);
+                $('#nik').val(data.nik);
+                $('#jenis_kelamin').val(data.jenis_kelamin);
 
-                fileInfo.innerText = file.name;
-                uploadLabel.innerText = "Ganti File";
-            } else {
-                fileInfo.innerText = "Belum ada file";
-                uploadLabel.innerText = "Pilih File";
+                $('#search').val(ui.item.label);
+                // Store the value (user ID) in the hidden input
+                // $(offcanvasID).find("input[name='user_id']").val(ui.item.value);
+                $('#tgl_mutasi').focus();
+                return false;
             }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            return $("<li>")
+                .append(`<div style="padding: 5px; font-size: 14px;">${item.label}</div>`)
+                .appendTo(ul);
+        };
+
+        function clearSearch() {
+            $('#search').val('');
+            $('#siswa_id').val('');
+            $('#nama').val('');
+            $('#nis').val('');
+            $('#nik').val('');
+            $('#jenis_kelamin').val('');
+            $('#search').focus();
         }
     </script>
-@endpush
-@push('css')
-    <style>
-        .form-title {
-            margin-bottom: 24px;
-        }
-    </style>
 @endpush

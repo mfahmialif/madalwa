@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Services;
 
 use App\Models\Departemen;
@@ -13,13 +14,12 @@ class Helper
         $idrString = preg_replace("/[^0-9]/", "", $idrString);
 
         // Convert the string to a double
-        $idrDecimal = (double) $idrString;
+        $idrDecimal = (float) $idrString;
         return $idrDecimal;
     }
     public static function doubleToIdr($idrString)
     {
         return 'Rp ' . number_format($idrString, 0, ',', '.');
-
     }
 
     public static function terbilang($nilai)
@@ -118,7 +118,6 @@ class Helper
                 if ($key !== false) {
                     unset($enum[$key]);
                 }
-
             }
             $enum = array_values($enum);
         }
@@ -162,6 +161,7 @@ class Helper
             'tidak aktif'    => 'danger',
             'cuti'           => 'secondary',
             'lulus'          => 'info',
+            'pindah'         => 'danger'
         ];
 
         return $color[$status];

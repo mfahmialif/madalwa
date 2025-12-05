@@ -115,6 +115,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/', [MutasiKeluarController::class, 'index'])->name('admin.mutasi-keluar.index');
             Route::get('/data', [MutasiKeluarController::class, 'data'])->name('admin.mutasi-keluar.data');
             Route::get('/add', [MutasiKeluarController::class, 'add'])->name('admin.mutasi-keluar.add');
+            Route::get('/autocomplete/{query}', [MutasiKeluarController::class, 'autocomplete'])->name('admin.mutasi-keluar.autocomplete');
             Route::post('/', [MutasiKeluarController::class, 'store'])->name('admin.mutasi-keluar.store');
             Route::get('/{mutasi}/edit', [MutasiKeluarController::class, 'edit'])->name('admin.mutasi-keluar.edit');
             Route::put('/{mutasi}/update', [MutasiKeluarController::class, 'update'])->name('admin.mutasi-keluar.update');

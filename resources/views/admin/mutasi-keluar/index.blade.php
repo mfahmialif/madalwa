@@ -72,6 +72,7 @@
                                     <th>Sekolah Tujuan</th>
                                     <th>Alasan Mutasi</th>
                                     <th>Kelas</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -151,6 +152,11 @@
                     {
                         data: 'kelas',
                         name: 'kelas',
+                        className: "text-middle"
+                    },
+                    {
+                        data: 'siswa_status',
+                        name: 'siswa_status',
                         className: "text-middle"
                     },
                     {

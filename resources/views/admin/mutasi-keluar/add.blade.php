@@ -38,3 +38,8 @@
         </div>
     </div>
 @endsection
+@push('script')
+    <script>
+        $('#search').focus();
+    </script>
+@endpush

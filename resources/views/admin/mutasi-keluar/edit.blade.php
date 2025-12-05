@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Edit Data Mutasi Keluar</h4>
+                                    <h4>Edit Data Mutasi Keluar - {{ $mutasi->siswa->nama_siswa }}</h4>
                                 </div>
                             </div>
                             @include('admin.mutasi-keluar.form')
@@ -37,11 +37,7 @@
     </div>
 @endsection
 @push('script')
-    {{-- <script>
-        const mutasiMasuk = @json($mutasiMasuk);
-        $('#form_edit').find('select[name="kelas"]').val(mataPelajaran.kelas_id).trigger('change');
-        $('#form_edit').find('input[name="kode"]').val(mataPelajaran.kode);
-        $('#form_edit').find('input[name="nama"]').val(mataPelajaran.nama);
-        $('#form_edit').find('select[name="status"]').val(mataPelajaran.status).trigger('change');
-    </script> --}}
+    <script>
+        $('.hidden-edit').remove();
+    </script>
 @endpush

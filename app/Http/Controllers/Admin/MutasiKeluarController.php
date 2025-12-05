@@ -1,25 +1,25 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Kelas;
-use App\Models\Mutasi;
 use App\Models\Siswa;
+use App\Models\Mutasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Services\Helper;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class MutasiKeluarController extends Controller
 {
     protected $rules = [
-        // Foreign Keys
         'siswa_id'       => 'required|exists:siswa,id',
         'sekolah_tujuan' => 'required',
         'alasan_mutasi'  => 'required',
         'no_surat'       => 'required',
         'tgl_mutasi'     => 'required',
-
     ];
 
     public function index()
@@ -31,15 +31,16 @@ class MutasiKeluarController extends Controller
     {
         $search = request('search.value');
         $data   = Mutasi::join('siswa', 'mutasi.siswa_id', '=', 'siswa.id')
-                ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
-                ->where('mutasi.jenis', 'keluar')
-                ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
-                })
-                ->select([
-                    'mutasi.*',
-                    'siswa.nama_siswa',
-                ]);
+            ->join('kelas', 'siswa.kelas_id', '=', 'kelas.id')
+            ->where('mutasi.jenis', 'keluar')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+                $query->where('kelas.unit_sekolah_id', Auth::user()->unitSekolah->unit_sekolah_id);
+            })
+            ->select([
+                'mutasi.*',
+                'siswa.nama_siswa',
+                'siswa.status as siswa_status',
+            ]);
         return DataTables::of($data)
             ->filter(function ($query) use ($search, $request) {
                 $query->where(function ($query) use ($search) {
@@ -53,6 +54,9 @@ class MutasiKeluarController extends Controller
             })
             ->addColumn('kelas', function ($row) {
                 return $row->siswa->kelas->keterangan;
+            })
+            ->editColumn('siswa_status', function ($row) {
+                return '<span class="badge bg-' . Helper::getColorStatus($row->siswa_status) . '">' . strtoupper($row->siswa_status) . '</span>';
             })
             ->addColumn('action', function ($row) {
                 $content = '<div class="dropdown dropdown-action">
@@ -71,23 +75,42 @@ class MutasiKeluarController extends Controller
                     </div>';
                 return $content;
             })
-            ->rawColumns(['action', 'nama_siswa', 'alamat', 'asal'])
+            ->rawColumns(['action',  'siswa_status'])
             ->toJson();
     }
     public function add()
     {
-        $siswa = Siswa::join('kelas','kelas.id','=','siswa.kelas_id')
-        ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
-                        $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
-                })->get();
+        $siswa = Siswa::join('kelas', 'kelas.id', '=', 'siswa.kelas_id')
+            ->when(Auth::user()->role->nama_unit == 'unit sekolah', function ($query) {
+                $query->where('kelas.unit_sekolah_id', Auth::user()->unitSekolah->unit_sekolah_id);
+            })->get();
         return view('admin.mutasi-keluar.add', compact('siswa'));
     }
+
+    public function autocomplete($query)
+    {
+        return Siswa::where(function ($q) use ($query) {
+            $q->where('nama_siswa', 'LIKE', "%$query%")
+                ->orWhere('nis', 'LIKE', "%$query%");
+        })->where('status', '!=', 'pindah')
+            ->select('*')
+            ->limit(100)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->nama_siswa . " - $item->nis - $item->jenis_kelamin - $item->kelas_sekarang",
+                    'value' => $item->id,
+                    'data'  => $item,
+                ];
+            });
+    }
+
     public function store(Request $request)
     {
         try {
-
             $request->validate($this->rules);
 
+            DB::beginTransaction();
             $mutasi                 = new Mutasi();
             $mutasi->no_surat       = $request->no_surat;
             $mutasi->siswa_id       = $request->siswa_id;
@@ -96,6 +119,11 @@ class MutasiKeluarController extends Controller
             $mutasi->alasan_mutasi  = $request->alasan_mutasi;
             $mutasi->jenis          = 'keluar';
             $mutasi->save();
+
+            $siswa = $mutasi->siswa;
+            $siswa->status = 'pindah';
+            $siswa->save();
+            DB::commit();
             return redirect()->route('admin.mutasi-keluar.index')->with('success', 'Mutasi Keluar berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.mutasi-keluar.add')
@@ -103,6 +131,7 @@ class MutasiKeluarController extends Controller
                 ->withInput()
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
+            DB::rollback();
             return redirect()->route('admin.mutasi-keluar.add')->with('error', $th->getMessage())->withInput();
         }
     }
@@ -114,17 +143,17 @@ class MutasiKeluarController extends Controller
     public function update(Request $request, Mutasi $mutasi)
     {
         try {
+            unset($this->rules['siswa_id']);
             $request->validate($this->rules);
-            $mutasi                 = Mutasi::find($mutasi->id);
+
             $mutasi->no_surat       = $request->no_surat;
-            $mutasi->siswa_id       = $request->siswa_id;
             $mutasi->tgl_mutasi     = $request->tgl_mutasi;
             $mutasi->sekolah_tujuan = $request->sekolah_tujuan;
             $mutasi->alasan_mutasi  = $request->alasan_mutasi;
             $mutasi->tgl_mutasi     = $request->tgl_mutasi;
             $mutasi->jenis          = 'keluar';
             $mutasi->save();
-            DB::commit();
+
             return redirect()->route('admin.mutasi-keluar.index')->with('success', 'Mutasi Keluar berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.mutasi-keluar.edit', ['mutasi' => $mutasi->id])
@@ -132,7 +161,6 @@ class MutasiKeluarController extends Controller
                 ->withInput()
                 ->with('error', implode(' ', collect($e->errors())->flatten()->toArray()));
         } catch (\Throwable $th) {
-            DB::rollback();
             return redirect()->route('admin.mutasi-keluar.edit', ['mutasi' => $mutasi->id])->with('error', $th->getMessage())->withInput();
         }
     }
