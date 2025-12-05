@@ -137,6 +137,7 @@ class CreateSiswaTable extends Migration
 
             $table->enum('status_daftar', ['daftar', 'diterima', 'tidak diterima'])->default('daftar');
             $table->enum('status', ['aktif', 'tidak aktif', 'cuti', 'pindah', 'lulus'])->default('aktif');
+            $table->enum('status_sebelum_ganti', ['aktif', 'tidak aktif', 'cuti', 'pindah', 'lulus'])->nullable();
             $table->timestamps(); // Adds created_at and updated_at columns
         });
     }

@@ -93,6 +93,7 @@ class MutasiKeluarController extends Controller
             $q->where('nama_siswa', 'LIKE', "%$query%")
                 ->orWhere('nis', 'LIKE', "%$query%");
         })->where('status', '!=', 'pindah')
+        ->where('status_daftar', '=', 'diterima')
             ->select('*')
             ->limit(100)
             ->get()
@@ -120,8 +121,10 @@ class MutasiKeluarController extends Controller
             $mutasi->jenis          = 'keluar';
             $mutasi->save();
 
+            $statusLama = $mutasi->siswa->status;
             $siswa = $mutasi->siswa;
             $siswa->status = 'pindah';
+            $siswa->status_sebelum_ganti = $statusLama;
             $siswa->save();
             DB::commit();
             return redirect()->route('admin.mutasi-keluar.index')->with('success', 'Mutasi Keluar berhasil ditambahkan');
@@ -167,6 +170,10 @@ class MutasiKeluarController extends Controller
     public function destroy(Mutasi $mutasi)
     {
         try {
+            $siswa = $mutasi->siswa;
+            $siswa->status = $siswa->status_sebelum_ganti;
+            $siswa->status_sebelum_ganti = null;
+            $siswa->save();
             $mutasi->delete();
             return response()->json([
                 'status'  => true,

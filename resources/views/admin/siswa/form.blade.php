@@ -8,6 +8,23 @@
     {{-- Baris 1: Kelas, Kurikulum, Tahun Pelajaran --}}
     <div class="col-12 col-md-4">
         <div class="input-block local-forms">
+            <label>Status</label>
+            <select class="form-control select2 @error('status') is-invalid @enderror" name="status">
+                <option value="">Pilih Status</option>
+                @foreach ($status as $item)
+                    <option value="{{ $item }}" {{ old('status') == $item ? 'selected' : '' }}>
+                        {{ $item }}
+                    </option>
+                @endforeach
+            </select>
+            @error('status')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="input-block local-forms">
             <label>Kelas</label>
             <select class="form-control select2 @error('kelas_id') is-invalid @enderror" name="kelas_id">
                 <option value="">Pilih Kelas</option>

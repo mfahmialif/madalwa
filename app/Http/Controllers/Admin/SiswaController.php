@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 class SiswaController extends Controller
 {
     protected $rules = [
+        'status'                     => 'required',
         'kurikulum_id'               => 'required|exists:kurikulum,id',
         'kelas_id'                   => 'nullable|exists:kelas,id',
         'tahun_pelajaran_id'         => 'required|exists:tahun_pelajaran,id',
@@ -244,6 +246,7 @@ class SiswaController extends Controller
 
         $jenisKelamin   = Helper::getEnumValues('users', 'jenis_kelamin');
         $agama          = Helper::getEnumValues('siswa', 'agama');
+        $status          = Helper::getEnumValues('siswa', 'status');
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $status         = Helper::getEnumValues('siswa', 'status');
         $kelas          = Kelas::orderBy('angka')->get();
@@ -254,7 +257,7 @@ class SiswaController extends Controller
         })->get();
 
         $siswa = $siswa->load('user');
-        return view('admin.siswa.edit', compact('siswa', 'agama', 'jenisKelamin', 'tahunPelajaran', 'status', 'kelas', 'kurikulum', 'jurusan'));
+        return view('admin.siswa.edit', compact('siswa', 'agama', 'jenisKelamin', 'tahunPelajaran', 'status', 'kelas', 'kurikulum', 'jurusan', 'status'));
     }
 
     public function update(Request $request, Siswa $siswa)
@@ -288,7 +291,7 @@ class SiswaController extends Controller
                 }
                 $data['foto'] = Helper::uploadFile($request->file('foto'), $request->nama_siswa, 'foto_siswa');
             }
-             if ($request->hasFile('kk')) {
+            if ($request->hasFile('kk')) {
                 if ($siswa->kk) {
                     Helper::deleteFile($siswa->kk, 'kk');
                 }
@@ -411,7 +414,7 @@ class SiswaController extends Controller
         $jenis         = Helper::getEnumValues('komponen_nilai', 'jenis');
         $komponenNilai = KomponenNilai::orderBy('jenis', 'asc')->get();
         $nilai         = Nilai::where('siswa_id', $siswa->id)->where('jadwal_id', $jadwal->id)->get()->keyBy('jenis');
-        $nilaiDetail   = NilaiDetail::join('komponen_nilai', 'komponen_nilai.id', '=', 'nilai_detail.komponen_nilai_id', )
+        $nilaiDetail   = NilaiDetail::join('komponen_nilai', 'komponen_nilai.id', '=', 'nilai_detail.komponen_nilai_id',)
             ->where('nilai_detail.siswa_id', $siswa->id)
             ->where('nilai_detail.jadwal_id', $jadwal->id)
             ->select('nilai_detail.*', 'komponen_nilai.nama as komponen_nilai_nama', 'komponen_nilai.jenis as komponen_nilai_jenis')
