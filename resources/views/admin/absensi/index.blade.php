@@ -19,7 +19,25 @@
         <div class="col-sm-12">
 
             <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
+                    <div class="input-block local-forms">
+                        <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
+                            @if (Auth::user()->role->nama == 'unit sekolah')
+                                <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                                    {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
+                                </option>
+                            @else
+                                <option value="">Semua Unit Sekolah</option>
+                                @foreach ($unitSekolah as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->nama_unit }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
                     <div class="input-block local-forms">
                         <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id" required>
                             <option value="">Semua Tahun Pelajaran</option>
@@ -31,7 +49,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <div class="input-block local-forms">
                         <select class="form-control select2 filter-dt" id="filter_kelas_id" required>
                             <option value="">Semua Kelas</option>
@@ -155,6 +173,7 @@
                     data: function(d) {
                         d.tahun_pelajaran_id = $('#filter_tahun_pelajaran_id').val();
                         d.kelas_id = $('#filter_kelas_id').val();
+                        d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                         // d.search = $('#search-table').val();
                     },
                 },

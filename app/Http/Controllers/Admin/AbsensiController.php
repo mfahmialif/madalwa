@@ -6,6 +6,7 @@ use App\Models\Absensi;
 use App\Models\Jadwal;
 use App\Models\Kelas;
 use App\Models\TahunPelajaran;
+use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -21,7 +22,8 @@ class AbsensiController extends Controller
     {
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $kelas          = Kelas::orderBy('angka', 'asc')->get();
-        return view('admin.absensi.index', compact('tahunPelajaran', 'kelas'));
+        $unitSekolah    = UnitSekolah::all();
+        return view('admin.absensi.index', compact('tahunPelajaran', 'kelas', 'unitSekolah'));
     }
 
     public function data(Request $request)
@@ -34,6 +36,8 @@ class AbsensiController extends Controller
             ->join('kelas_sub', 'kelas_sub.id', '=', 'jadwal.kelas_sub_id')
             ->join('kelas', 'kelas.id', '=', 'kelas_sub.kelas_id')
             ->join('guru', 'guru.id', '=', 'jadwal.guru_id')
+            ->join('jurusan', 'jurusan.id', '=', 'kelas_sub.jurusan_id')
+            ->join('unit_sekolah', 'unit_sekolah.id', '=', 'jurusan.unit_sekolah_id')
             ->when(Auth::user()->role->nama_unit == 'unit sekolah',function($query) {
                         $query->where('kelas.unit_sekolah_id',Auth::user()->unitSekolah->unit_sekolah_id);
                 })
@@ -47,7 +51,9 @@ class AbsensiController extends Controller
                 'guru.nik as guru_nik',
                 'mata_pelajaran.nama as mata_pelajaran_nama',
                 'mata_pelajaran.kode as mata_pelajaran_kode',
-                'kurikulum.nama as kurikulum_nama'
+                'kurikulum.nama as kurikulum_nama',
+                'jurusan.nama_jurusan',
+                'unit_sekolah.nama_unit'
             );
 
         return DataTables::of($data)
@@ -57,6 +63,9 @@ class AbsensiController extends Controller
                 });
                 $query->when($request->kelas_id, function ($q) use ($request) {
                     $q->where('kelas.id', $request->kelas_id);
+                });
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('unit_sekolah.id', $request->unit_sekolah_id);
                 });
                 $query->where(function ($query) use ($search) {
                     $query->orWhere('mata_pelajaran.kode', 'LIKE', "%$search%");
@@ -70,7 +79,7 @@ class AbsensiController extends Controller
                 });
             })
             ->editColumn('kelas_angka', function ($row) {
-                return $row->kelas_angka . ' ' . $row->kelas_sub;
+                return $row->kelas_angka . ' ' . $row->kelas_sub . '<br>' . $row->nama_jurusan . " ($row->nama_unit)";
             })
             ->editColumn('mata_pelajaran_nama', function ($row) {
                 $kode      = e($row->mata_pelajaran_kode);

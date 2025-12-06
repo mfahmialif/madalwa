@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('siswa_id')->constrained('siswa');
             $table->foreignId('jadwal_id')->constrained('jadwal');
+            $table->foreignId('nilai_id')->constrained('nilai');
             $table->foreignId('komponen_nilai_id')->constrained('komponen_nilai');
             $table->string('nilai');
             $table->string('label')->nullable();

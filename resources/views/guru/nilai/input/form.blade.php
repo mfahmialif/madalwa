@@ -26,7 +26,7 @@
             <table id="table1" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 5%">No</th>
+                        <th rowspan="2">No</th>
                         <th rowspan="2">Siswa</th>
 
                         @foreach ($kelompokKomponen as $jenis => $komponenList)
@@ -38,8 +38,12 @@
                     <tr>
                         @foreach ($kelompokKomponen as $jenis => $komponenList)
                             @foreach ($komponenList as $komponen)
-                                <th class="text-center" style="width: 5%">
+                                <th class="text-center">
                                     {!! implode('<br>', explode(' ', $komponen['nama'])) !!}
+                                    @if ($jenis != 'sikap' && $komponen['nama'] != 'Nilai')
+                                        <br>
+                                        ({{ $komponen['bobot'] }}%)
+                                    @endif
                                 </th>
                             @endforeach
                         @endforeach
@@ -56,7 +60,7 @@
 <div class="col-12 pb-4">
     <div class="doctor-submit text-end">
         <button type="submit" id="btn-submit" class="btn btn-primary submit-form me-2">Simpan</button>
-        <a href="{{ route('guru.nilai.index') }}" class="btn btn-secondary cancel-form">Batalkan</a>
+        <a href="{{ route('admin.nilai.index') }}" class="btn btn-secondary cancel-form">Batalkan</a>
     </div>
 </div>
 
@@ -139,14 +143,16 @@
                                 const nilaiDetail = row.nilai_detail.find(item => item
                                     .komponen_nilai_id === komponen.id);
                                 if (komponen.id) { // nilai detail atau nilai per komponen
-                                    const nilaiValue = typeof nilaiDetail === 'undefined' ? 0 : nilaiDetail.nilai;
+                                    const nilaiValue = typeof nilaiDetail === 'undefined' ? 0 :
+                                        nilaiDetail.nilai;
 
                                     return `<input type="${inputType}" class="form-control form-control-sm text-center input-nilai nilai_${row.id}_${jenis}"
-                    name="nilai[${row.id}][${komponen.id}]" value="${nilaiValue}" ${disabled} onchange="hitungNilai(${row.id}, '${jenis}', ${komponen.bobot})"  oninput="hitungNilai(${row.id}, '${jenis}', ${komponen.bobot})"/>`;
+                    name="nilai[${row.id}][${komponen.id}]" value="${nilaiValue}" ${disabled} data-bobot="${komponen.bobot}" onchange="hitungNilai(${row.id}, '${jenis}')"  oninput="hitungNilai(${row.id}, '${jenis}')"/>`;
                                 } else { // nilai akhir per jenis
                                     const nilai = row.nilai.find(item => item
                                         .jenis === jenis);
-                                    const nilaiValue = typeof nilai === 'undefined' ? 0 : nilai.nilai_akhir;
+                                    const nilaiValue = typeof nilai === 'undefined' ? 0 : nilai
+                                        .nilai_akhir;
                                     return `<input type="${inputType}" class="form-control form-control-sm text-center input-nilai"
     id="nilai_${row.id}_${jenis}" name="nilai[${row.id}][${jenis}]" value="${nilaiValue}" ${disabled} />`;
 
@@ -160,7 +166,7 @@
             return datatable;
         }
 
-        function hitungNilai(siswaId, jenis, bobot) {
+        function hitungNilai(siswaId, jenis) {
             if (jenis === 'sikap') {
                 return;
             }
@@ -168,10 +174,12 @@
             const nilai = $('.nilai_' + siswaId + '_' + jenis);
             let totalNilai = 0;
             nilai.each(function() {
-                totalNilai += parseFloat($(this).val());
-            })
-            const nilaiAkhir = (totalNilai * bobot) / 100;
-            $(`#nilai_${siswaId}_${jenis}`).val(nilaiAkhir.toFixed(2));
+                const bobot = parseFloat($(this).data('bobot')) || 0;
+                const value = parseFloat($(this).val()) || 0;
+                totalNilai += value * bobot / 100;
+            });
+
+            $(`#nilai_${siswaId}_${jenis}`).val(totalNilai.toFixed(2));
         }
 
         function submitFormThis() {

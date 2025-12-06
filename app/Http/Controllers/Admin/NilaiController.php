@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Kelas;
 use App\Models\Nilai;
 use App\Models\Jadwal;
-use App\Models\Kelas;
-use App\Models\TahunPelajaran;
-use Illuminate\Http\Request;
+use App\Models\UnitSekolah;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TahunPelajaran;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
 
 class NilaiController extends Controller
 {
@@ -17,7 +19,8 @@ class NilaiController extends Controller
     {
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $kelas          = Kelas::orderBy('angka', 'asc')->get();
-        return view('admin.nilai.index', compact('tahunPelajaran', 'kelas'));
+        $unitSekolah    = UnitSekolah::all();
+        return view('admin.nilai.index', compact('tahunPelajaran', 'kelas', 'unitSekolah'));
     }
 
     public function data(Request $request)
@@ -31,6 +34,8 @@ class NilaiController extends Controller
             ->join('kelas_sub', 'kelas_sub.id', '=', 'jadwal.kelas_sub_id')
             ->join('kelas', 'kelas.id', '=', 'kelas_sub.kelas_id')
             ->join('guru', 'guru.id', '=', 'jadwal.guru_id')
+            ->join('jurusan', 'jurusan.id', '=', 'kelas_sub.jurusan_id')
+            ->join('unit_sekolah', 'unit_sekolah.id', '=', 'jurusan.unit_sekolah_id')
             ->select(
                 'jadwal.*',
                 'tahun_pelajaran.kode as tahun_pelajaran_kode',
@@ -41,7 +46,9 @@ class NilaiController extends Controller
                 'guru.nik as guru_nik',
                 'mata_pelajaran.nama as mata_pelajaran_nama',
                 'mata_pelajaran.kode as mata_pelajaran_kode',
-                'kurikulum.nama as kurikulum_nama'
+                'kurikulum.nama as kurikulum_nama',
+                'jurusan.nama_jurusan',
+                'unit_sekolah.nama_unit'
             );
 
         return DataTables::of($data)
@@ -51,6 +58,9 @@ class NilaiController extends Controller
                 });
                 $query->when($request->kelas_id, function ($q) use ($request) {
                     $q->where('kelas.id', $request->kelas_id);
+                });
+                $query->when($request->unit_sekolah_id, function ($q) use ($request) {
+                    $q->where('unit_sekolah.id', $request->unit_sekolah_id);
                 });
                 $query->where(function ($query) use ($search) {
                     $query->orWhere('mata_pelajaran.kode', 'LIKE', "%$search%");
@@ -64,8 +74,9 @@ class NilaiController extends Controller
                 });
             })
             ->editColumn('kelas_angka', function ($row) {
-                return $row->kelas_angka . ' ' . $row->kelas_sub;
+                return $row->kelas_angka . ' ' . $row->kelas_sub . '<br>' . $row->nama_jurusan . " ($row->nama_unit)";
             })
+            ->addColumn('status_nilai', function ($row) {})
             ->editColumn('mata_pelajaran_nama', function ($row) {
                 $kode      = e($row->mata_pelajaran_kode);
                 $nama      = e($row->mata_pelajaran_nama);

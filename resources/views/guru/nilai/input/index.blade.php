@@ -21,8 +21,10 @@
                 <i class="feather-info"></i>
                 <div>
                     <strong>Informasi:</strong> Anda sedang menginput nilai untuk <br>
-                    Kelas <strong>{{ $jadwal->kelasSub->kelas->angka }} {{ $jadwal->kelasSub->sub }}</strong>.<br>
-                    Mata Pelajaran <strong>{{ $jadwal->kurikulumDetail->mataPelajaran->nama }}</strong>.<br>
+                    Kelas <strong>{{ $jadwal->kelasSub->kelas->angka }} {{ $jadwal->kelasSub->sub }}
+                        {{ $jadwal->kelasSub->jurusan->nama_jurusan }}
+                        ({{ $jadwal->kelasSub->jurusan->unitSekolah->nama_unit }})</strong>.<br> Mata Pelajaran
+                    <strong>{{ $jadwal->kurikulumDetail->mataPelajaran->nama }}</strong>.<br>
                     Guru <strong>{{ $jadwal->guru->nama }}</strong>.<br>
                     Jadwal <strong>{{ $jadwal->hari }} ({{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }})</strong>.<br>
                 </div>

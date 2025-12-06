@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
@@ -113,30 +114,17 @@ class NilaiInputController extends Controller
     public function store(Jadwal $jadwal, Request $request)
     {
         try {
-            $request->validate($this->rules,
+            $request->validate(
+                $this->rules,
                 [
                     'nilai.required' => 'Harus ada nilai yang diisi.',
-                ]);
+                ]
+            );
 
             \DB::beginTransaction();
 
-            Nilai::where('jadwal_id', $jadwal->id)->delete();
             NilaiDetail::where('jadwal_id', $jadwal->id)->delete();
-
-            $nilaiDetail = [];
-            foreach ($request->nilai as $siswaId => $nilai) {
-                foreach ($nilai as $komponenNilaiId => $value) {
-                    $nilaiDetail[] = [
-                        'siswa_id'          => $siswaId,
-                        'jadwal_id'         => $jadwal->id,
-                        'komponen_nilai_id' => $komponenNilaiId,
-                        'nilai'             => $value,
-                        'created_at'        => now(),
-                        'updated_at'        => now(),
-                    ];
-                }
-            }
-            NilaiDetail::insert($nilaiDetail);
+            Nilai::where('jadwal_id', $jadwal->id)->delete();
 
             $komponenNilai    = KomponenNilai::orderBy('jenis', 'asc')->get();
             $bobotNilai       = BobotNilai::where('jadwal_id', $jadwal->id)->get()->keyBy('komponen_nilai_id');
@@ -160,7 +148,7 @@ class NilaiInputController extends Controller
                         $nilaiTemp = ($item['bobot'] / 100) * $nilai[$item['id']] ?? 0;
                         $nilaiPerJenis += $nilaiTemp;
                     }
-                    $nilaiInsert[] = [
+                    $nilaiInsert = [
                         'siswa_id'    => $siswaId,
                         'jadwal_id'   => $jadwal->id,
                         'jenis'       => $jenis,
@@ -168,15 +156,28 @@ class NilaiInputController extends Controller
                         'created_at'  => now(),
                         'updated_at'  => now(),
                     ];
+
+                    $nilaiInsert = Nilai::create($nilaiInsert);
+
+                    foreach ($nilai as $komponenNilaiId => $value) {
+                        $nilaiDetail[] = [
+                            'siswa_id'          => $siswaId,
+                            'jadwal_id'         => $jadwal->id,
+                            'nilai_id'          => $nilaiInsert->id,
+                            'komponen_nilai_id' => $komponenNilaiId,
+                            'nilai'             => $value,
+                            'created_at'        => now(),
+                            'updated_at'        => now(),
+                        ];
+                    }
+
+                    NilaiDetail::insert($nilaiDetail);
                 }
             }
-
-            Nilai::insert($nilaiInsert);
 
             \DB::commit();
             return redirect()->route('guru.nilai.index')->with('success', 'Absensi berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            dd(implode(' ', collect($e->errors())->flatten()->toArray()));
             return redirect()->route('guru.nilai.input.index', ['jadwal' => $jadwal])
                 ->withErrors($e->validator)
                 ->withInput()
@@ -185,6 +186,5 @@ class NilaiInputController extends Controller
             \DB::rollback();
             return redirect()->route('guru.nilai.input.index', ['jadwal' => $jadwal])->with('error', $th->getMessage())->withInput();
         }
-
     }
 }
