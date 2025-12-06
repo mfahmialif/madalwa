@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -124,10 +125,18 @@ class JadwalDetailController extends Controller
                                 ->where('jam_selesai', '>=', $request->jam_selesai);
                         });
                 })
-                ->exists();
+                ->first();
 
             if ($bentrokGuru) {
-                abort(403, 'Jadwal guru bentrok, guru sudah dijadwalkan di waktu yang sama. Harap memilih guru yang lain.');
+                $mp = $bentrokGuru->kurikulumDetail->mataPelajaran->nama;
+                $kelasSub = $bentrokGuru->kelasSub;
+                $sub = $kelasSub->sub;
+                $kelas = $kelasSub->kelas->angka;
+                $unit = $kelasSub->jurusan->unitSekolah->nama_unit;
+                $jurusan = $kelasSub->jurusan->nama_jurusan;
+                $keterangan = "$mp - $kelas $sub - $jurusan - $unit";
+
+                abort(403, "Jadwal guru bentrok, guru sudah dijadwalkan di waktu yang sama. Harap memilih guru yang lain: $keterangan");
             }
 
             // Cek bentrok mata pelajaran
@@ -136,10 +145,18 @@ class JadwalDetailController extends Controller
                 ->when($request->jadwal_id, function ($q) use ($request) {
                     $q->where('id', '!=', $request->jadwal_id);
                 })
-                ->exists();
+                ->first();
 
             if ($bentrokMapel) {
-                abort(403, 'Sudah ada mata pelajaran ini di kelas ini. Harap cek jadwal kelas.');
+                $mp = $bentrokMapel->kurikulumDetail->mataPelajaran->nama;
+                $kelasSub = $bentrokMapel->kelasSub;
+                $sub = $kelasSub->sub;
+                $kelas = $kelasSub->kelas->angka;
+                $unit = $kelasSub->jurusan->unitSekolah->nama_unit;
+                $jurusan = $kelasSub->jurusan->nama_jurusan;
+                $keterangan = "$mp - $kelas $sub - $jurusan - $unit";
+
+                abort(403, "Sudah ada mata pelajaran ini di kelas ini. Harap cek jadwal kelas: $keterangan");
             }
 
             $jadwal                      = new Jadwal();
@@ -170,7 +187,6 @@ class JadwalDetailController extends Controller
                 'tahunPelajaran'  => $tahunPelajaran,
             ])->with('error', $th->getMessage())->withInput();
         }
-
     }
 
     public function edit()
@@ -258,7 +274,6 @@ class JadwalDetailController extends Controller
                 'jadwal'          => $jadwal,
             ])->with('error', $th->getMessage())->withInput();
         }
-
     }
 
     public function destroy()
@@ -292,5 +307,4 @@ class JadwalDetailController extends Controller
             ]);
         }
     }
-
 }
