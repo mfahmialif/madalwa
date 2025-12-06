@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Jadwal;
-use App\Models\KurikulumDetail;
-use App\Models\TahunPelajaran;
+use App\Models\BobotNilai;
 use Illuminate\Http\Request;
+use App\Models\TahunPelajaran;
+use App\Models\KurikulumDetail;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
 
 class JadwalDetailController extends Controller
 {
@@ -282,6 +283,8 @@ class JadwalDetailController extends Controller
             $jadwal          = Jadwal::findOrFail(request()->route('jadwal'));
             $kurikulumDetail = $this->kurikulumDetail;
             $tahunPelajaran  = $this->tahunPelajaran;
+            
+            BobotNilai::where("jadwal_id", $jadwal->id)->delete();
             $jadwal->delete();
 
             return response()->json([
