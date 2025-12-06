@@ -220,5 +220,47 @@
             })
             return datatable;
         }
+
+        function deleteData(event) {
+            event.preventDefault();
+            var id = event.target.querySelector('input[name="id"]').value;
+            var name = event.target.querySelector('input[name="name"]').value;
+            swal({
+                title: "Apa kamu yakin?",
+                text: "Data yang akan dihapus: " + name + ". Data tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        value: true,
+                        visible: true,
+                        className: "",
+                        closeModal: true
+                    },
+                    cancel: "Batalkan",
+                },
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    var url = "{{ route('admin.nilai.destroy', ['jadwal' => '_jadwal']) }}";
+                    url = url.replace('_jadwal', id);
+                    var fd = new FormData($(event.target)[0]);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function() {
+                            toastr.info('Loading...');
+                        },
+                        success: function(response) {
+                            searchDataTable('#tableMutasiMasuk', true);
+                            showToastr(response.status, response.message);
+                        }
+                    });
+                }
+            });
+        }
     </script>
 @endpush

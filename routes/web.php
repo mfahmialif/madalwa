@@ -122,7 +122,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::put('/{mutasi}/update', [MutasiKeluarController::class, 'update'])->name('admin.mutasi-keluar.update');
             Route::delete('/{mutasi}/destroy', [MutasiKeluarController::class, 'destroy'])->name('admin.mutasi-keluar.destroy');
         });
-         Route::prefix('kelulusan')->group(function () {
+        Route::prefix('kelulusan')->group(function () {
             Route::get('/', [KelulusanController::class, 'index'])->name('admin.kelulusan.index');
             Route::get('/data', [KelulusanController::class, 'data'])->name('admin.kelulusan.data');
             Route::put('/update-status-lulus', [KelulusanController::class, 'updateStatusLulus'])->name('admin.kelulusan.update-status-lulus');
@@ -149,7 +149,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
                 Route::get('/', [ImportController::class, 'showKurikulum'])->name('admin.import.kurikulum.show');
                 Route::post('/save', [ImportController::class, 'importKurikulum'])->name('admin.import.kurikulum.save');
             });
-
         });
         Route::prefix('jurusan')->group(function () {
             Route::get('/', [JurusanController::class, 'index'])->name('admin.jurusan.index');
@@ -221,6 +220,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
                     Route::post('/', [NilaiInputController::class, 'store'])->name('admin.nilai.input.store');
                     Route::get('/data-form', [NilaiInputController::class, 'dataForm'])->name('admin.nilai.input.data-form');
                 });
+
+                Route::delete('destroy', [NilaiController::class, 'destroy'])->name('admin.nilai.destroy');
             });
         });
         Route::prefix('guru')->group(function () {
@@ -325,7 +326,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
                 Route::get('/{jadwal}/edit', [JadwalDetailController::class, 'edit'])->name('admin.jadwal.detail.edit');
                 Route::put('/{jadwal}/update', [JadwalDetailController::class, 'update'])->name('admin.jadwal.detail.update');
                 Route::delete('/{jadwal}/destroy', [JadwalDetailController::class, 'destroy'])->name('admin.jadwal.detail.destroy');
-
             });
         });
         Route::prefix('user')->group(function () {
@@ -347,7 +347,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::delete('/{role}/destroy', [RoleController::class, 'destroy'])->name('admin.role.destroy');
         });
     });
-
 });
 Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function () {
     Route::prefix('dashboard')->group(function () {
@@ -395,6 +394,8 @@ Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function () {
                 Route::post('/', [GuruNilaiInputController::class, 'store'])->name('guru.nilai.input.store');
                 Route::get('/data-form', [GuruNilaiInputController::class, 'dataForm'])->name('guru.nilai.input.data-form');
             });
+
+            Route::delete('destroy', [GuruNilaiController::class, 'destroy'])->name('guru.nilai.destroy');
         });
     });
 

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Kelas;
 use App\Models\Nilai;
 use App\Models\Jadwal;
+use App\Models\BobotNilai;
+use App\Models\NilaiDetail;
 use App\Models\UnitSekolah;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TahunPelajaran;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class NilaiController extends Controller
@@ -108,16 +111,64 @@ class NilaiController extends Controller
                 ';
             })
             ->addColumn('action', function ($row) {
+                $hari       = e($row->hari);
+                $jamMulai   = e(substr($row->jam_mulai, 0, 5)); // contoh: '07:30:00' -> '07:30'
+                $jamSelesai = e(substr($row->jam_selesai, 0, 5));
+
                 $content = '<div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a class="dropdown-item" href="' . route("admin.nilai.bobot-nilai.index", ['jadwal' => $row]) . '"><i class="fa-solid fa-eye m-r-5"></i> Bobot Nilai</a>
                             <a class="dropdown-item" href="' . route("admin.nilai.input.index", ['jadwal' => $row]) . '"><i class="fa-solid fa-pen m-r-5"></i> Input Nilai</a>
+                            <form action="" onsubmit="deleteData(event)" method="POST">
+                            ' . method_field('delete') . csrf_field() . '
+                                <input type="hidden" name="id" value="' . $row->id . '">
+                                <input type="hidden" name="name" value="' . $row->mata_pelajaran_nama . ': ' . $hari . ' - ' . $jamMulai . ' - ' . $jamSelesai . '">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fa fa-trash-alt m-r-5"></i> Hapus nilai dan bobot siswa
+                                </button>
+                            </form>
                         </div>
                     </div>';
                 return $content;
             })
             ->rawColumns(['action', 'kelas_angka', 'mata_pelajaran_nama', 'guru_nama', 'hari'])
             ->toJson();
+    }
+
+    public function destroy(Jadwal $jadwal)
+    {
+        try {
+            DB::beginTransaction();
+
+            BobotNilai::where('jadwal_id', $jadwal->id)->delete();
+            NilaiDetail::where('jadwal_id', $jadwal->id)->delete();
+            Nilai::where('jadwal_id', $jadwal->id)->delete();
+
+            DB::commit();
+            return response()->json([
+                'status'  => true,
+                'message' => 'Nilai berhasil dihapus',
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            if ($e->getCode() == '23000') {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Nilai  tidak dapat dihapus karena masih digunakan oleh user.',
+                ]);
+            }
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Terjadi kesalahan pada database: ' . $e->getMessage(),
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status'  => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 }
