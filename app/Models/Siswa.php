@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,11 @@ class Siswa extends Model
         // get last kelasSiswa
         $kelasSiswa = $this->kelasSiswa()->orderBy('id', 'desc')->first();
         $kelas      = $this->kelas;
-        $response   = $kelasSiswa ? $kelas->angka . ' (' . $kelas->unitSekolah->nama_unit . ')' . ' - ' . $kelasSiswa->kelasSub->sub : 'Belum ada kelas';
+        $jurusan    = $this->jurusan;
+        $unitSekolah = $kelas->unitSekolah;
+
+        $response   = $kelasSiswa ? $kelas->angka .' '.$kelasSiswa->kelasSub->sub." - $unitSekolah->nama_unit - $jurusan->nama_jurusan" :
+            "$kelas->angka - $unitSekolah->nama_unit - $jurusan->nama_jurusan";
         return $response;
     }
 
@@ -63,5 +68,9 @@ class Siswa extends Model
     public function mutasi()
     {
         return $this->hasMany(Mutasi::class);
+    }
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
     }
 }
