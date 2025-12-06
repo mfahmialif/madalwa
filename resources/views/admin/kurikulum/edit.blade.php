@@ -43,6 +43,7 @@
         $('#form_edit').find('select[name="tahun_pelajaran_id"]').val(kurikulum.tahun_pelajaran_id).trigger('change');
         $('#form_edit').find('input[name="kode"]').val(kurikulum.kode);
         $('#form_edit').find('input[name="nama"]').val(kurikulum.nama);
+        loadMataPelajaran();
 
         function setMataPelajaranKurikulum() {
             kurikulum.detail.forEach(element => {
