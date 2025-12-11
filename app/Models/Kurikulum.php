@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,11 +16,18 @@ class Kurikulum extends Model
         return $this->belongsTo(TahunPelajaran::class);
     }
 
-    public function detail(){
+    public function detail()
+    {
         return $this->hasMany(KurikulumDetail::class);
     }
 
-    public function unitSekolah(){
+    public function unitSekolah()
+    {
         return $this->belongsTo(UnitSekolah::class);
+    }
+
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class, 'kurikulum_id', 'id');
     }
 }

@@ -18,7 +18,7 @@ class CreateSiswaTable extends Migration
             $table->foreignId('kelas_id')->nullable()->constrained('kelas');
             $table->foreignId('tahun_pelajaran_id')->constrained('tahun_pelajaran');
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('kurikulum_id')->constrained('kurikulum');
+            $table->foreignId('kurikulum_id')->nullable()->constrained('kurikulum');
 
             // Student Information
             $table->string('nama_siswa');

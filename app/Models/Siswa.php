@@ -19,10 +19,10 @@ class Siswa extends Model
         $kelasSiswa = $this->kelasSiswa()->orderBy('id', 'desc')->first();
         $kelas      = $this->kelas;
         $jurusan    = $this->jurusan;
-        $unitSekolah = $kelas->unitSekolah;
+        $unitSekolah = @$kelas->unitSekolah;
 
-        $response   = $kelasSiswa ? $kelas->angka .' '.$kelasSiswa->kelasSub->sub." - $unitSekolah->nama_unit - $jurusan->nama_jurusan" :
-            "$kelas->angka - $unitSekolah->nama_unit - $jurusan->nama_jurusan";
+        $response   = $kelasSiswa ? @$kelas->angka . ' ' . $kelasSiswa->kelasSub->sub . " - " . @$unitSekolah->nama_unit . " - " . $jurusan->nama_jurusan :
+            @$kelas->angka . " - " . @$unitSekolah->nama_unit . " - " . $jurusan->nama_jurusan;
         return $response;
     }
 

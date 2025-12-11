@@ -29,6 +29,9 @@
     <!-- Datatables CSS -->
     <link rel="stylesheet" href="{{ asset('template') }}/assets/plugins/datatables/datatables.min.css">
 
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="{{ asset('template') }}/assets/plugins/datatables/buttons.dataTables.min.css">
+
     <!-- Feathericon CSS -->
     <link rel="stylesheet" href="{{ asset('template') }}/assets/css/feather.css">
 
@@ -48,15 +51,15 @@
         @include('layouts.admin.navbar')
 
         @if (\Auth::user()->role->nama == 'guru')
-            @include('layouts.admin.sidebar-guru')
+        @include('layouts.admin.sidebar-guru')
         @elseif (\Auth::user()->role->nama == 'admin')
-            @include('layouts.admin.sidebar')
+        @include('layouts.admin.sidebar')
         @elseif (\Auth::user()->role->nama == 'unit sekolah')
-            @include('layouts.admin.sidebar-unit-sekolah')
+        @include('layouts.admin.sidebar-unit-sekolah')
         @elseif (\Auth::user()->role->nama == 'kepala sekolah')
-            @include('layouts.admin.sidebar-kepala')
+        @include('layouts.admin.sidebar-kepala')
         @else
-            @include('layouts.admin.sidebar-siswa')
+        @include('layouts.admin.sidebar-siswa')
         @endif
 
         <div class="page-wrapper">
@@ -307,12 +310,22 @@
     <script src="{{ asset('template') }}/assets/js/select2.min.js"></script>
 
     <!-- Datatables JS -->
-    <script src="{{ asset('template') }}/assets/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="{{ asset('template') }}/assets/plugins/datatables/datatables.min.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/datatables-simple.js"></script>
+
+    <!-- DataTables Buttons JS -->
+    <script src="{{ asset('template') }}/assets/plugins/datatables/exportalldata.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/dataTables.buttons.min.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/jszip.min.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/pdfmake.min.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/vfs_fonts.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/buttons.html5.min.js"></script>
+    <script src="{{ asset('template') }}/assets/plugins/datatables/buttons.print.min.js"></script>
 
     <!-- counterup JS -->
     <script src="{{ asset('template') }}/assets/js/jquery.waypoints.js"></script>
     <script src="{{ asset('template') }}/assets/js/jquery.counterup.min.js"></script>
+
 
     <!-- Apexchart JS -->
     <script src="{{ asset('template') }}/assets/plugins/apexchart/apexcharts.min.js"></script>
@@ -328,18 +341,19 @@
     <script src="{{ asset('template') }}/assets/js/jquery.loading.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ asset('template') }}/assets/js/toastrconfig.js"></script>
-    <script src="{{ asset('template') }}/assets/js/custom.js"></script>
+    <script src="{{ asset('template') }}/assets/js/custom.js?v=2"></script>
     <script src="{{ asset('template') }}/assets/js/app.js"></script>
 
     @if (session('success') || session('error'))
-        <script>
-            swal({
-                title: "{{ session('success') ? 'Success!' : 'Error!' }}",
-                text: "{{ session('success') ?? session('error') }}",
-                icon: "{{ session('success') ? 'success' : 'error' }}",
-                button: "OK",
-            });
-        </script>
+    <script>
+        swal({
+            title: "{{ session('success') ? 'Success!' : 'Error!' }}"
+            , text: "{{ session('success') ?? session('error') }}"
+            , icon: "{{ session('success') ? 'success' : 'error' }}"
+            , button: "OK"
+        , });
+
+    </script>
     @endif
 
     @stack('script')

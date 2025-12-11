@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\CetakLaporanController;
 use App\Http\Controllers\Admin\JadwalDetailController;
 use App\Http\Controllers\Admin\MutasiKeluarController;
 use App\Http\Controllers\Admin\KepalaSekolahController;
+use App\Http\Controllers\Admin\KurikulumSiswaController;
 use App\Http\Controllers\Admin\MataPelajaranController;
 use App\Http\Controllers\Admin\TahunPelajaranController;
 use App\Http\Controllers\Admin\LaporanAkademikController;
@@ -313,6 +314,16 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/{kurikulum}/edit', [KurikulumController::class, 'edit'])->name('admin.kurikulum.edit');
             Route::put('/{kurikulum}/update', [KurikulumController::class, 'update'])->name('admin.kurikulum.update');
             Route::delete('/{kurikulum}/destroy', [KurikulumController::class, 'destroy'])->name('admin.kurikulum.destroy');
+
+            Route::prefix('{kurikulum}/siswa')->group(function () {
+                Route::get('/', [KurikulumSiswaController::class, 'index'])->name('admin.kurikulum.siswa.index');
+                Route::get('/data', [KurikulumSiswaController::class, 'data'])->name('admin.kurikulum.siswa.data');
+                Route::get('/data-siswa', [KurikulumSiswaController::class, 'dataSiswa'])->name('admin.kurikulum.siswa.data-siswa');
+                Route::get('/add', [KurikulumSiswaController::class, 'add'])->name('admin.kurikulum.siswa.add');
+                Route::post('/', [KurikulumSiswaController::class, 'store'])->name('admin.kurikulum.siswa.store');
+                Route::delete('/bulk-destroy', [KurikulumSiswaController::class, 'bulkDestroy'])->name('admin.kurikulum.siswa.bulk-destroy');
+                Route::delete('/destroy', [KurikulumSiswaController::class, 'destroy'])->name('admin.kurikulum.siswa.destroy');
+            });
         });
         Route::prefix('jadwal')->group(function () {
             Route::get('/', [JadwalController::class, 'index'])->name('admin.jadwal.index');

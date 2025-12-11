@@ -1,14 +1,17 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Siswa;
 use App\Models\Kurikulum;
-use App\Models\KurikulumDetail;
-use App\Models\MataPelajaran;
-use App\Models\TahunPelajaran;
 use App\Models\UnitSekolah;
 use Illuminate\Http\Request;
+use App\Models\MataPelajaran;
+use App\Models\TahunPelajaran;
+use App\Models\KurikulumDetail;
+use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class KurikulumController extends Controller
 {
@@ -22,14 +25,16 @@ class KurikulumController extends Controller
     public function index()
     {
         $unitSekolah = UnitSekolah::all();
-        return view('admin.kurikulum.index', compact('unitSekolah'));
+        $tahunPelajaran = TahunPelajaran::all();
+        return view('admin.kurikulum.index', compact('unitSekolah', 'tahunPelajaran'));
     }
     public function data(Request $request)
     {
         $search = request('search.value');
         $data   = Kurikulum::join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'kurikulum.tahun_pelajaran_id')
             ->join('unit_sekolah', 'unit_sekolah.id', '=', 'kurikulum.unit_sekolah_id')
-            ->select('kurikulum.*',
+            ->select(
+                'kurikulum.*',
                 'tahun_pelajaran.nama as tahun_pelajaran_nama',
                 'tahun_pelajaran.semester as tahun_pelajaran_semester',
                 'unit_sekolah.nama_unit as nama_unit'
@@ -42,6 +47,9 @@ class KurikulumController extends Controller
                     $query->orWhere('tahun_pelajaran.semester', 'LIKE', "%$search%");
                     $query->orWhere('tahun_pelajaran.kode', 'LIKE', "%$search%");
                 });
+                $query->when($request->tahun_pelajaran_id, function ($q) use ($request) {
+                    $q->where('kurikulum.tahun_pelajaran_id', $request->tahun_pelajaran_id);
+                });
                 $query->when($request->unit_sekolah_id, function ($q) use ($request) {
                     $q->where('kurikulum.unit_sekolah_id', $request->unit_sekolah_id);
                 });
@@ -50,6 +58,7 @@ class KurikulumController extends Controller
                 $content = '<div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                         <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="' . route("admin.kurikulum.siswa.index", $row) . '"><i class="fa-solid fa-eye m-r-5"></i> Siswa</a>
                             <a class="dropdown-item" href="' . route("admin.kurikulum.edit", $row) . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>
                             <form action="" onsubmit="deleteData(event)" method="POST">
                             ' . method_field('delete') . csrf_field() . '
@@ -106,12 +115,12 @@ class KurikulumController extends Controller
                         'mata_pelajaran_id' => $value,
                     ];
                 }
-    
+
                 KurikulumDetail::insert($kurikulumDetail);
             }
 
             \DB::commit();
-            return redirect()->route('admin.kurikulum.index')->with('success', 'Mata Pelajaran berhasil ditambahkan');
+            return redirect()->route('admin.kurikulum.index')->with('success', 'Kurikulum berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.kurikulum.add')
                 ->withErrors($e->validator)
@@ -167,7 +176,7 @@ class KurikulumController extends Controller
             }
 
             \DB::commit();
-            return redirect()->route('admin.kurikulum.index')->with('success', 'Mata Pelajaran berhasil diupdate');
+            return redirect()->route('admin.kurikulum.index')->with('success', 'Kurikulum berhasil diupdate');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.kurikulum.edit')
                 ->withErrors($e->validator)
@@ -181,18 +190,25 @@ class KurikulumController extends Controller
     public function destroy(Kurikulum $kurikulum)
     {
         try {
+            DB::beginTransaction();
+            Siswa::where('kurikulum_id', $kurikulum->id)->update([
+                'kurikulum_id' => null
+            ]);
+
             KurikulumDetail::where('kurikulum_id', $kurikulum->id)->delete();
             $kurikulum->delete();
+
+            DB::commit();
             return response()->json([
                 'status'  => true,
-                'message' => 'Mata Pelajaran berhasil dihapus',
+                'message' => 'Kurikulum berhasil dihapus',
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
-
+            DB::rollBack();
             if ($e->getCode() == '23000') {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Mata Pelajaran tidak dapat dihapus karena masih ada jadwal yang masih aktif.',
+                    'message' => 'Kurikulum tidak dapat dihapus karena masih ada jadwal yang masih aktif.',
                 ]);
             }
 
@@ -201,6 +217,7 @@ class KurikulumController extends Controller
                 'message' => 'Terjadi kesalahan pada database: ' . $e->getMessage(),
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'status'  => false,
                 'message' => $th->getMessage(),

@@ -1,14 +1,14 @@
 @extends('layouts.admin.template')
-@section('title', 'Guru')
+@section('title', 'Kurikulum Siswa')
 @section('content')
 <!-- Page Header -->
 <div class="page-header">
     <div class="row">
         <div class="col-sm-12">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.guru.index') }}">Guru </a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.kurikulum.index') }}">Kurikulum </a></li>
                 <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                <li class="breadcrumb-item active">Data Guru</li>
+                <li class="breadcrumb-item active">Data Kurikulum Siswa</li>
             </ul>
         </div>
     </div>
@@ -17,8 +17,26 @@
 
 <div class="row">
     <div class="col-sm-12">
-
+        <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
+            <i class="feather-info"></i>
+            <div>
+                <strong>Informasi:</strong> Anda sedang melihat data siswa untuk
+                <strong>kurikulum: {{ $kurikulum->nama }}</strong>.
+            </div>
+        </div>
         <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id" required>
+                        <option value="">Semua Tahun Pelajaran</option>
+                        @foreach ($tahunPelajaran as $item)
+                        <option value="{{ $item->id }}">
+                            {{ $item->nama }} {{ $item->semester }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div class="col-12 col-md-6">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
@@ -37,38 +55,27 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="input-block local-forms">
-                    <select class="form-control select2 filter-dt" id="filter_jenis_kelamin" required>
-                        <option value="">Semua Jenis Kelamin</option>
-                        @foreach ($jenisKelamin as $item)
-                        <option value="{{ $item }}">
-                            {{ $item }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
         </div>
-
         <div class="card card-table show-entire">
             <div class="card-body">
+
                 <!-- Table Header -->
                 <div class="page-table-header mb-2">
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="doctor-table-blk">
-                                <h3>Data Guru</h3>
+                                <h3>Data Kurikulum Siswa</h3>
                                 <div class="doctor-search-blk mt-3 mt-md-0">
                                     <div class="top-nav-search table-search-blk">
-                                        <form onsubmit="event.preventDefault(); searchDataTable('#tableGuru');">
-                                            <input type="text" class="form-control" id="search-table" oninput="searchDataTable('#tableGuru')" placeholder="Search here">
+                                        <form onsubmit="event.preventDefault(); searchDataTable('#table1');">
+                                            <input type="text" class="form-control" id="search-table" oninput="searchDataTable('#table1')" placeholder="Search here">
                                             <a class="btn"><img src="{{ asset('template') }}/assets/img/icons/search-normal.svg" alt=""></a>
                                         </form>
                                     </div>
                                     <div class="add-group">
-                                        <a href="{{ route('admin.guru.add') }}" class="btn btn-primary add-pluss ms-2"><img src="{{ asset('template') }}/assets/img/icons/plus.svg" alt=""></a>
-                                        <a href="javascript:void(0);" onclick="searchDataTable('#tableGuru', true)" class="btn btn-primary doctor-refresh ms-2"><img src="{{ asset('template') }}/assets/img/icons/re-fresh.svg" alt=""></a>
+                                        <a href="{{ route('admin.kurikulum.siswa.add', ['kurikulum' => $kurikulum]) }}" class="btn btn-primary add-pluss ms-2"><img src="{{ asset('template') }}/assets/img/icons/plus.svg" alt=""></a>
+                                        <a href="javascript:void(0);" onclick="searchDataTable('#table1', true)" class="btn btn-primary doctor-refresh ms-2"><img src="{{ asset('template') }}/assets/img/icons/re-fresh.svg" alt=""></a>
+                                        <a href="javascript:void(0);" onclick="deleteSiswa()" class="btn btn-primary doctor-refresh ms-2"><img src="{{ asset('template') }}/assets/img/icons/trash.svg" alt=""></a>
                                     </div>
                                 </div>
                             </div>
@@ -78,19 +85,25 @@
                             <a href="javascript:;" id="btn-copy" class=" me-2"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-02.svg" alt=""></a>
                             <a href="javascript:;" id="btn-csv" class=" me-2"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-03.svg" alt=""></a>
                             <a href="javascript:;" id="btn-excel"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-04.svg" alt=""></a>
+
                         </div>
                     </div>
                 </div>
                 <!-- /Table Header -->
 
                 <div class="table-responsive">
-                    <table id="tableGuru" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
+                    <table id="table1" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
                         <thead>
                             <tr>
+                                <th style="width: 5%">
+                                    <div class="form-check check-tables">
+                                        <input class="form-check-input" id="check-all" type="checkbox" value="something">
+                                    </div>
+                                </th>
                                 <th style="width: 5%">No</th>
-                                <th>Nama</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Status</th>
+                                <th style="width: 15%">Tahun Pelajaran</th>
+                                <th style="width: 15%">Unit</th>
+                                <th>Siswa</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -106,7 +119,9 @@
 @endsection
 @push('script')
 <script>
-    var table1 = dataTable('#tableGuru');
+    let selectedIds = new Set();
+
+    var table1 = dataTable('#table1');
     $('#search-table').focus();
 
     var searchTimeout = null;
@@ -118,11 +133,33 @@
 
     $('#check-all').on('change', function() {
         $('.check-table').prop('checked', this.checked);
+        $('.check-table').each(function() {
+            saveSelectedId(this);
+        });
     });
 
     $(document).on('change', '.check-table', function() {
         $('#check-all').prop('checked', $('.check-table:checked').length === $('.check-table').length);
+        saveSelectedId(this);
     });
+
+    $('#table1').on('draw.dt', function() {
+        $('.check-table').each(function() {
+            if (selectedIds.has($(this).val())) {
+                $(this).prop('checked', true);
+            }
+        });
+        $('#check-all').prop('checked', false);
+    });
+
+    function saveSelectedId(element) {
+        let id = $(element).val();
+        if (element.checked) {
+            selectedIds.add(id);
+        } else {
+            selectedIds.delete(id);
+        }
+    }
 
     function searchDataTable(tableId, refresh = false) {
         var time = refresh ? 0 : 700;
@@ -137,7 +174,7 @@
     }
 
     function dataTable(tableId) {
-        var url = "{{ route('admin.guru.data') }}"
+        var url = "{{ route('admin.kurikulum.siswa.data', ['kurikulum' => $kurikulum]) }}"
         var datatable = $(tableId).DataTable({
             // responsive: true,
             dom: "rt<'d-flex justify-content-end m-3 align-items-center'l p><'d-flex justify-content-between m-3'iB>"
@@ -145,7 +182,7 @@
             , processing: true
             , serverSide: true
             , order: [
-                [0, "desc"]
+                [1, "desc"]
             ]
             , search: {
                 return: true
@@ -153,31 +190,46 @@
             , ajax: {
                 url: url
                 , data: function(d) {
-                    d.jenis_kelamin = $('#filter_jenis_kelamin').val();
+                    d.tahun_pelajaran_id = $('#filter_tahun_pelajaran_id').val();
                     d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                     // d.search = $('#search-table').val();
                 }
             , }
+            , lengthMenu: [
+                [10, 20, 50, 100, -1]
+                , [10, 20, 50, 100, 'All']
+            ]
             , deferRender: true
             , columns: [{
+                    data: 'id'
+                    , render: function(data, type, row, meta) {
+                        return `
+                            <div class="form-check check-tables">
+                                <input class="form-check-input check-table status_daftar_checkbox" type="checkbox" name="status_daftar_checkbox[]" value="${data}">
+                            </div>
+                            `;
+                    }
+                    , className: "text-middle"
+                    , orderable: false
+                , }, {
                     data: 'id'
                     , render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 , }
                 , {
-                    data: 'nama'
-                    , name: 'nama'
+                    data: 'tahun_pelajaran_kode'
+                    , name: 'tahun_pelajaran_kode'
                     , className: "text-middle"
                 }
                 , {
-                    data: 'jenis_kelamin'
-                    , name: 'jenis_kelamin'
+                    data: 'nama_unit'
+                    , name: 'nama_unit'
                     , className: "text-middle"
                 }
                 , {
-                    data: 'status'
-                    , name: 'status'
+                    data: 'nama_siswa'
+                    , name: 'nama_siswa'
                     , className: "text-middle"
                 }
                 , {
@@ -213,8 +265,8 @@
             , dangerMode: true
         , }).then((willDelete) => {
             if (willDelete) {
-                var url = "{{ route('admin.guru.destroy', ['guru' => '_guru']) }}";
-                url = url.replace('_guru', id);
+                var url =
+                    "{{ route('admin.kurikulum.siswa.destroy', ['kurikulum' => $kurikulum]) }}";
                 var fd = new FormData($(event.target)[0]);
                 $.ajax({
                     type: "post"
@@ -234,36 +286,49 @@
         });
     }
 
-    function changeStatusDaftar(statusDaftar) {
+    function deleteSiswa() {
 
-        let siswa_id = [];
-        // Ambil semua checkbox yang diceklis
-        $('.status_daftar_checkbox:checked').each(function() {
-            siswa_id.push($(this).val());
-        });
+        let siswa_id = Array.from(selectedIds);
 
         if (siswa_id.length === 0) {
             swal('Peringatan!', 'Pilih setidaknya satu siswa terlebih dahulu.', 'warning');
             return;
         }
 
-        $.ajax({
-            type: "PUT"
-            , url: "{{ route('admin.guru.update-status-daftar') }}"
-            , data: {
-                _token: "{{ csrf_token() }}"
-                , siswa_id: siswa_id
-                , status_daftar: statusDaftar
-            }
-            , success: function(response) {
-                showToastr(response.status, response.message);
-                table1.ajax.reload();
-            }
-            , error: function(xhr) {
-                toastr.error(xhr.responseText);
-            }
-            , complete: function() {
-                $('#check-all').prop('checked', false);
+        swal({
+            title: "Apa kamu yakin?"
+            , text: "Data yang akan dihapus tidak akan bisa dikembalikan"
+            , icon: "warning"
+            , buttons: {
+                confirm: {
+                    text: "OK"
+                    , value: true
+                    , visible: true
+                    , className: ""
+                    , closeModal: true
+                }
+                , cancel: "Batalkan"
+            , }
+            , dangerMode: true
+        , }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: "DELETE"
+                    , url: "{{ route('admin.kurikulum.siswa.bulk-destroy', ['kurikulum' => $kurikulum]) }}"
+                    , data: {
+                        _token: "{{ csrf_token() }}"
+                        , id: siswa_id
+                    , }
+                    , success: function(response) {
+                        showToastr(response.status, response.message);
+                        selectedIds.clear();
+                        table1.ajax.reload();
+                        $('#check-all').prop('checked', false);
+                    }
+                    , error: function(xhr) {
+                        toastr.error(xhr.responseText);
+                    }
+                , });
             }
         });
     }
