@@ -154,7 +154,8 @@ class SiswaController extends Controller
         $status         = Helper::getEnumValues('siswa', 'status');
         $unitSekolah    = UnitSekolah::all();
         $kelas          = Kelas::with('unitSekolah')->orderBy('unit_sekolah_id')->orderBy('angka')->get();
-        return view('admin.siswa.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah', 'kelas'));
+        $status         = Helper::getEnumValues('siswa', 'status');
+        return view('admin.siswa.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah', 'kelas', 'status'));
     }
 
     public function data(Request $request)
@@ -182,6 +183,9 @@ class SiswaController extends Controller
                 });
                 $query->when($request->kelas_id, function ($q) use ($request) {
                     $q->where('siswa.kelas_id', $request->kelas_id);
+                });
+                $query->when($request->status, function ($q) use ($request) {
+                    $q->where('siswa.status', $request->status);
                 });
                 $query->where(function ($query) use ($search) {
                     $query->orWhere('siswa.nama_siswa', 'LIKE', "%$search%");

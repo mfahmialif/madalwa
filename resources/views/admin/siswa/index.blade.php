@@ -67,11 +67,23 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_jenis_kelamin" required>
                         <option value="">Semua Jenis Kelamin</option>
                         @foreach ($jenisKelamin as $item)
+                        <option value="{{ $item }}">
+                            {{ $item }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-1">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_status" required>
+                        <option value="">Status</option>
+                        @foreach ($status as $item)
                         <option value="{{ $item }}">
                             {{ $item }}
                         </option>
@@ -154,6 +166,40 @@
 <script>
     let selectedIds = new Set();
 
+    // Read URL parameters and set filter values
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // Set filter values from URL parameters
+    var urlKelasId = getUrlParameter('kelas_id');
+    var urlJenisKelamin = getUrlParameter('jenis_kelamin');
+    var urlStatus = getUrlParameter('status');
+    var urlTahunPelajaran = getUrlParameter('tahun_pelajaran_id');
+    var urlUnitSekolah = getUrlParameter('unit_sekolah_id');
+
+    if (urlKelasId) {
+        $('#filter_kelas_id').val(urlKelasId);
+    }
+    if (urlJenisKelamin) {
+        $('#filter_jenis_kelamin').val(urlJenisKelamin);
+    }
+    if (urlStatus) {
+        $('#filter_status').val(urlStatus);
+    }
+    if (urlTahunPelajaran) {
+        $('#filter_tahun_pelajaran_id').val(urlTahunPelajaran);
+    }
+    if (urlUnitSekolah) {
+        $('#filter_unit_sekolah_id').val(urlUnitSekolah);
+    }
+
+    // Reinitialize select2 with new values
+    $('.select2').select2();
+
     var table1 = dataTable('#table1');
     $('#search-table').focus();
 
@@ -227,6 +273,7 @@
                     d.jenis_kelamin = $('#filter_jenis_kelamin').val();
                     d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                     d.kelas_id = $('#filter_kelas_id').val();
+                    d.status = $('#filter_status').val();
                     // d.search = $('#search-table').val();
                 }
             , }

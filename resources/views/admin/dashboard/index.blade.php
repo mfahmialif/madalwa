@@ -168,9 +168,9 @@
                                             </div>
                                             <span style="font-size: 13px; font-weight: 500; color: #4a5568;">Laki-laki</span>
                                         </div>
-                                        <span class="badge bg-primary" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px;">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&jenis_kelamin=Laki-laki&status=aktif" class="badge bg-primary" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px; text-decoration: none;" title="Lihat siswa laki-laki kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['laki_laki'] }}
-                                        </span>
+                                        </a>
                                     </div>
 
                                     <!-- Perempuan -->
@@ -183,19 +183,20 @@
                                             </div>
                                             <span style="font-size: 13px; font-weight: 500; color: #4a5568;">Perempuan</span>
                                         </div>
-                                        <span class="badge bg-danger" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px;">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&jenis_kelamin=Perempuan&status=aktif" class="badge bg-danger" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px; text-decoration: none;" title="Lihat siswa perempuan kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['perempuan'] }}
-                                        </span>
+                                        </a>
                                     </div>
 
                                     <!-- Total -->
                                     <div class="text-center pt-3" style="border-top: 2px solid #e9ecef;">
                                         <p class="text-muted mb-1" style="font-size: 11px; font-weight: 600;">TOTAL SISWA</p>
-                                        <span class="badge" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); 
-                                                                        font-size: 18px; padding: 10px 20px; font-weight: 700; 
-                                                                        border-radius: 10px; color: #fff; box-shadow: 0 3px 10px rgba(253, 160, 133, 0.3);">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&status=aktif" class="badge" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); 
+                                                  font-size: 18px; padding: 10px 20px; font-weight: 700; 
+                                                  border-radius: 10px; color: #fff; box-shadow: 0 3px 10px rgba(253, 160, 133, 0.3);
+                                                  text-decoration: none; cursor: pointer;" title="Lihat semua siswa kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['total'] }}
-                                        </span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -281,9 +282,9 @@
                                             </div>
                                             <span style="font-size: 13px; font-weight: 500; color: #4a5568;">Laki-laki</span>
                                         </div>
-                                        <span class="badge bg-primary" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px;">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&jenis_kelamin=Laki-laki&status=tidak aktif" class="badge bg-primary" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px; text-decoration: none;" title="Lihat siswa laki-laki non aktif kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['laki_laki'] }}
-                                        </span>
+                                        </a>
                                     </div>
 
                                     <!-- Perempuan -->
@@ -296,19 +297,20 @@
                                             </div>
                                             <span style="font-size: 13px; font-weight: 500; color: #4a5568;">Perempuan</span>
                                         </div>
-                                        <span class="badge bg-danger" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px;">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&jenis_kelamin=Perempuan&status=tidak aktif" class="badge bg-danger" style="font-size: 15px; padding: 8px 15px; font-weight: 700; border-radius: 8px; text-decoration: none;" title="Lihat siswa perempuan non aktif kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['perempuan'] }}
-                                        </span>
+                                        </a>
                                     </div>
 
                                     <!-- Total -->
                                     <div class="text-center pt-3" style="border-top: 2px solid #e9ecef;">
                                         <p class="text-muted mb-1" style="font-size: 11px; font-weight: 600;">TOTAL SISWA</p>
-                                        <span class="badge" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); 
-                                                                        font-size: 18px; padding: 10px 20px; font-weight: 700; 
-                                                                        border-radius: 10px; color: #fff; box-shadow: 0 3px 10px rgba(253, 160, 133, 0.3);">
+                                        <a href="{{ route('admin.siswa.index') }}?kelas_id={{ $kelas['id'] }}&status=tidak aktif" class="badge" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); 
+                                                  font-size: 18px; padding: 10px 20px; font-weight: 700; 
+                                                  border-radius: 10px; color: #fff; box-shadow: 0 3px 10px rgba(253, 160, 133, 0.3);
+                                                  text-decoration: none; cursor: pointer;" title="Lihat semua siswa non aktif kelas {{ $kelas['nama_kelas'] }}">
                                             {{ $kelas['total'] }}
-                                        </span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
