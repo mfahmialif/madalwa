@@ -1,0 +1,219 @@
+@extends('layouts.admin.template')
+@section('title', 'Kamar')
+@section('content')
+<!-- Page Header -->
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('admin.kamar.index') }}">Kamar </a></li>
+                <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
+                <li class="breadcrumb-item active">Data Kamar</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="input-block local-forms">
+                    <label>Filter Unit Sekolah</label>
+                    <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id">
+                        @if (Auth::user()->role->nama == 'unit sekolah')
+                        <option value="{{ Auth::user()->unitSekolah->unit_sekolah_id }}">
+                            {{ Auth::user()->unitSekolah->unitSekolah->nama_unit }}
+                        </option>
+                        @else
+                        <option value="">Semua Unit Sekolah</option>
+                        @foreach ($unitSekolah as $item)
+                        <option value="{{ $item->id }}">
+                            {{ $item->nama_unit }}
+                        </option>
+                        @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-table show-entire">
+            <div class="card-body">
+                <!-- Table Header -->
+                <div class="page-table-header mb-2">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="doctor-table-blk">
+                                <h3><i class="fas fa-door-open me-2"></i>Data Kamar</h3>
+                                <div class="doctor-search-blk mt-3 mt-md-0">
+                                    <div class="top-nav-search table-search-blk">
+                                        <form onsubmit="event.preventDefault(); searchDataTable('#tableKamar');">
+                                            <input type="text" class="form-control" id="search-table" oninput="searchDataTable('#tableKamar')" placeholder="Cari kamar...">
+                                            <a class="btn"><img src="{{ asset('template') }}/assets/img/icons/search-normal.svg" alt=""></a>
+                                        </form>
+                                    </div>
+                                    <div class="add-group">
+                                        <a href="{{ route('admin.kamar.add') }}" class="btn btn-primary add-pluss ms-2"><img src="{{ asset('template') }}/assets/img/icons/plus.svg" alt=""></a>
+                                        <a href="javascript:void(0);" onclick="searchDataTable('#tableKamar', true)" class="btn btn-primary doctor-refresh ms-2"><img src="{{ asset('template') }}/assets/img/icons/re-fresh.svg" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto text-end float-end ms-auto download-grp">
+                            <a href="javascript:;" id="btn-pdf" class=" me-2"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-01.svg" alt=""></a>
+                            <a href="javascript:;" id="btn-copy" class=" me-2"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-02.svg" alt=""></a>
+                            <a href="javascript:;" id="btn-csv" class=" me-2"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-03.svg" alt=""></a>
+                            <a href="javascript:;" id="btn-excel"><img src="{{ asset('template') }}/assets/img/icons/pdf-icon-04.svg" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Table Header -->
+
+                <div class="table-responsive">
+                    <table id="tableKamar" class="table border-0 custom-table comman-table datatable mb-0 table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">No</th>
+                                <th>Nama Kamar</th>
+                                <th>Unit Sekolah</th>
+                                <th>Jumlah Siswa</th>
+                                <th>Keterangan</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+@push('script')
+<script>
+    var table1 = dataTable('#tableKamar');
+    $('#search-table').focus();
+
+    $('.filter-dt').change(function(e) {
+        e.preventDefault();
+        table1.ajax.reload();
+    });
+
+    var searchTimeout = null;
+
+    function searchDataTable(tableId, refresh = false) {
+        var time = refresh ? 0 : 700;
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            $(tableId).DataTable().search(
+                $('#search-table').val()
+            ).draw();
+        }, time);
+    }
+
+    function dataTable(tableId) {
+        var url = "{{ route('admin.kamar.data') }}"
+        var datatable = $(tableId).DataTable({
+            dom: "rt<'d-flex justify-content-end m-3 align-items-center'l p><'d-flex justify-content-between m-3'iB>"
+            , autoWidth: false
+            , processing: true
+            , serverSide: true
+            , order: [
+                [0, "desc"]
+            ]
+            , search: {
+                return: true
+            , }
+            , ajax: {
+                url: url
+                , data: function(d) {
+                    d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
+                }
+            }
+            , deferRender: true
+            , columns: [{
+                    data: 'id'
+                    , render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                }
+                , {
+                    data: 'nama_kamar'
+                    , name: 'nama_kamar'
+                    , className: "text-middle"
+                }
+                , {
+                    data: 'nama_unit'
+                    , name: 'nama_unit'
+                    , className: "text-middle"
+                }
+                , {
+                    data: 'jumlah_siswa'
+                    , name: 'jumlah_siswa'
+                    , className: "text-middle"
+                    , orderable: false
+                }
+                , {
+                    data: 'keterangan'
+                    , name: 'keterangan'
+                    , className: "text-middle"
+                }
+                , {
+                    data: 'action'
+                    , name: 'action'
+                    , className: "text-end"
+                    , searchable: false
+                    , orderable: false
+                }
+            ]
+        , })
+        return datatable;
+    }
+
+    function deleteData(event) {
+        event.preventDefault();
+        var id = event.target.querySelector('input[name="id"]').value;
+        var name = event.target.querySelector('input[name="name"]').value;
+        swal({
+            title: "Apa kamu yakin?"
+            , text: "Data yang akan dihapus: " + name + ". Data tidak dapat dikembalikan!"
+            , icon: "warning"
+            , buttons: {
+                confirm: {
+                    text: "OK"
+                    , value: true
+                    , visible: true
+                    , className: ""
+                    , closeModal: true
+                }
+                , cancel: "Batalkan"
+            , }
+            , dangerMode: true
+        , }).then((willDelete) => {
+            if (willDelete) {
+                var url = "{{ route('admin.kamar.destroy', ['kamar' => '_kamar']) }}";
+                url = url.replace('_kamar', id);
+                var fd = new FormData($(event.target)[0]);
+                $.ajax({
+                    type: "post"
+                    , url: url
+                    , data: fd
+                    , contentType: false
+                    , processData: false
+                    , beforeSend: function() {
+                        toastr.info('Loading...');
+                    }
+                    , success: function(response) {
+                        searchDataTable('#tableKamar', true);
+                        showToastr(response.status, response.message);
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+@endpush

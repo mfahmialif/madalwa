@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -16,27 +17,90 @@ class DashboardController extends Controller
     {
         $siswa         = Siswa::count();
         $siswaNonAktif =
-        [
-         'L' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
-                $query->where('jenis_kelamin', 'Laki-laki');
-            })->count(),
-         'P' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
-                $query->where('jenis_kelamin', 'Perempuan');
-            })->count(),
-        ];
+            [
+                'L' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
+                    $query->where('jenis_kelamin', 'Laki-laki');
+                })->count(),
+                'P' => Siswa::where('status', 'tidak aktif')->whereHas('user', function ($query) {
+                    $query->where('jenis_kelamin', 'Perempuan');
+                })->count(),
+            ];
         $siswaAktif =
-        [
-         'L' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
-                $query->where('jenis_kelamin', 'Laki-laki');
-            })->count(),
-         'P' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
-                $query->where('jenis_kelamin', 'Perempuan');
-            })->count(),
-        ];
+            [
+                'L' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
+                    $query->where('jenis_kelamin', 'Laki-laki');
+                })->count(),
+                'P' => Siswa::where('status', 'aktif')->whereHas('user', function ($query) {
+                    $query->where('jenis_kelamin', 'Perempuan');
+                })->count(),
+            ];
 
         $kelasSub = KelasSub::count();
         $guru     = Guru::count();
         $jadwal   = Jadwal::count();
+
+        // Get all kelas with unit information and student count by gender and status
+        $kelasDataAktif = \App\Models\Kelas::with('unitSekolah')
+            ->get()
+            ->map(function ($kelas) {
+                $siswaLakiLaki = Siswa::where('kelas_id', $kelas->id)
+                    ->where('status', 'aktif')
+                    ->where('status_daftar', 'diterima')
+                    ->whereHas('user', function ($query) {
+                        $query->where('jenis_kelamin', 'Laki-laki');
+                    })
+                    ->count();
+
+                $siswaPerempuan = Siswa::where('kelas_id', $kelas->id)
+                    ->where('status', 'aktif')
+                    ->where('status_daftar', 'diterima')
+                    ->whereHas('user', function ($query) {
+                        $query->where('jenis_kelamin', 'Perempuan');
+                    })
+                    ->count();
+
+                return [
+                    'id' => $kelas->id,
+                    'nama_kelas' => $kelas->angka,
+                    'unit' => $kelas->unitSekolah->nama_unit ?? '-',
+                    'laki_laki' => $siswaLakiLaki,
+                    'perempuan' => $siswaPerempuan,
+                    'total' => $siswaLakiLaki + $siswaPerempuan
+                ];
+            })
+            ->sortBy('nama_kelas')
+            ->values();
+
+        $kelasDataNonAktif = \App\Models\Kelas::with('unitSekolah')
+            ->get()
+            ->map(function ($kelas) {
+                $siswaLakiLaki = Siswa::where('kelas_id', $kelas->id)
+                    ->where('status', 'tidak aktif')
+                    ->where('status_daftar', 'diterima')
+                    ->whereHas('user', function ($query) {
+                        $query->where('jenis_kelamin', 'Laki-laki');
+                    })
+                    ->count();
+
+                $siswaPerempuan = Siswa::where('kelas_id', $kelas->id)
+                    ->where('status', 'tidak aktif')
+                    ->where('status_daftar', 'diterima')
+                    ->whereHas('user', function ($query) {
+                        $query->where('jenis_kelamin', 'Perempuan');
+                    })
+                    ->count();
+
+                return [
+                    'id' => $kelas->id,
+                    'nama_kelas' => $kelas->angka,
+                    'unit' => $kelas->unitSekolah->nama_unit ?? '-',
+                    'laki_laki' => $siswaLakiLaki,
+                    'perempuan' => $siswaPerempuan,
+                    'total' => $siswaLakiLaki + $siswaPerempuan
+                ];
+            })
+            ->sortBy('nama_kelas')
+            ->values();
 
         $statuses = Helper::getEnumValues('absensi_detail', 'status');
 
@@ -71,10 +135,22 @@ class DashboardController extends Controller
         }
 
         $xaxis = [
-            'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'categories' => [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'
+            ],
         ];
 
-        return view('admin.dashboard.index', compact('siswa', 'kelasSub', 'guru', 'jadwal', 'series', 'xaxis', 'siswaNonAktif', 'siswaAktif'));
+        return view('admin.dashboard.index', compact('siswa', 'kelasSub', 'guru', 'jadwal', 'series', 'xaxis', 'siswaNonAktif', 'siswaAktif', 'kelasDataAktif', 'kelasDataNonAktif'));
     }
 }

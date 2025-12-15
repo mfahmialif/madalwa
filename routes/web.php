@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\NilaiController;
 use App\Http\Controllers\Admin\SiswaController;
 use App\Http\Controllers\Admin\AlumniController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\KelasWaliController;
 use App\Http\Controllers\Admin\KelulusanController;
 use App\Http\Controllers\Admin\KurikulumController;
+use App\Http\Controllers\Admin\KamarSiswaController;
 use App\Http\Controllers\Admin\KelasSiswaController;
 use App\Http\Controllers\Admin\NilaiBobotController;
 use App\Http\Controllers\Admin\NilaiInputController;
@@ -29,6 +31,7 @@ use App\Http\Controllers\Admin\AbsensiRekapController;
 use App\Http\Controllers\Admin\CetakLaporanController;
 use App\Http\Controllers\Admin\JadwalDetailController;
 use App\Http\Controllers\Admin\MutasiKeluarController;
+use App\Http\Controllers\Admin\KenaikanKelasController;
 use App\Http\Controllers\Admin\KepalaSekolahController;
 use App\Http\Controllers\Admin\KurikulumSiswaController;
 use App\Http\Controllers\Admin\MataPelajaranController;
@@ -128,6 +131,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('/data', [KelulusanController::class, 'data'])->name('admin.kelulusan.data');
             Route::put('/update-status-lulus', [KelulusanController::class, 'updateStatusLulus'])->name('admin.kelulusan.update-status-lulus');
             Route::delete('/{siswa}/destroy', [KelulusanController::class, 'destroy'])->name('admin.kelulusan.destroy');
+        });
+        Route::prefix('kenaikan-kelas')->group(function () {
+            Route::get('/', [KenaikanKelasController::class, 'index'])->name('admin.kenaikan-kelas.index');
+            Route::get('/data', [KenaikanKelasController::class, 'data'])->name('admin.kenaikan-kelas.data');
+            Route::post('/naikkan', [KenaikanKelasController::class, 'naikkanKelas'])->name('admin.kenaikan-kelas.naikkan');
+            Route::post('/naikkan-batch', [KenaikanKelasController::class, 'naikkanKelasBatch'])->name('admin.kenaikan-kelas.naikkan-batch');
         });
         Route::prefix('import')->group(function () {
 
@@ -285,6 +294,25 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
                     Route::put('/{kelasSiswa}/update', [KelasSiswaController::class, 'update'])->name('admin.kelas.sub.siswa.update');
                     Route::delete('/{kelasSiswa}/destroy', [KelasSiswaController::class, 'destroy'])->name('admin.kelas.sub.siswa.destroy');
                 });
+            });
+        });
+        Route::prefix('kamar')->group(function () {
+            Route::get('/', [KamarController::class, 'index'])->name('admin.kamar.index');
+            Route::get('/data', [KamarController::class, 'data'])->name('admin.kamar.data');
+            Route::get('/add', [KamarController::class, 'add'])->name('admin.kamar.add');
+            Route::post('/', [KamarController::class, 'store'])->name('admin.kamar.store');
+            Route::get('/{kamar}/edit', [KamarController::class, 'edit'])->name('admin.kamar.edit');
+            Route::put('/{kamar}/update', [KamarController::class, 'update'])->name('admin.kamar.update');
+            Route::delete('/{kamar}/destroy', [KamarController::class, 'destroy'])->name('admin.kamar.destroy');
+
+            Route::prefix('{kamar}/siswa')->group(function () {
+                Route::get('/', [KamarSiswaController::class, 'index'])->name('admin.kamar.siswa.index');
+                Route::get('/data', [KamarSiswaController::class, 'data'])->name('admin.kamar.siswa.data');
+                Route::get('/data-siswa', [KamarSiswaController::class, 'dataSiswa'])->name('admin.kamar.siswa.data-siswa');
+                Route::get('/add', [KamarSiswaController::class, 'add'])->name('admin.kamar.siswa.add');
+                Route::post('/', [KamarSiswaController::class, 'store'])->name('admin.kamar.siswa.store');
+                Route::delete('/bulk-destroy', [KamarSiswaController::class, 'bulkDestroy'])->name('admin.kamar.siswa.bulk-destroy');
+                Route::delete('/{kamarSiswa}/destroy', [KamarSiswaController::class, 'destroy'])->name('admin.kamar.siswa.destroy');
             });
         });
         Route::prefix('mata-pelajaran')->group(function () {
