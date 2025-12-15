@@ -27,7 +27,6 @@ class KamarSiswaController extends Controller
         $data   = KamarSiswa::where('kamar_siswa.kamar_id', $kamar->id)
             ->join('siswa', 'siswa.id', '=', 'kamar_siswa.siswa_id')
             ->join('kelas', 'kelas.id', '=', 'kamar_siswa.kelas_id')
-            ->join('tahun_pelajaran', 'tahun_pelajaran.id', '=', 'kamar_siswa.tahun_pelajaran_id')
             ->leftJoin('users', 'users.id', '=', 'siswa.user_id')
             ->select(
                 'kamar_siswa.*',
@@ -35,7 +34,6 @@ class KamarSiswaController extends Controller
                 'siswa.nis',
                 'siswa.nisn',
                 'kelas.angka as kelas_angka',
-                'tahun_pelajaran.kode as tahun_kode',
                 'users.jenis_kelamin'
             );
 
@@ -62,9 +60,6 @@ class KamarSiswaController extends Controller
             ->addColumn('kelas_info', function ($row) {
                 return '<span class="badge bg-info">Kelas ' . $row->kelas_angka . '</span>';
             })
-            ->addColumn('tahun_info', function ($row) {
-                return '<span class="badge bg-primary">' . $row->tahun_kode . '</span>';
-            })
             ->addColumn('action', function ($row) use ($kamar) {
                 $content = '<div class="dropdown dropdown-action">
                         <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
@@ -81,7 +76,7 @@ class KamarSiswaController extends Controller
                     </div>';
                 return $content;
             })
-            ->rawColumns(['action', 'nama_siswa', 'kelas_info', 'tahun_info'])
+            ->rawColumns(['action', 'nama_siswa', 'kelas_info'])
             ->toJson();
     }
 
@@ -90,13 +85,20 @@ class KamarSiswaController extends Controller
         $search = request('search.value');
 
         // Get siswa yang:
-        // 1. Belum ada di kamar ini
+        // 1. Belum ada di kamar INI (spesifik)
         // 2. Belum punya kamar di kelas mereka saat ini (untuk enforce 1 kamar per kelas)
         $data = Siswa::leftJoin('users', 'users.id', '=', 'siswa.user_id')
             ->leftJoin('kelas', 'kelas.id', '=', 'siswa.kelas_id')
             ->where('siswa.status', 'aktif')
             ->where('siswa.status_daftar', 'diterima')
-            // Filter: siswa yang BELUM punya kamar di kelas mereka saat ini
+            // Filter 1: Siswa yang BELUM ada di kamar INI
+            ->whereNotExists(function ($query) use ($kamar) {
+                $query->select(\DB::raw(1))
+                    ->from('kamar_siswa')
+                    ->whereColumn('kamar_siswa.siswa_id', 'siswa.id')
+                    ->where('kamar_siswa.kamar_id', $kamar->id);
+            })
+            // Filter 2: Siswa yang BELUM punya kamar APAPUN di kelas mereka saat ini
             ->whereNotExists(function ($query) {
                 $query->select(\DB::raw(1))
                     ->from('kamar_siswa')
@@ -143,8 +145,7 @@ class KamarSiswaController extends Controller
     public function add(Kamar $kamar)
     {
         Helper::checkUnitSekolahAccess($kamar->unit_sekolah_id);
-        $tahunPelajaran = TahunPelajaran::orderBy('id', 'desc')->get();
-        return view('admin.kamar.siswa.add', compact('kamar', 'tahunPelajaran'));
+        return view('admin.kamar.siswa.add', compact('kamar'));
     }
 
     public function store(Kamar $kamar, Request $request)
@@ -153,10 +154,9 @@ class KamarSiswaController extends Controller
             Helper::checkUnitSekolahAccess($kamar->unit_sekolah_id);
 
             $validated = $request->validate([
-                'siswa_id'           => 'required|array',
-                'siswa_id.*'         => 'integer|exists:siswa,id',
-                'tahun_pelajaran_id' => 'required|exists:tahun_pelajaran,id',
-                'keterangan'         => 'nullable|string',
+                'siswa_id'   => 'required|array',
+                'siswa_id.*' => 'integer|exists:siswa,id',
+                'keterangan' => 'nullable|string',
             ]);
 
             DB::beginTransaction();
@@ -207,11 +207,10 @@ class KamarSiswaController extends Controller
                 }
 
                 KamarSiswa::create([
-                    'kamar_id'           => $kamar->id,
-                    'siswa_id'           => $siswaId,
-                    'kelas_id'           => $siswa->kelas_id,
-                    'tahun_pelajaran_id' => $validated['tahun_pelajaran_id'],
-                    'keterangan'         => $validated['keterangan'],
+                    'kamar_id'   => $kamar->id,
+                    'siswa_id'   => $siswaId,
+                    'kelas_id'   => $siswa->kelas_id,
+                    'keterangan' => $validated['keterangan'],
                 ]);
 
                 $successCount++;

@@ -17,6 +17,11 @@ class Kamar extends Model
         return $this->belongsTo(UnitSekolah::class, 'unit_sekolah_id');
     }
 
+    public function tahunPelajaran()
+    {
+        return $this->belongsTo(TahunPelajaran::class, 'tahun_pelajaran_id');
+    }
+
     public function kamarSiswa()
     {
         return $this->hasMany(KamarSiswa::class, 'kamar_id');
@@ -25,7 +30,7 @@ class Kamar extends Model
     public function siswa()
     {
         return $this->belongsToMany(Siswa::class, 'kamar_siswa', 'kamar_id', 'siswa_id')
-            ->withPivot('kelas_id', 'tahun_pelajaran_id', 'keterangan')
+            ->withPivot('kelas_id', 'keterangan')
             ->withTimestamps();
     }
 }

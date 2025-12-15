@@ -81,7 +81,6 @@
                                 <th style="width: 5%">No</th>
                                 <th>Nama Siswa</th>
                                 <th>Kelas Saat Ditempatkan</th>
-                                <th>Tahun Pelajaran</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -189,12 +188,6 @@
                 , {
                     data: 'kelas_info'
                     , name: 'kelas_info'
-                    , className: "text-middle"
-                    , orderable: false
-                }
-                , {
-                    data: 'tahun_info'
-                    , name: 'tahun_info'
                     , className: "text-middle"
                     , orderable: false
                 }

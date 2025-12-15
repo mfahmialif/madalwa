@@ -26,9 +26,4 @@ class KamarSiswa extends Model
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
-
-    public function tahunPelajaran()
-    {
-        return $this->belongsTo(TahunPelajaran::class, 'tahun_pelajaran_id');
-    }
 }

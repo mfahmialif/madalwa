@@ -52,23 +52,6 @@
 
                         <div class="col-12">
                             <div class="input-block local-forms">
-                                <label>Tahun Pelajaran <span class="login-danger">*</span></label>
-                                <select class="form-control select2 @error('tahun_pelajaran_id') is-invalid @enderror" name="tahun_pelajaran_id" required>
-                                    <option value="">Pilih Tahun Pelajaran</option>
-                                    @foreach ($tahunPelajaran as $item)
-                                    <option value="{{ $item->id }}" {{ old('tahun_pelajaran_id') == $item->id ? 'selected' : '' }}>
-                                        {{ $item->nama }} {{ $item->semester }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('tahun_pelajaran_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="input-block local-forms">
                                 <label>Keterangan (Opsional)</label>
                                 <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" rows="3" placeholder="Keterangan tambahan">{{ old('keterangan') }}</textarea>
                                 @error('keterangan')

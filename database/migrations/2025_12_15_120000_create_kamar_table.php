@@ -17,11 +17,13 @@ return new class extends Migration
             $table->id();
             $table->string('nama_kamar');
             $table->unsignedBigInteger('unit_sekolah_id');
+            $table->unsignedBigInteger('tahun_pelajaran_id');
             $table->text('keterangan')->nullable();
             $table->integer('kapasitas')->nullable();
             $table->timestamps();
 
             $table->foreign('unit_sekolah_id')->references('id')->on('unit_sekolah');
+            $table->foreign('tahun_pelajaran_id')->references('id')->on('tahun_pelajaran');
         });
     }
 

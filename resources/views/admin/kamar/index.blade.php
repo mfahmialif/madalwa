@@ -78,6 +78,7 @@
                                 <th style="width: 5%">No</th>
                                 <th>Nama Kamar</th>
                                 <th>Unit Sekolah</th>
+                                <th>Tahun Pelajaran</th>
                                 <th>Jumlah Siswa</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
@@ -149,6 +150,12 @@
                     data: 'nama_unit'
                     , name: 'nama_unit'
                     , className: "text-middle"
+                }
+                , {
+                    data: 'tahun_info'
+                    , name: 'tahun_info'
+                    , className: "text-middle"
+                    , orderable: false
                 }
                 , {
                     data: 'jumlah_siswa'
