@@ -153,7 +153,8 @@ class SiswaController extends Controller
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $status         = Helper::getEnumValues('siswa', 'status');
         $unitSekolah    = UnitSekolah::all();
-        return view('admin.siswa.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah'));
+        $kelas          = Kelas::with('unitSekolah')->orderBy('unit_sekolah_id')->orderBy('angka')->get();
+        return view('admin.siswa.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah', 'kelas'));
     }
 
     public function data(Request $request)
