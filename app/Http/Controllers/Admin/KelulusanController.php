@@ -29,7 +29,8 @@ class KelulusanController extends Controller
         $tahunPelajaran = TahunPelajaran::orderBy('kode', 'desc')->get();
         $status   = Helper::getEnumValues('siswa', 'status');
         $unitSekolah    = UnitSekolah::all();
-        return view('admin.kelulusan.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah'));
+        $kelas          = Kelas::with('unitSekolah')->orderBy('unit_sekolah_id')->orderBy('angka')->get();
+        return view('admin.kelulusan.index', compact('jenisKelamin', 'tahunPelajaran', 'status', 'unitSekolah', 'kelas'));
     }
 
     public function data(Request $request)
@@ -50,6 +51,9 @@ class KelulusanController extends Controller
                 $query->where('siswa.status_daftar', '=', 'diterima');
                 $query->when($request->jenis_kelamin, function ($q) use ($request) {
                     $q->where('siswa.jenis_kelamin', $request->jenis_kelamin);
+                });
+                $query->when($request->kelas_id, function ($q) use ($request) {
+                    $q->where('siswa.kelas_id', $request->kelas_id);
                 });
                 $query->where(function ($query) use ($search) {
                     $query->orWhere('siswa.nama_siswa', 'LIKE', "%$search%");

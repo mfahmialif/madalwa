@@ -27,9 +27,8 @@
         </div>
 
         <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
-                    <label>Filter Tahun Pelajaran</label>
                     <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id">
                         <option value="">Semua Tahun Pelajaran</option>
                         @foreach ($tahunPelajaran as $item)
@@ -40,9 +39,8 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
-                    <label>Filter Unit Sekolah</label>
                     <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id">
                         <option value="">Semua Unit Sekolah</option>
                         @foreach ($unitSekolah as $item)
@@ -53,14 +51,25 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
-                    <label>Filter Kelas</label>
                     <select class="form-control select2 filter-dt" id="filter_kelas_id">
                         <option value="">Semua Kelas</option>
                         @foreach ($kelas as $item)
                         <option value="{{ $item->id }}">
                             Kelas {{ $item->angka }} - {{ $item->unitSekolah->nama_unit }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_jenis_kelamin">
+                        <option value="">Semua Jenis Kelamin</option>
+                        @foreach ($jenisKelamin as $item)
+                        <option value="{{ $item }}">
+                            {{ $item }}
                         </option>
                         @endforeach
                     </select>
@@ -203,6 +212,7 @@
                     d.tahun_pelajaran_id = $('#filter_tahun_pelajaran_id').val();
                     d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
                     d.kelas_id = $('#filter_kelas_id').val();
+                    d.jenis_kelamin = $('#filter_jenis_kelamin').val();
                 }
             }
             , deferRender: true

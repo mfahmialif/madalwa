@@ -24,7 +24,7 @@
         </div>
 
         <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_tahun_pelajaran_id" required>
                         <option value="">Semua Tahun Pelajaran</option>
@@ -36,7 +36,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_unit_sekolah_id" required>
                         @if (Auth::user()->role->nama == 'unit sekolah')
@@ -54,7 +54,19 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
+                <div class="input-block local-forms">
+                    <select class="form-control select2 filter-dt" id="filter_kelas_id">
+                        <option value="">Semua Kelas</option>
+                        @foreach ($kelas as $item)
+                        <option value="{{ $item->id }}">
+                            Kelas {{ $item->angka }} - {{ $item->unitSekolah->nama_unit }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
                 <div class="input-block local-forms">
                     <select class="form-control select2 filter-dt" id="filter_jenis_kelamin" required>
                         <option value="">Semua Jenis Kelamin</option>
@@ -212,6 +224,7 @@
                     d.tahun_pelajaran_id = $('#filter_tahun_pelajaran_id').val();
                     d.jenis_kelamin = $('#filter_jenis_kelamin').val();
                     d.unit_sekolah_id = $('#filter_unit_sekolah_id').val();
+                    d.kelas_id = $('#filter_kelas_id').val();
                     // d.search = $('#search-table').val();
                 }
             , }

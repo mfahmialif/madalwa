@@ -31,8 +31,9 @@ class KenaikanKelasController extends Controller
         $tahunPelajaran = TahunPelajaran::orderBy('id', 'desc')->get();
         $unitSekolah    = UnitSekolah::all();
         $kelas          = Kelas::with('unitSekolah')->orderBy('unit_sekolah_id')->orderBy('angka')->get();
+        $jenisKelamin   = Helper::getEnumValues('siswa', 'jenis_kelamin');
 
-        return view('admin.kenaikan-kelas.index', compact('breadcrumb', 'page', 'activeMenu', 'tahunPelajaran', 'unitSekolah', 'kelas'));
+        return view('admin.kenaikan-kelas.index', compact('breadcrumb', 'page', 'activeMenu', 'tahunPelajaran', 'unitSekolah', 'kelas', 'jenisKelamin'));
     }
 
     public function data(Request $request)
@@ -61,6 +62,9 @@ class KenaikanKelasController extends Controller
                 $query->when($request->kelas_id, function ($q) use ($request) {
                     $q->where('siswa.kelas_id', $request->kelas_id);
                 });
+                $query->when($request->jenis_kelamin, function ($q) use ($request) {
+                    $q->where('siswa.jenis_kelamin', $request->jenis_kelamin);
+                });
                 $query->where(function ($query) use ($search) {
                     $query->orWhere('siswa.nama_siswa', 'LIKE', "%$search%");
                     $query->orWhere('siswa.jenis_kelamin', 'LIKE', "%$search%");
@@ -77,7 +81,8 @@ class KenaikanKelasController extends Controller
                         <div>
                             <strong>' . $row->nama_siswa . '</strong><br>
                             <small>NIS: ' . ($row->nis ?? '-') . '</small><br>
-                            <small>NISN: ' . ($row->nisn ?? '-') . '</small>
+                            <small>NISN: ' . ($row->nisn ?? '-') . '</small><br>
+                            <small>JK: ' . ($row->jenis_kelamin ?? '-') . '</small>
                         </div>
                     </div>
                 ';
